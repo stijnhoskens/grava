@@ -43,7 +43,7 @@ public class Graph<T extends Node> {
 		for(Edge<T> edge : edges) {
 			if(node.equals(edge.getNode1()))
 				nodeEdges.add(edge);
-			else if(node.equals(edge.getNode2()))
+			else if(node.equals(edge.getNode2()) && !edge.isDirected())
 				nodeEdges.add(edge.switchNodes());
 		}
 		return nodeEdges;

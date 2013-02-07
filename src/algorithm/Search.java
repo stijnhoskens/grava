@@ -4,11 +4,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import comparators.*;
 
 import exceptions.InvalidGraphException;
 import exceptions.InvalidNodeException;
@@ -21,7 +22,7 @@ import graph.Node;
  * To use this class, first setup a Search instance, then perform the desired search algorithm.
  * Once the search is concluded, getPath() will return the found path.
  * @author Stijn Hoskens
- * @version 0.4
+ * @version 0.5
  * @param <T> The node subclass you want to work with.
  */
 public class Search<T extends Node> {
@@ -32,6 +33,7 @@ public class Search<T extends Node> {
 	private Path<T> foundPath;
 	private Heuristic<T> h;
 	private SearchMethod method; //The method last used.
+	private int beamWidth = 1;
 	
 	public Search(Graph<T> graph, T start, T goal) 
 			throws InvalidGraphException, InvalidNodeException {
@@ -49,14 +51,20 @@ public class Search<T extends Node> {
 	}
 	
 	/**
+	 * @note non deterministic search adds the new paths randomly to the first place in queue or the last place. 
+	 * In this sense it is not purely non deterministic, but there is a good balance between
+	 * depth and breadth first.
 	 * @note If the given method is a heuristic search, and no heuristic is given, 
 	 * it will just perform as if it was a blind search.
+	 * @note When beamsearch is used and no beamwidth is set, it will use a beamwidth of 1,
+	 * and will do hillclimbing2.
+	 * @note beam and hill climbing 2 search both ignore leafs that are not goal nodes.
 	 */
 	public void performSearch(SearchMethod method) {
 		this.foundPath = null;
 		this.method = method;
 		if(method.isHeuristic() && h==null)
-			h = new DefaultHeuristic<T>();
+			h = getDefaultHeuristic();
 		try {
 			Method classMethod = this.getClass().getMethod(method.name(), new Class<?>[] { });
 			classMethod.invoke(this, new Object[] { });
@@ -80,6 +88,10 @@ public class Search<T extends Node> {
 	
 	public void setHeuristic(Heuristic<T> h) {
 		this.h = h;
+	}
+	
+	public void setBeamWidth(int beamWidth) {
+		this.beamWidth = beamWidth;
 	}
 	
 	public Path<T> getPath() throws NoPathFoundException {
@@ -111,11 +123,6 @@ public class Search<T extends Node> {
 		}
 	}
 	
-	/**
-	 * Adds the new paths randomly to the first place in queue or the last place. 
-	 * In this sense it is not purely non deterministic, but there is a good balance between
-	 * depth and breadth first.
-	 */
 	public void nonDeterministic() {
 		initialiseQueue();
 		while(!q.isEmpty() && !hasReachedGoal()) {
@@ -172,6 +179,44 @@ public class Search<T extends Node> {
 			q.addAllFirst(sorted);
 		}
 	}
+	
+	public void beam() {
+		beam(this.beamWidth);
+	}
+	
+	private void beam(int beamWidth) {
+		initialiseQueue();
+		while(!q.isEmpty() && !hasReachedGoal()) {
+			Set<Path<T>> allNewPaths = new HashSet<Path<T>>();
+			while(!q.isEmpty()) {
+				Path<T> path = q.pollFirst();
+				allNewPaths.addAll(generateChildrenPaths(path));
+			}
+			List<Path<T>> sorted = getSortedList(allNewPaths);
+			int toExtract = beamWidth;
+			for(int i = 0; i < toExtract && i < sorted.size(); i++) {
+				Path<T> path = sorted.get(i);
+				if(!hasDeadEndButNoGoal(path))
+					q.addLast(path);
+				else toExtract++;
+			}
+		}
+	}
+	
+	public void hillClimbing2() {
+		beam(1);
+	}
+	
+	public void greedy() {
+		initialiseQueue();
+		PathComparator<T> comp = getPathComparator();
+		while(!q.isEmpty() && !hasReachedGoal()) {
+			Path<T> firstPath = q.pollFirst();
+			Set<Path<T>> childrenPaths = generateChildrenPaths(firstPath);
+			q.addAllFirst(childrenPaths);
+			q.sort(comp);
+		}
+	}
 
 	/**
 	 * This method also eliminates loops.
@@ -193,6 +238,7 @@ public class Search<T extends Node> {
 	/**
 	 * If there is a path ending in the goal node, this method puts it in the foundPath field. 
 	 * @return whether or not a path in the queue reaches the goal node
+	 * @effect path == foundPath
 	 */
 	private boolean hasReachedGoal() {
 		for(Path<T> path : q) 
@@ -235,40 +281,46 @@ public class Search<T extends Node> {
 	
 	private List<Path<T>> getSortedList(Collection<Path<T>> set) {
 		List<Path<T>> list = new ArrayList<Path<T>>(set);
-		PathComparator comp = new PathComparator(method.getSearchType());
+		PathComparator<T> comp = getPathComparator();
 		Collections.sort(list, comp);
 		return list;
 	}
 	
-	private double h(Path<T> path) {
-		return h.value(path.getEndpoint(), goal);
+	private PathComparator<T> getPathComparator() {
+		switch(method.getSearchType()) {
+		case Blind:
+			return new BlindPathComparator<T>();
+		case Cost:
+			return new CostPathComparator<T>();
+		case Heuristic:
+			return new HeuristicPathComparator<T>(h, goal);
+		case Optimal:
+			return new OptimalPathComparator<T>();
+		default:
+			return new BlindPathComparator<T>();
+		}
 	}
 	
-	private class PathComparator implements Comparator<Path<T>> {
-
-		private final SearchType type;
-
-		public PathComparator(SearchType type) {
-			this.type = type;
-		}
-		
-		@Override
-		public int compare(Path<T> arg0, Path<T> arg1) {
-			switch(type) {
-			case Blind:
-				return 0;
-			case Cost:
-				return 0; //TODO
-			case Heuristic:
-				double h1 = h(arg0);
-				double h2 = h(arg1);
-				return h1<h2 ? -1 : (h1>h2 ? 1 : 0);
-			case Optimal:
-				return 0; //TODO
-			default:
+	private Heuristic<T> getDefaultHeuristic() {
+		return new Heuristic<T>() {
+			@Override
+			public double value(T node1, T node2) {
 				return 0;
 			}
-		}
-		
+		};
+	}
+	
+	/**
+	 * Returns true when the path has a dead end, however, it returns false when 
+	 * the endpoint is the goal node.
+	 */
+	private boolean hasDeadEndButNoGoal(Path<T> path) {
+		if(path.getEndpoint().equals(goal))
+			return false;
+		else return hasDeadEnd(path);
+	}
+	
+	private boolean hasDeadEnd(Path<T> path) {
+		return generateChildrenPaths(path).isEmpty() || path.size()==0;
 	}
 }
