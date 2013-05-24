@@ -213,15 +213,6 @@ public abstract class Search<T extends Node> {
 		}
 	}
 	
-	private Heuristic<T> getDefaultHeuristic() {
-		return new Heuristic<T>() {
-			@Override
-			public double value(T node1, T node2) {
-				return 0;
-			}
-		};
-	}
-	
 	/**
 	 * Returns true when the path has a dead end, however, it returns false when 
 	 * the endpoint is the goal node.
