@@ -1,12 +1,10 @@
 package algorithm;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import comparators.*;
@@ -25,15 +23,15 @@ import graph.Node;
  * @version 0.5
  * @param <T> The node subclass you want to work with.
  */
-public class Search<T extends Node> {
+public abstract class Search<T extends Node> {
 	
-	private final Graph<T> graph;
-	private T start, goal;
-	private final Queue<T> q = new Queue<T>();
-	private Path<T> foundPath;
-	private Heuristic<T> h;
-	private SearchMethod method; //The method last used.
-	private int beamWidth = 1;
+	protected final Graph<T> graph;
+	protected T start, goal;
+	protected final Queue<T> q = new Queue<T>();
+	protected Path<T> foundPath;
+	protected Heuristic<T> h;
+	protected SearchMethod method; //The method last used.
+	protected int beamWidth = 1;
 	
 	public Search(Graph<T> graph, T start, T goal) 
 			throws InvalidGraphException, InvalidNodeException {
@@ -60,8 +58,8 @@ public class Search<T extends Node> {
 	 * and will do hillclimbing2.
 	 * @note beam and hill climbing 2 search both ignore leafs that are not goal nodes.
 	 */
-	public void performSearch(SearchMethod method) {
-		this.foundPath = null;
+	public abstract void performSearch();
+	/*	this.foundPath = null;
 		this.method = method;
 		if(method.isHeuristic() && h==null)
 			h = getDefaultHeuristic();
@@ -72,7 +70,7 @@ public class Search<T extends Node> {
 			e.printStackTrace();
 			//do nothing, something went inexplicably wrong.
 		}
-	}
+	}*/
 	
 	public void setStart(T start) throws InvalidNodeException {
 		if(start==null || !graph.containsNode(start))
@@ -100,74 +98,9 @@ public class Search<T extends Node> {
 		return this.foundPath;
 	}
 
-	private void initialiseQueue() {
+	protected void initialiseQueue() {
 		q.clear();
 		q.offerFirst(new Path<T>(start));
-	}
-	
-	public void depthFirst() {
-		initialiseQueue();
-		while(!q.isEmpty() && !hasReachedGoal()) {
-			Path<T> firstPath = q.pollFirst();
-			Set<Path<T>> childrenPaths = generateChildrenPaths(firstPath);
-			q.addAllFirst(childrenPaths);
-		}
-	}
-	
-	public void breadthFirst() {
-		initialiseQueue();
-		while(!q.isEmpty() && !hasReachedGoal()) {
-			Path<T> firstPath = q.pollFirst();
-			Set<Path<T>> childrenPaths = generateChildrenPaths(firstPath);
-			q.addAllLast(childrenPaths);
-		}
-	}
-	
-	public void nonDeterministic() {
-		initialiseQueue();
-		while(!q.isEmpty() && !hasReachedGoal()) {
-			Path<T> firstPath = q.pollFirst();
-			Set<Path<T>> childrenPaths = generateChildrenPaths(firstPath);
-			Random r = new Random();
-			for(Path<T> childrenPath : childrenPaths) {
-				if(r.nextBoolean()) q.addFirst(childrenPath);
-				else q.addLast(childrenPath);
-			}
-		}
-	}
-	
-	public void iterativeDeepening() {
-		outerLoop: for(int depth = 1; true; depth++) {
-			initialiseQueue();
-			while(!q.isEmpty()) {
-				Path<T> firstPath = q.pollFirst();
-				if(firstPath.size() < depth) {
-					Set<Path<T>> childrenPaths = generateChildrenPaths(firstPath);
-					q.addAllFirst(childrenPaths);
-				}
-				if(hasReachedGoal())
-					break outerLoop;
-			}
-		}
-	}
-	
-	public void biDirectional() {
-		Queue<T> q2 = new Queue<T>();
-		initialiseQueue();
-		q2.offerFirst(new Path<T>(goal));
-		while(!q.isEmpty() && !q2.isEmpty()) {
-			Path<T> firstPath1 = q.pollFirst();
-			Path<T> firstPath2 = q2.pollFirst();
-			Set<Path<T>> childrenPaths1 = generateChildrenPaths(firstPath1);
-			Set<Path<T>> childrenPaths2 = generateChildrenPaths(firstPath2);
-			q.addAllLast(childrenPaths1);
-			q2.addAllLast(childrenPaths2);
-			Path<T> sharedPath = sharedState(q, q2);
-			if(!sharedPath.isEmpty()) {
-				foundPath = sharedPath;
-				break;
-			}
-		}
 	}
 	
 	public void hillClimbing1() {
@@ -221,7 +154,7 @@ public class Search<T extends Node> {
 	/**
 	 * This method also eliminates loops.
 	 */
-	private Set<Path<T>> generateChildrenPaths(Path<T> path) {
+	protected Set<Path<T>> generateChildrenPaths(Path<T> path) {
 		Set<Path<T>> childrenPaths = new HashSet<Path<T>>();
 		T lastNode = path.getEndpoint();
 		Set<T> neighbours = this.graph.getNeighboursOf(lastNode);
@@ -240,7 +173,7 @@ public class Search<T extends Node> {
 	 * @return whether or not a path in the queue reaches the goal node
 	 * @effect path == foundPath
 	 */
-	private boolean hasReachedGoal() {
+	protected boolean hasReachedGoal() {
 		for(Path<T> path : q) 
 			if(path.getEndpoint().equals(goal)) {
 				foundPath = path;
@@ -249,7 +182,7 @@ public class Search<T extends Node> {
 		return false;
 	}
 	
-	private void eliminateLoops(Set<Path<T>> paths) {
+	protected void eliminateLoops(Set<Path<T>> paths) {
 		Set<Path<T>> newPaths = new HashSet<Path<T>>(paths);
 		for(Path<T> path : paths)
 			if(path.subPath(0, path.size()-2).contains(path.getEndpoint()))
@@ -258,35 +191,14 @@ public class Search<T extends Node> {
 		paths.addAll(newPaths);
 	}
 	
-	private Path<T> sharedState(Queue<T> q1, Queue<T> q2) {
-		for(Path<T> path : q1) 
-			for(Path<T> path2 : q2) {
-				Path<T> cPath = combinedPath(path, path2);
-				if(!cPath.isEmpty())
-					return cPath;
-			}
-		return new Path<T>();
-	}
-	
-	private Path<T> combinedPath(Path<T> p1, Path<T> p2) {
-		Path<T> path = new Path<T>();
-		for(int i = 0; i < p1.size(); i++)
-			for(int j = 0; j < p2.size(); j++)
-				if(p1.get(i).equals(p2.get(j))) {
-					path.addAll(p1.subPath(0, i));
-					path.addAll(p2.subPath(j-1, 0));
-				}
-		return path;
-	}
-	
-	private List<Path<T>> getSortedList(Collection<Path<T>> set) {
+	protected List<Path<T>> getSortedList(Collection<Path<T>> set) {
 		List<Path<T>> list = new ArrayList<Path<T>>(set);
 		PathComparator<T> comp = getPathComparator();
 		Collections.sort(list, comp);
 		return list;
 	}
 	
-	private PathComparator<T> getPathComparator() {
+	protected PathComparator<T> getPathComparator() {
 		switch(method.getSearchType()) {
 		case Blind:
 			return new BlindPathComparator<T>();

@@ -5,9 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import algorithm.Path;
-import algorithm.Search;
-import algorithm.SearchMethod;
+import algorithm.*;
 
 import graph.Graph;
 import graph.Node;
@@ -48,24 +46,28 @@ public class SearchTest {
 		graph.addConnection(B, E, 5d);
 		graph.addConnection(E, F, 4d);
 		graph.addConnection(F, G, 3d);
-		search = new Search<Node>(graph, S, G);
 	}
 
 	@Test
 	public void test_Blind() {
-		search.performSearch(SearchMethod.depthFirst);
+		search = new DepthFirst<Node>(graph, S, G);
+		search.performSearch();
 		foundPath = search.getPath();
 		assertEquals(G, foundPath.getEndpoint());
-		search.performSearch(SearchMethod.breadthFirst);
+		search = new BreadthFirst<Node>(graph, S, G);
+		search.performSearch();
 		foundPath = search.getPath();
 		assertEquals(G, foundPath.getEndpoint());
-		search.performSearch(SearchMethod.nonDeterministic);
+		search = new NonDeterministic<Node>(graph, S, G);
+		search.performSearch();
 		foundPath = search.getPath();
 		assertEquals(G, foundPath.getEndpoint());
-		search.performSearch(SearchMethod.iterativeDeepening);
+		search = new IterativeDeepening<Node>(graph, S, G);
+		search.performSearch();
 		foundPath = search.getPath();
 		assertEquals(G, foundPath.getEndpoint());
-		search.performSearch(SearchMethod.biDirectional);
+		search = new BiDirectional<Node>(graph, S, G);
+		search.performSearch();
 		foundPath = search.getPath();
 		assertEquals(G, foundPath.getEndpoint());
 	}
