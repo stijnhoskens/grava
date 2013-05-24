@@ -157,7 +157,7 @@ public abstract class Search<T extends Node> {
 	protected Set<Path<T>> generateChildrenPaths(Path<T> path) {
 		Set<Path<T>> childrenPaths = new HashSet<Path<T>>();
 		T lastNode = path.getEndpoint();
-		Set<T> neighbours = this.graph.getNeighboursOf(lastNode);
+		Collection<T> neighbours = this.graph.getNeighboursOf(lastNode);
 		for(T neighbour : neighbours) {
 			Path<T> childrenPath = new Path<T>(path);
 			childrenPath.add(neighbour);
