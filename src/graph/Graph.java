@@ -10,7 +10,6 @@ public class Graph<T extends Node> {
 	private final Set<T> nodes = new HashSet<>();
 	private Set<Edge<T>> edges = new HashSet<>();
 	private NodeFactory<T> nodeFactory;
-	private Set<T> expandedNodes = new HashSet<>();
 
 	public Graph() {
 		// basic constructor
@@ -88,9 +87,9 @@ public class Graph<T extends Node> {
 	 * @return
 	 */
 	public Collection<T> getNeighboursOf(T node) {
-		if (hasNodeFactory() && !isNodeExpanded(node)) {
+		if (hasNodeFactory()) {
 			
-			List<T> neighbours = this.nodeFactory.creatNeighbourNodes(node);
+			List<T> neighbours = this.nodeFactory.createNeighbourNodes(node);
 			this.addNodes(neighbours);
 			double[][] costs = new double[neighbours.size()][2];
 			for (int i = 0; i < neighbours.size(); i++) {
@@ -99,7 +98,7 @@ public class Graph<T extends Node> {
 				costs[i][1] = this.nodeFactory.getCostBetween(neighbour, node);
 			}
 			this.addConnections(node, neighbours, costs);
-			this.expandedNodes.add(node);
+			this.nodes.addAll(neighbours);
 			return neighbours;
 			
 		} else {
@@ -130,10 +129,6 @@ public class Graph<T extends Node> {
 				return true;
 		}
 		return false;
-	}
-	
-	private boolean isNodeExpanded(T node) {
-		return expandedNodes.contains(node);
 	}
 
 }
