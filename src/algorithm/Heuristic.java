@@ -1,6 +1,6 @@
 package algorithm;
 
-import graph.Node;
+import node.Node;
 
 public interface Heuristic<T extends Node> {
 	

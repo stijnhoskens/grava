@@ -1,6 +1,6 @@
 package comparators;
 
-import graph.Node;
+import node.Node;
 import algorithm.Heuristic;
 import algorithm.Path;
 

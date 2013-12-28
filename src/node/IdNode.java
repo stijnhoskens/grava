@@ -1,21 +1,17 @@
-package graph;
+package node;
 
-public class Node {
-
+public class IdNode implements Node {
+	
 	private String id;
 
-	public Node() {
-
-	}
-
-	public Node(String id) {
+	public IdNode(String id) {
 		this.id = id;
 	}
 
 	public String getId() {
 		return id;
 	}
-
+	
 	public void printId() {
 		System.out.println(id);
 	}
@@ -41,7 +37,7 @@ public class Node {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Node other = (Node) obj;
+		IdNode other = (IdNode) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

@@ -1,6 +1,6 @@
 package comparators;
 
-import graph.Node;
+import node.Node;
 import algorithm.Path;
 
 public class CostPathComparator<T extends Node> implements PathComparator<T> {

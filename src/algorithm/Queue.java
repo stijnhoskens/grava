@@ -1,6 +1,5 @@
 package algorithm;
 
-import graph.Node;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -8,6 +7,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import node.Node;
 
 public class Queue<T extends Node> extends ArrayDeque<Path<T>> {
 

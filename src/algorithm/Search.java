@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import node.Node;
+
 import comparators.*;
 
 import exceptions.InvalidGraphException;
@@ -14,7 +16,6 @@ import exceptions.InvalidNodeException;
 import exceptions.NoPathFoundException;
 
 import graph.Graph;
-import graph.Node;
 
 /**
  * To use this class, first setup a Search instance, then perform the desired search algorithm.
@@ -157,7 +158,7 @@ public abstract class Search<T extends Node> {
 	protected Set<Path<T>> generateChildrenPaths(Path<T> path) {
 		Set<Path<T>> childrenPaths = new HashSet<Path<T>>();
 		T lastNode = path.getEndpoint();
-		Collection<T> neighbours = this.graph.getNeighboursOf(lastNode);
+		Collection<T> neighbours = this.graph.getNeighborsOf(lastNode);
 		for(T neighbour : neighbours) {
 			Path<T> childrenPath = new Path<T>(path);
 			childrenPath.add(neighbour);

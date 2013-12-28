@@ -2,10 +2,11 @@ package algorithm;
 
 import java.util.Set;
 
+import node.Node;
+
 import exceptions.InvalidGraphException;
 import exceptions.InvalidNodeException;
 import graph.Graph;
-import graph.Node;
 
 public class DepthFirst<T extends Node> extends BlindSearch<T> {
 	

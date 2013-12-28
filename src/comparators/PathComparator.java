@@ -1,8 +1,9 @@
 package comparators;
 
-import graph.Node;
 
 import java.util.Comparator;
+
+import node.Node;
 
 import algorithm.Path;
 
