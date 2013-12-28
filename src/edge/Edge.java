@@ -3,35 +3,37 @@ package edge;
 import node.Node;
 
 /**
- * This class is used whenever one way edge are used. This can be the case when
- * a certain street is one direction. You can also use this if you insist on
- * making two edges for a two way edge. It can come in handy in a LinkedGraph,
- * where only the other neighbor is needed, so a bidirectional relation is
- * unnecessary.
+ * This class is used for the most basic edge, in only one direction. This can
+ * be the case when a certain street is one direction. You can also use this if
+ * you insist on making two edges for a two way edge. It can come in handy in a
+ * LinkedGraph, where only the other neighbor is needed, so a bidirectional
+ * relation is unnecessary. Use the BiDirectionalEdge if you need the edge to
+ * contain both linking nodes.
  * 
  * @author Stijn
  * 
  * @param <T>
+ *            The node which the edge connects.
  */
-public class OneWayEdge<T extends Node> {
+public class Edge<T extends Node> {
 
 	protected final T node2;
 
 	protected final double cost1to2;
 
-	public OneWayEdge(T node, double cost) {
+	public Edge(T node, double cost) {
 		node2 = node;
 		cost1to2 = cost;
 	}
-	
+
 	public T getNode2() {
 		return node2;
 	}
-	
+
 	public double getCost1to2() {
 		return cost1to2;
 	}
-	
+
 	public double getCost() {
 		return getCost1to2();
 	}
@@ -55,7 +57,7 @@ public class OneWayEdge<T extends Node> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		OneWayEdge<?> other = (OneWayEdge<?>) obj;
+		Edge<?> other = (Edge<?>) obj;
 		if (Double.doubleToLongBits(cost1to2) != Double
 				.doubleToLongBits(other.cost1to2))
 			return false;

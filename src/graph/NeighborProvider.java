@@ -4,14 +4,14 @@ import java.util.Set;
 
 import node.Node;
 
-import edge.OneWayEdge;
+import edge.Edge;
 
-public interface NeighborProvider<T extends Node> {
+public interface NeighborProvider<T extends Node, S extends Edge<T>> {
 
 	/**
 	 * Returns all one way edges starting from the given node, this encapsulates
 	 * both the cost and the neighbor the node can go to.
 	 */
-	public Set<OneWayEdge<T>> getEdgesFrom(T node);
+	public Set<S> getEdgesFrom(T node);
 
 }

@@ -5,7 +5,7 @@ import java.util.Set;
 
 import node.ValueNode;
 
-import edge.OneWayEdge;
+import edge.Edge;
 
 /**
  * This graph is dynamic in the sense that it builds up its node set in runtime,
@@ -21,9 +21,9 @@ import edge.OneWayEdge;
  * 
  * @param <T>
  */
-public class DynamicGraph<T extends ValueNode> implements Graph<T> {
+public class DynamicGraph<T extends ValueNode, S extends Edge<T>> implements Graph<T,S> {
 
-	private final NeighborProvider<T> neighborProvider;
+	private final NeighborProvider<T,S> neighborProvider;
 
 	/**
 	 * Use this constructor if you want nodes be made dynamically.
@@ -31,7 +31,7 @@ public class DynamicGraph<T extends ValueNode> implements Graph<T> {
 	 * @param provider
 	 *            Dynamically provides all neighbors while searching for them.
 	 */
-	public DynamicGraph(NeighborProvider<T> provider) {
+	public DynamicGraph(NeighborProvider<T,S> provider) {
 		this.neighborProvider = provider;
 	}
 
@@ -43,21 +43,21 @@ public class DynamicGraph<T extends ValueNode> implements Graph<T> {
 	@Override
 	public Set<T> getNeighborsOf(T node) {
 		Set<T> neighbors = new HashSet<>();
-		for (OneWayEdge<T> edge : getEdgesFrom(node))
+		for (Edge<T> edge : getEdgesFrom(node))
 			neighbors.add(edge.getNode2());
 		return neighbors;
 	}
 
 	@Override
 	public double getCostBetween(T node0, T node1) {
-		for (OneWayEdge<T> edge : getEdgesFrom(node0))
+		for (Edge<T> edge : getEdgesFrom(node0))
 			if(edge.getNode2().equals(node1))
 				return edge.getCost();
 		return Double.POSITIVE_INFINITY;
 	}
 
 	@Override
-	public Set<OneWayEdge<T>> getEdgesFrom(T node) {
+	public Set<S> getEdgesFrom(T node) {
 		return neighborProvider.getEdgesFrom(node);
 	}
 

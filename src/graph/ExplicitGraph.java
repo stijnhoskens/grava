@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import node.Node;
-
-import edge.OneWayEdge;
-import edge.TwoWayEdge;
+import edge.BiDirectionalEdge;
 
 /**
  * This graph is explicit in the sense that it has an explicit set of both nodes
@@ -23,11 +21,13 @@ import edge.TwoWayEdge;
  * 
  * @param <T>
  */
-public class ExplicitGraph<T extends Node> implements Graph<T>,
-		NeighborProvider<T> {
+public class ExplicitGraph<T extends Node>
+		implements
+			Graph<T, BiDirectionalEdge<T>>,
+			NeighborProvider<T, BiDirectionalEdge<T>> {
 
 	private final Set<T> nodes = new HashSet<>();
-	private final Set<TwoWayEdge<T>> edges = new HashSet<>();
+	private final Set<BiDirectionalEdge<T>> edges = new HashSet<>();
 
 	public ExplicitGraph() {
 		// basic constructor
@@ -39,7 +39,7 @@ public class ExplicitGraph<T extends Node> implements Graph<T>,
 	 * @param nodes
 	 * @param edges
 	 */
-	public ExplicitGraph(Set<T> nodes, Set<TwoWayEdge<T>> edges) {
+	public ExplicitGraph(Set<T> nodes, Set<BiDirectionalEdge<T>> edges) {
 		this.nodes.addAll(nodes);
 		this.edges.addAll(edges);
 	}
@@ -56,13 +56,13 @@ public class ExplicitGraph<T extends Node> implements Graph<T>,
 		nodes.addAll(nodes);
 	}
 
-	public void addEdge(TwoWayEdge<T> edge) {
+	public void addEdge(BiDirectionalEdge<T> edge) {
 		edges.add(edge);
 	}
 
 	public void addEdge(T node1, T node2, double cost1to2, double cost2to1) {
 		if (nodes.contains(node1) && nodes.contains(node2))
-			addEdge(new TwoWayEdge<T>(node1, node2, cost1to2, cost2to1));
+			addEdge(new BiDirectionalEdge<T>(node1, node2, cost1to2, cost2to1));
 	}
 
 	public void addEdge(T node1, T node2, double cost) {
@@ -91,9 +91,9 @@ public class ExplicitGraph<T extends Node> implements Graph<T>,
 	/**
 	 * Returns a set of edges with the given node as first node every time.
 	 */
-	protected Set<TwoWayEdge<T>> getEdgesOf(T node) {
-		Set<TwoWayEdge<T>> nodeEdges = new HashSet<TwoWayEdge<T>>();
-		for (TwoWayEdge<T> edge : edges) {
+	protected Set<BiDirectionalEdge<T>> getEdgesOf(T node) {
+		Set<BiDirectionalEdge<T>> nodeEdges = new HashSet<BiDirectionalEdge<T>>();
+		for (BiDirectionalEdge<T> edge : edges) {
 			if (node.equals(edge.getNode1()))
 				nodeEdges.add(edge);
 			else if (node.equals(edge.getNode2()) && !edge.isDirected())
@@ -102,8 +102,8 @@ public class ExplicitGraph<T extends Node> implements Graph<T>,
 		return nodeEdges;
 	}
 
-	protected TwoWayEdge<T> getEdgeBetween(T node0, T node1) {
-		for (TwoWayEdge<T> edge : getEdgesOf(node0))
+	protected BiDirectionalEdge<T> getEdgeBetween(T node0, T node1) {
+		for (BiDirectionalEdge<T> edge : getEdgesOf(node0))
 			if (edge.equals(node1))
 				return edge;
 		return null;
@@ -112,7 +112,7 @@ public class ExplicitGraph<T extends Node> implements Graph<T>,
 	@Override
 	public Set<T> getNeighborsOf(T node) {
 		Set<T> neighbors = new HashSet<T>();
-		for (TwoWayEdge<T> edge : getEdgesOf(node))
+		for (BiDirectionalEdge<T> edge : getEdgesOf(node))
 			neighbors.add(edge.getNode2());
 		return neighbors;
 	}
@@ -124,7 +124,7 @@ public class ExplicitGraph<T extends Node> implements Graph<T>,
 
 	@Override
 	public double getCostBetween(T node0, T node1) {
-		TwoWayEdge<T> edge = getEdgeBetween(node0, node1);
+		BiDirectionalEdge<T> edge = getEdgeBetween(node0, node1);
 		if (edge == null)
 			return Double.POSITIVE_INFINITY;
 		else
@@ -132,11 +132,8 @@ public class ExplicitGraph<T extends Node> implements Graph<T>,
 	}
 
 	@Override
-	public Set<OneWayEdge<T>> getEdgesFrom(T node) {
-		Set<OneWayEdge<T>> edges = new HashSet<>();
-		for (TwoWayEdge<T> edge : getEdgesOf(node))
-			edges.add(new OneWayEdge<T>(edge.getNode2(), edge.getCost1to2()));
-		return edges;
+	public Set<BiDirectionalEdge<T>> getEdgesFrom(T node) {
+		return getEdgesOf(node);
 	}
 
 }

@@ -3,24 +3,33 @@ package edge;
 import node.Node;
 import exceptions.DirectedException;
 
-public class TwoWayEdge<T extends Node> extends OneWayEdge<T> {
+/**
+ * Use this class whenever your edges need to contain both nodes.
+ * 
+ * @see Edge
+ * 
+ * @author Stijn
+ * 
+ * @param <T>
+ */
+public class BiDirectionalEdge<T extends Node> extends Edge<T> {
 
 	private final T node1;
 
 	private final double cost2to1;
 
-	public TwoWayEdge(T node1, T node2, double cost1to2, double cost2to1) {
+	public BiDirectionalEdge(T node1, T node2, double cost1to2, double cost2to1) {
 		super(node2, cost1to2);
 		this.node1 = node1;
 		this.cost2to1 = cost2to1;
 	}
 
-	public TwoWayEdge(T node1, T node2, double cost) {
+	public BiDirectionalEdge(T node1, T node2, double cost) {
 		this(node1, node2, cost, cost);
 	}
 
-	public TwoWayEdge<T> switchNodes() {
-		return new TwoWayEdge<T>(node2, node1, cost2to1, cost1to2);
+	public BiDirectionalEdge<T> switchNodes() {
+		return new BiDirectionalEdge<T>(node2, node1, cost2to1, cost1to2);
 	}
 
 	public T getNode1() {
@@ -59,7 +68,7 @@ public class TwoWayEdge<T extends Node> extends OneWayEdge<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TwoWayEdge<?> other = (TwoWayEdge<?>) obj;
+		BiDirectionalEdge<?> other = (BiDirectionalEdge<?>) obj;
 		if (node1 == null) {
 			if (other.node1 != null)
 				return false;
