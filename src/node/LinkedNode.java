@@ -4,10 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import edge.Edge;
+import graph.NeighborProvider;
 
 public abstract class LinkedNode<T extends LinkedNode<T, S>, S extends Edge<T>>
 		implements
-			Node {
+			Node,
+			NeighborProvider<T, S> {
 
 	public abstract Set<S> getEdges();
 

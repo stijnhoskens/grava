@@ -21,9 +21,11 @@ import edge.Edge;
  * 
  * @param <T>
  */
-public class DynamicGraph<T extends ValueNode, S extends Edge<T>> implements Graph<T,S> {
+public class DynamicGraph<T extends ValueNode, S extends Edge<T>>
+		implements
+			Graph<T, S> {
 
-	private final NeighborProvider<T,S> neighborProvider;
+	private final NeighborProvider<T, S> neighborProvider;
 
 	/**
 	 * Use this constructor if you want nodes be made dynamically.
@@ -31,10 +33,14 @@ public class DynamicGraph<T extends ValueNode, S extends Edge<T>> implements Gra
 	 * @param provider
 	 *            Dynamically provides all neighbors while searching for them.
 	 */
-	public DynamicGraph(NeighborProvider<T,S> provider) {
+	public DynamicGraph(NeighborProvider<T, S> provider) {
 		this.neighborProvider = provider;
 	}
 
+	/**
+	 * Returns false by default, since no data is held, except for the
+	 * neighborProvider.
+	 */
 	@Override
 	public boolean containsNode(T node) {
 		return false;
@@ -51,7 +57,7 @@ public class DynamicGraph<T extends ValueNode, S extends Edge<T>> implements Gra
 	@Override
 	public double getCostBetween(T node0, T node1) {
 		for (Edge<T> edge : getEdgesFrom(node0))
-			if(edge.getNode2().equals(node1))
+			if (edge.getNode2().equals(node1))
 				return edge.getCost();
 		return Double.POSITIVE_INFINITY;
 	}

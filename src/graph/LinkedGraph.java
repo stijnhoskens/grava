@@ -10,8 +10,7 @@ import edge.Edge;
 
 public class LinkedGraph<T extends LinkedNode<T, S>, S extends Edge<T>>
 		implements
-			Graph<T, S>,
-			NeighborProvider<T, S> {
+			Graph<T, S> {
 
 	private final Set<T> nodes = new HashSet<>();
 

@@ -23,8 +23,7 @@ import edge.BiDirectionalEdge;
  */
 public class ExplicitGraph<T extends Node>
 		implements
-			Graph<T, BiDirectionalEdge<T>>,
-			NeighborProvider<T, BiDirectionalEdge<T>> {
+			Graph<T, BiDirectionalEdge<T>> {
 
 	private final Set<T> nodes = new HashSet<>();
 	private final Set<BiDirectionalEdge<T>> edges = new HashSet<>();

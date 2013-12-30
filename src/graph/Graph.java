@@ -27,7 +27,9 @@ import edge.Edge;
  * @param <S>
  *            The edges used.
  */
-public interface Graph<T extends Node, S extends Edge<T>> {
+public interface Graph<T extends Node, S extends Edge<T>>
+		extends
+			NeighborProvider<T, S> {
 
 	/**
 	 * Returns true if the graph contains given node.
@@ -42,7 +44,7 @@ public interface Graph<T extends Node, S extends Edge<T>> {
 	/**
 	 * Returns the cost between the given nodes, if the graph is directed, it
 	 * returns the cost from node0 to node1. If not reachable, returns
-	 * Double.POSITIVE_INFINITY;
+	 * Double.POSITIVE_INFINITY.
 	 * 
 	 * @deprecated use getEdgesFrom instead, whenever you need the cost, chances
 	 *             are you will also need the corresponding neighbor.
