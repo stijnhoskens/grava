@@ -69,17 +69,18 @@ public class BiDirectionalEdge<T extends Node> extends Edge<T> {
 		if (getClass() != obj.getClass())
 			return false;
 		BiDirectionalEdge<?> other = (BiDirectionalEdge<?>) obj;
-		if (node1 == null) {
+		if (node1 == null)
 			if (other.node1 != null)
 				return false;
-		} else if (!node1.equals(other.node1))
-			return false;
-		if (node2 == null) {
+		if (node2 == null)
 			if (other.node2 != null)
 				return false;
-		} else if (!node2.equals(other.node2))
-			return false;
-		return true;
+		if (node1.equals(other.node1) && node2.equals(other.node2))
+			return true;
+		BiDirectionalEdge<?> switched = other.switchNodes();
+		if (node1.equals(switched.node1) && node2.equals(switched.node2))
+			return true;
+		return false;
 	}
 
 }
