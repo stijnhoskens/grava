@@ -50,6 +50,10 @@ public class BiDirectionalEdge<T extends Node> extends Edge<T> {
 	public double getCost2to1() {
 		return cost2to1;
 	}
+	
+	public double getCost1to2() {
+		return super.getCost();
+	}
 
 	@Override
 	public int hashCode() {

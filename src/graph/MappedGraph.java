@@ -42,8 +42,11 @@ public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
 
 	@Override
 	public Set<T> getNeighborsOf(T node) {
+		Set<Edge<T>> nodeEdges = edges.get(node);
+		if (nodeEdges == null)
+			return null;
 		Set<T> neighbors = new HashSet<>();
-		for (Edge<T> edge : edges.get(node))
+		for (Edge<T> edge : nodeEdges)
 			neighbors.add(edge.getNode2());
 		return neighbors;
 	}
@@ -58,7 +61,10 @@ public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
 
 	@Override
 	public Set<Edge<T>> getEdgesFrom(T node) {
-		return Collections.unmodifiableSet(edges.get(node));
+		Set<Edge<T>> nodeEdges = edges.get(node);
+		if (nodeEdges == null)
+			return null;
+		return Collections.unmodifiableSet(nodeEdges);
 	}
 
 }

@@ -30,12 +30,8 @@ public class Edge<T extends Node> {
 		return node2;
 	}
 
-	public double getCost1to2() {
-		return cost1to2;
-	}
-
 	public double getCost() {
-		return getCost1to2();
+		return cost1to2;
 	}
 
 }

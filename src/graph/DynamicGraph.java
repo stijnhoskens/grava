@@ -48,8 +48,11 @@ public class DynamicGraph<T extends ValueNode, S extends Edge<T>>
 
 	@Override
 	public Set<T> getNeighborsOf(T node) {
+		Set<S> edges = getEdgesFrom(node);
+		if (edges == null)
+			return null;
 		Set<T> neighbors = new HashSet<>();
-		for (Edge<T> edge : getEdgesFrom(node))
+		for (Edge<T> edge : edges)
 			neighbors.add(edge.getNode2());
 		return neighbors;
 	}
