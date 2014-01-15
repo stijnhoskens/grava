@@ -78,11 +78,6 @@ public class ExplicitGraph<T extends Node>
 	}
 
 	@Override
-	public boolean containsNode(T node) {
-		return nodes.contains(node);
-	}
-
-	@Override
 	public double getCostBetween(T node0, T node1) {
 		BiDirectionalEdge<T> edge = getEdgeBetween(node0, node1);
 		if (edge == null)

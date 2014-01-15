@@ -37,15 +37,6 @@ public class DynamicGraph<T extends ValueNode, S extends Edge<T>>
 		this.neighborProvider = provider;
 	}
 
-	/**
-	 * Returns false by default, since no data is held, except for the
-	 * neighborProvider.
-	 */
-	@Override
-	public boolean containsNode(T node) {
-		return false;
-	}
-
 	@Override
 	public Set<T> getNeighborsOf(T node) {
 		Set<S> edges = getEdgesFrom(node);

@@ -32,11 +32,6 @@ public interface Graph<T extends Node, S extends Edge<T>>
 			NeighborProvider<T, S> {
 
 	/**
-	 * Returns true if the graph contains given node.
-	 */
-	public boolean containsNode(T node);
-
-	/**
 	 * Returns the neighbors to the given node. Returns null whenever node is
 	 * not in the graph in the first place.
 	 */
@@ -57,6 +52,10 @@ public interface Graph<T extends Node, S extends Edge<T>>
 	 * Returns a set of one way edges to all the neighbors of the given node, it
 	 * encapsulates both the neighbor and the cost, so no need for two separate
 	 * methods. Returns null if node is not in the graph.
+	 * 
+	 * @note Both this method and getNeighborsOf have their uses, the neighbors
+	 *       method will be used by a blind search algorithm, where the cost
+	 *       computation is unnecessary.
 	 */
 	public Set<S> getEdgesFrom(T node);
 }

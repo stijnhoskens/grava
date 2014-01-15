@@ -9,6 +9,14 @@ import java.util.Set;
 import node.Node;
 import edge.Edge;
 
+/**
+ * Uses a map to map nodes to their corresponding edges, which in turn have a
+ * destination node. This implementation is comparable to an adjacency list.
+ * 
+ * @author Stijn
+ * 
+ * @param <T>
+ */
 public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
 
 	public final Map<T, Set<Edge<T>>> edges;
@@ -33,11 +41,6 @@ public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
 			edges.put(node, nodeEdges);
 		} else
 			existingEdges.add(edge);
-	}
-
-	@Override
-	public boolean containsNode(T node) {
-		return edges.containsKey(node);
 	}
 
 	@Override

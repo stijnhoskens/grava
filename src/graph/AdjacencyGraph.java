@@ -8,6 +8,12 @@ import node.Node;
 import util.AdjacencyMatrix;
 import edge.Edge;
 
+/**
+ * Uses an ordered list for its nodes and a corresponding adjacency graph to represent its edges.
+ * @author Stijn
+ *
+ * @param <T>
+ */
 public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
 
 	private List<T> nodes;
@@ -18,8 +24,7 @@ public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
 		this.matrix = matrix;
 	}
 
-	@Override
-	public boolean containsNode(T node) {
+	protected boolean containsNode(T node) {
 		return nodes.contains(node);
 	}
 
@@ -30,7 +35,7 @@ public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
 		Set<T> neighbors = new HashSet<>();
 		double[] matrixRow = matrix.getRow(indexOf(node));
 		for (int i = 0; i < matrixRow.length; i++)
-			if (matrixRow[i] != 0d)
+			if (matrixRow[i] != Double.POSITIVE_INFINITY)
 				neighbors.add(nodes.get(i));
 		return neighbors;
 	}
@@ -39,10 +44,7 @@ public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
 	public double getCostBetween(T node0, T node1) {
 		if (!(containsNode(node0) && containsNode(node1)))
 			return Double.POSITIVE_INFINITY;
-		double cost = matrix.get(indexOf(node0), indexOf(node1));
-		if (cost == 0d)
-			return Double.POSITIVE_INFINITY;
-		return cost;
+		return matrix.get(indexOf(node0), indexOf(node1));
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
 		Set<Edge<T>> edges = new HashSet<>();
 		double[] matrixRow = matrix.getRow(indexOf(node));
 		for (int i = 0; i < matrixRow.length; i++)
-			if (matrixRow[i] != 0d)
+			if (matrixRow[i] != Double.POSITIVE_INFINITY)
 				edges.add(new Edge<T>(nodes.get(i), matrixRow[i]));
 		return edges;
 	}
