@@ -7,18 +7,13 @@ import node.Node;
 import edge.Edge;
 
 /**
- * Represents a graph, with certain nodes and inter-connecting edges. More than
- * one classes implement this interface. ExplicitGraph contains the more naive
- * implementation, with a different set for both nodes and edges. LinkedGraph
- * should be the most efficient implementation, use this one if all your nodes
- * and edges are known in advance. A DynamicGraph is used whenever all nodes are
- * not known (for instance because the number of all possible nodes is simply
- * too high). Provider a NodeProvider to an instance of this class, and it will
- * dynamically build up the graph, it will not keep memory of all visited nodes.
+ * Represents a graph, with certain nodes and inter-connecting edges.
  * 
+ * @see AdjacencyGraph
+ * @see DynamicGraph
  * @see ExplicitGraph
  * @see LinkedGraph
- * @see DynamicGraph
+ * @see MappedGraph
  * 
  * @author Stijn
  * 

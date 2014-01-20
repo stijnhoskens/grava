@@ -29,6 +29,11 @@ public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
 		this.edges = new HashMap<>();
 	}
 
+	public MappedGraph(Graph<T, Edge<T>> graph, T seed) {
+		GraphExplorer<T, Edge<T>> explorer = new GraphExplorer<>(graph, seed);
+		this.edges = explorer.getNodeMapping();
+	}
+
 	public void addNode(T node) {
 		edges.put(node, new HashSet<Edge<T>>());
 	}
@@ -68,6 +73,10 @@ public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
 		if (nodeEdges == null)
 			return null;
 		return Collections.unmodifiableSet(nodeEdges);
+	}
+
+	Set<T> getNodes() {
+		return Collections.unmodifiableSet(edges.keySet());
 	}
 
 }

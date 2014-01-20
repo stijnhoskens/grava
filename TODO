@@ -1,9 +1,10 @@
-+ fix generics errors in algorithm package.
-+ do a benchmark test to see which graph implementation is the most efficient.
-+ review LinkedGraph, does it need a nodes set? can't it be a shallow interface? 
-+ test if every graph method is properly implemented.
-+ create a maze generator for testing purposes (http://en.wikipedia.org/wiki/Maze_generation_algorithm).
-+ graph conversion? 
-+ callback interface for GUI's, to see how the path searching evolves. 
-PathEvolutionCallback for instance, with method pathExplored(Path path), a message queue can 
-then reconstruct its full evolution
++ 	fix generics errors in algorithm package.
++ 	do a benchmark test to see which graph implementation is the most efficient.
++ 	review LinkedGraph, does it need a nodes set? can't it be a shallow interface? 
++ 	test if every graph method is properly implemented.
++ 	create a maze generator for testing purposes (http://en.wikipedia.org/wiki/Maze_generation_algorithm).
+- 	graph conversion? DONE
++ 	test graph conversion.
++ 	callback interface for GUI's, to see how the path searching evolves. 
+	PathEvolutionCallback for instance, with method pathExplored(Path path), a message queue can 
+	then reconstruct its full evolution

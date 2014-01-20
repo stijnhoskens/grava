@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,9 +10,15 @@ import util.AdjacencyMatrix;
 import edge.Edge;
 
 /**
- * Uses an ordered list for its nodes and a corresponding adjacency graph to represent its edges.
+ * Uses an ordered list for its nodes and a corresponding adjacency graph to
+ * represent its edges. An implementation to convert from other graphs is not
+ * provided, since all other graphs work with a node set instead of a list.
+ * There is no way of knowing which node maps to which row in the matrix.
+ * 
+ * @See AdjacencyMatrix
+ * 
  * @author Stijn
- *
+ * 
  * @param <T>
  */
 public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
@@ -22,6 +29,19 @@ public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
 	public AdjacencyGraph(List<T> nodes, AdjacencyMatrix matrix) {
 		this.nodes = nodes;
 		this.matrix = matrix;
+	}
+
+	public AdjacencyGraph(Graph<T, Edge<T>> graph, T seed) {
+		// Creates an instance by first creating a mapped graph, which is used
+		// to extract a node list, and corresponding entries in the adjacency
+		// matrix.
+		MappedGraph<T> mapped = new MappedGraph<T>(graph, seed);
+		nodes = new ArrayList<>(mapped.getNodes());
+		matrix = new AdjacencyMatrix(nodes.size());
+		for (T node : nodes)
+			for (Edge<T> edge : mapped.getEdgesFrom(node))
+				matrix.set(indexOf(node), indexOf(edge.getNode2()),
+						edge.getCost());
 	}
 
 	protected boolean containsNode(T node) {

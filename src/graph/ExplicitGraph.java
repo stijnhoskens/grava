@@ -13,9 +13,6 @@ import edge.BiDirectionalEdge;
  * and edges. This is the more intuitive approach, but it will not work very
  * good.
  * 
- * @see LinkedGraph
- * @see DynamicGraph
- * 
  * @author Stijn
  * 
  * @param <T>
@@ -42,6 +39,12 @@ public class ExplicitGraph<T extends Node>
 		this.edges.addAll(edges);
 	}
 
+	public ExplicitGraph(Graph<T, BiDirectionalEdge<T>> graph, T seed) {
+		GraphExplorer<T, BiDirectionalEdge<T>> explorer = new GraphExplorer<>(
+				graph, seed);
+		this.nodes.addAll(explorer.getNodes());
+		this.edges.addAll(explorer.getEdges());
+	}
 	public Set<T> getNodes() {
 		return Collections.unmodifiableSet(nodes);
 	}

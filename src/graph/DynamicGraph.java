@@ -12,10 +12,13 @@ import edge.Edge;
  * using a given neighborProvider. It does not actually keep a set of nodes
  * already searched, as this could create a big memory waste.
  * 
- * @see NeighborProvider
+ * Use this implementation if there are way too many nodes (for instance all
+ * permutations in a certain game). Since these nodes are not kept, but instead
+ * are created every time a node is needed, these nodes should implement equals
+ * and hashcode. This is enforced by implementing the ValueNode interface.
  * 
- * @see LinkedGraph
- * @see ExplicitGraph
+ * @see NeighborProvider
+ * @see ValueNode
  * 
  * @author Stijn
  * 
@@ -32,6 +35,9 @@ public class DynamicGraph<T extends ValueNode, S extends Edge<T>>
 	 * 
 	 * @param provider
 	 *            Dynamically provides all neighbors while searching for them.
+	 *            Supply a graph as an argument and this graph will act as a
+	 *            shallow facade for the underlying graph. This approach is not
+	 *            recommended as it creates unnecessary overhead.
 	 */
 	public DynamicGraph(NeighborProvider<T, S> provider) {
 		this.neighborProvider = provider;

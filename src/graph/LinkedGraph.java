@@ -10,6 +10,8 @@ import edge.Edge;
  * Serves as a mere facade to external users, this implementation contains no
  * data, since nodes have knowledge of their edges and neighbors.
  * 
+ * @see LinkedNode
+ * 
  * @author Stijn
  * 
  * @param <T>
@@ -18,6 +20,11 @@ import edge.Edge;
 public class LinkedGraph<T extends LinkedNode<T, S>, S extends Edge<T>>
 		implements
 			Graph<T, S> {
+
+	public LinkedGraph(Graph<T, S> graph) {
+		// Do nothing, this implementation is stateless, so no data is
+		// necessary, all is contained within linkedNodes
+	}
 
 	@Override
 	public Set<T> getNeighborsOf(T node) {
