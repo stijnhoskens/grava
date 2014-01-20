@@ -64,7 +64,7 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 		}
 		return exploredEdges;
 	}
-	
+
 	public Map<T, Set<S>> getNodeMapping() {
 		try {
 			awaitExplorer();
@@ -85,7 +85,8 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 
 	private class ExplorationRunner implements Runnable {
 
-		// Using a set ensures uniqueness of all items in it.
+		// Using a set ensures uniqueness of all items in it. This also enforces
+		// random polling, which means it's a form of non deterministic search.
 		private Set<T> q = new HashSet<>();
 
 		@Override
