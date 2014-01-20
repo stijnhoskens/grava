@@ -2,3 +2,5 @@
 + do a benchmark test to see which graph implementation is the most efficient.
 + review LinkedGraph, does it need a nodes set? can't it be a shallow interface? 
 + test if every graph method is properly implemented.
++ create a maze generator for testing purposes (http://en.wikipedia.org/wiki/Maze_generation_algorithm)
++ graph conversion? 
