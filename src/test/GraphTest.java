@@ -2,6 +2,7 @@ package test;
 
 import edge.BiDirectionalEdge;
 import graph.ExplicitGraph;
+import graph.Graph;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,7 +15,7 @@ import org.junit.Test;
 
 public class GraphTest {
 
-	private ExplicitGraph<IdNode> graph;
+	private Graph<?,?> graph;
 
 	private final IdNode S = new IdNode("S"), A = new IdNode("A"),
 			B = new IdNode("B"), C = new IdNode("C"), D = new IdNode("D"),
@@ -41,6 +42,7 @@ public class GraphTest {
 
 	@Test
 	public void test_GraphConversion() {
+		
 	}
 
 }
