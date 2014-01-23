@@ -17,9 +17,9 @@ import node.Node;
  */
 public class Edge<T extends Node> {
 
-	protected final T node2;
+	private final T node2;
 
-	protected final double cost1to2;
+	private final double cost1to2;
 
 	public Edge(T node, double cost) {
 		node2 = node;
