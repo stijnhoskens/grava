@@ -12,55 +12,61 @@ import exceptions.DirectedException;
  * 
  * @param <T>
  */
-public class BiDirectionalEdge<T extends Node> extends Edge<T> {
+public class BiDirectionalEdge<T extends Node, S extends Edge<T>> {
 
-	private final T node1;
+	private final S edge1;
 
-	private final double cost2to1;
+	private final S edge2;
 
-	public BiDirectionalEdge(T node1, T node2, double cost1to2, double cost2to1) {
-		super(node2, cost1to2);
-		this.node1 = node1;
-		this.cost2to1 = cost2to1;
+	public BiDirectionalEdge(S edge1, S edge2) {
+		this.edge1 = edge1;
+		this.edge2 = edge2;
 	}
 
-	public BiDirectionalEdge(T node1, T node2, double cost) {
-		this(node1, node2, cost, cost);
-	}
-
-	public BiDirectionalEdge<T> switchNodes() {
-		return new BiDirectionalEdge<T>(node2, node1, cost2to1, cost1to2);
+	public BiDirectionalEdge<T, S> switchNodes() {
+		return new BiDirectionalEdge<>(edge2, edge1);
 	}
 
 	public T getNode1() {
-		return node1;
+		return edge2.getNode2();
+	}
+	
+	public S getEdge1() {
+		return this.edge1;
+	}
+
+	public T getNode2() {
+		return edge1.getNode2();
+	}
+	
+	public S getEdge2() {
+		return this.edge2;
 	}
 
 	public boolean isDirected() {
-		return cost1to2 != cost2to1;
+		return getCost2to1() != getCost1to2();
 	}
 
-	@Override
 	public double getCost() throws DirectedException {
 		if (isDirected())
-			throw new DirectedException(cost1to2, cost2to1);
+			throw new DirectedException(getCost2to1(), getCost1to2());
 		return getCost1to2();
 	}
 
 	public double getCost2to1() {
-		return cost2to1;
+		return edge2.getCost();
 	}
-	
+
 	public double getCost1to2() {
-		return super.getCost();
+		return edge1.getCost();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((node1 == null) ? 0 : node1.hashCode());
-		result = prime * result + ((node2 == null) ? 0 : node2.hashCode());
+		result = prime * result + ((edge1 == null) ? 0 : edge1.hashCode());
+		result = prime * result + ((edge2 == null) ? 0 : edge2.hashCode());
 		return result;
 	}
 
@@ -72,19 +78,17 @@ public class BiDirectionalEdge<T extends Node> extends Edge<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BiDirectionalEdge<?> other = (BiDirectionalEdge<?>) obj;
-		if (node1 == null)
-			if (other.node1 != null)
+		BiDirectionalEdge<?, ?> other = (BiDirectionalEdge<?, ?>) obj;
+		if (edge1 == null) {
+			if (other.edge1 != null)
 				return false;
-		if (node2 == null)
-			if (other.node2 != null)
+		} else if (!edge1.equals(other.edge1))
+			return false;
+		if (edge2 == null) {
+			if (other.edge2 != null)
 				return false;
-		if (node1.equals(other.node1) && node2.equals(other.node2))
-			return true;
-		BiDirectionalEdge<?> switched = other.switchNodes();
-		if (node1.equals(switched.node1) && node2.equals(switched.node2))
-			return true;
-		return false;
+		} else if (!edge2.equals(other.edge2))
+			return false;
+		return true;
 	}
-
 }

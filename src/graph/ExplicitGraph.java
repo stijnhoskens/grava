@@ -18,12 +18,12 @@ import edge.Edge;
  * 
  * @param <T>
  */
-public class ExplicitGraph<T extends Node>
+public class ExplicitGraph<T extends Node, S extends Edge<T>>
 		implements
-			Graph<T, Edge<T>> {
+			Graph<T, S> {
 
 	private final Set<T> nodes = new HashSet<>();
-	private final Set<BiDirectionalEdge<T>> edges = new HashSet<>();
+	private final Set<BiDirectionalEdge<T,S>> edges = new HashSet<>();
 
 	public ExplicitGraph() {
 		// basic constructor
@@ -35,13 +35,13 @@ public class ExplicitGraph<T extends Node>
 	 * @param nodes
 	 * @param edges
 	 */
-	public ExplicitGraph(Set<T> nodes, Set<BiDirectionalEdge<T>> edges) {
+	public ExplicitGraph(Set<T> nodes, Set<BiDirectionalEdge<T,S>> edges) {
 		this.nodes.addAll(nodes);
 		this.edges.addAll(edges);
 	}
 
-	public ExplicitGraph(Graph<T, BiDirectionalEdge<T>> graph, T seed) {
-		GraphExplorer<T, BiDirectionalEdge<T>> explorer = new GraphExplorer<>(
+	public ExplicitGraph(Graph<T, S> graph, T seed) {
+		GraphExplorer<T, S> explorer = new GraphExplorer<>(
 				graph, seed);
 		this.nodes.addAll(explorer.getNodes());
 		this.edges.addAll(explorer.getEdges());
@@ -58,11 +58,11 @@ public class ExplicitGraph<T extends Node>
 		nodes.addAll(nodes);
 	}
 
-	public void addEdge(BiDirectionalEdge<T> edge) {
+	public void addEdge(BiDirectionalEdge<T,S> edge) {
 		edges.add(edge);
 	}
 
-	public void addEdges(Collection<BiDirectionalEdge<T>> edges) {
+	public void addEdges(Collection<BiDirectionalEdge<T,S>> edges) {
 		edges.addAll(edges);
 	}
 
@@ -91,13 +91,13 @@ public class ExplicitGraph<T extends Node>
 	}
 
 	@Override
-	public Set<Edge<T>> getEdgesFrom(T node) {
-		Set<Edge<T>> nodeEdges = new HashSet<>();
-		for (BiDirectionalEdge<T> edge : edges) {
+	public Set<S> getEdgesFrom(T node) {
+		Set<S> nodeEdges = new HashSet<>();
+		for (BiDirectionalEdge<T,S> edge : edges) {
 			if (node.equals(edge.getNode1()))
-				nodeEdges.add(edge);
+				nodeEdges.add(edge.getEdge2());
 			else if (node.equals(edge.getNode2()) && !edge.isDirected())
-				nodeEdges.add(edge.switchNodes());
+				nodeEdges.add(edge.getEdge1());
 		}
 		return nodeEdges;
 	}
