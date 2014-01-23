@@ -7,6 +7,7 @@ import java.util.Set;
 
 import node.Node;
 import edge.BiDirectionalEdge;
+import edge.Edge;
 
 /**
  * This graph is explicit in the sense that it has an explicit set of both nodes
@@ -19,7 +20,7 @@ import edge.BiDirectionalEdge;
  */
 public class ExplicitGraph<T extends Node>
 		implements
-			Graph<T, BiDirectionalEdge<T>> {
+			Graph<T, Edge<T>> {
 
 	private final Set<T> nodes = new HashSet<>();
 	private final Set<BiDirectionalEdge<T>> edges = new HashSet<>();
@@ -65,9 +66,9 @@ public class ExplicitGraph<T extends Node>
 		edges.addAll(edges);
 	}
 
-	protected BiDirectionalEdge<T> getEdgeBetween(T node0, T node1) {
-		for (BiDirectionalEdge<T> edge : getEdgesFrom(node0))
-			if (edge.equals(node1))
+	protected Edge<T> getEdgeBetween(T node0, T node1) {
+		for (Edge<T> edge : getEdgesFrom(node0))
+			if (edge.getNode2().equals(node1))
 				return edge;
 		return null;
 	}
@@ -75,23 +76,23 @@ public class ExplicitGraph<T extends Node>
 	@Override
 	public Set<T> getNeighborsOf(T node) {
 		Set<T> neighbors = new HashSet<T>();
-		for (BiDirectionalEdge<T> edge : getEdgesFrom(node))
+		for (Edge<T> edge : getEdgesFrom(node))
 			neighbors.add(edge.getNode2());
 		return neighbors;
 	}
 
 	@Override
 	public double getCostBetween(T node0, T node1) {
-		BiDirectionalEdge<T> edge = getEdgeBetween(node0, node1);
+		Edge<T> edge = getEdgeBetween(node0, node1);
 		if (edge == null)
 			return Double.POSITIVE_INFINITY;
 		else
-			return edge.getCost1to2();
+			return edge.getCost();
 	}
 
 	@Override
-	public Set<BiDirectionalEdge<T>> getEdgesFrom(T node) {
-		Set<BiDirectionalEdge<T>> nodeEdges = new HashSet<BiDirectionalEdge<T>>();
+	public Set<Edge<T>> getEdgesFrom(T node) {
+		Set<Edge<T>> nodeEdges = new HashSet<>();
 		for (BiDirectionalEdge<T> edge : edges) {
 			if (node.equals(edge.getNode1()))
 				nodeEdges.add(edge);
