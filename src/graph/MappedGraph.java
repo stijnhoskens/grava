@@ -61,11 +61,10 @@ public class MappedGraph<T extends Node, S extends Edge<T>>
 		Set<S> nodeEdges = edges.get(node);
 		if (nodeEdges == null)
 			return null;
-		return Edge.convert(nodeEdges); // TODO TEST
-		// Set<T> neighbors = new HashSet<>();
-		// for (S edge : nodeEdges)
-		// neighbors.add(edge.getDestination());
-		// return neighbors;
+		Set<T> neighbors = new HashSet<>();
+		for (S edge : nodeEdges)
+			neighbors.add(edge.getDestination());
+		return neighbors;
 	}
 
 	@Override
