@@ -1,5 +1,10 @@
 package edge;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import node.Node;
 
 /**
@@ -25,6 +30,49 @@ public class Edge<T extends Node> {
 
 	public T getDestination() {
 		return destination;
+	}
+
+	private static class DestinationSet<T extends Node, S extends Edge<T>>
+			extends
+				HashSet<T> {
+
+		private static final long serialVersionUID = 1L;
+
+		private final Collection<S> edges;
+
+		public DestinationSet(Collection<S> edges) {
+			this.edges = edges;
+		}
+
+		@Override
+		public Iterator<T> iterator() {
+			final Iterator<S> edgeIterator = edges.iterator();
+			return new Iterator<T>() {
+
+				@Override
+				public boolean hasNext() {
+					return edgeIterator.hasNext();
+				}
+
+				@Override
+				public T next() {
+					return edgeIterator.next().getDestination();
+				}
+
+				@Override
+				public void remove() {
+					edgeIterator.remove();
+				}
+			};
+		}
+	}
+
+	/**
+	 * Small optimization :)
+	 */
+	public static <T extends Node, S extends Edge<T>> Set<T> convert(
+			Collection<S> edges) {
+		return new DestinationSet<T, S>(edges);
 	}
 
 }
