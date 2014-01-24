@@ -7,7 +7,7 @@ import java.util.Set;
 
 import node.Node;
 import util.AdjacencyMatrix;
-import edge.Edge;
+import edge.WeightedEdge;
 
 /**
  * Uses an ordered list for its nodes and a corresponding adjacency graph to
@@ -21,7 +21,9 @@ import edge.Edge;
  * 
  * @param <T>
  */
-public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
+public class AdjacencyGraph<T extends Node>
+		implements
+			Graph<T, WeightedEdge<T>> {
 
 	private List<T> nodes;
 	private AdjacencyMatrix matrix;
@@ -31,16 +33,17 @@ public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
 		this.matrix = matrix;
 	}
 
-	public AdjacencyGraph(Graph<T, Edge<T>> graph, T seed) {
-		// Creates an instance by first creating a mapped graph, which is used
-		// to extract a node list, and corresponding entries in the adjacency
-		// matrix.
-		MappedGraph<T> mapped = new MappedGraph<T>(graph, seed);
+	public AdjacencyGraph(Graph<T, WeightedEdge<T>> graph, T seed) {
+		this(new GraphExplorer<T, WeightedEdge<T>>(graph, seed));
+	}
+
+	public AdjacencyGraph(GraphExplorer<T, WeightedEdge<T>> explorer) {
+		MappedGraph<T, WeightedEdge<T>> mapped = new MappedGraph<>(explorer);
 		nodes = new ArrayList<>(mapped.getNodes());
 		matrix = new AdjacencyMatrix(nodes.size());
 		for (T node : nodes)
-			for (Edge<T> edge : mapped.getEdgesFrom(node))
-				matrix.set(indexOf(node), indexOf(edge.getNode2()),
+			for (WeightedEdge<T> edge : mapped.getEdgesFrom(node))
+				matrix.set(indexOf(node), indexOf(edge.getDestination()),
 						edge.getCost());
 	}
 
@@ -61,21 +64,14 @@ public class AdjacencyGraph<T extends Node> implements Graph<T, Edge<T>> {
 	}
 
 	@Override
-	public double getCostBetween(T node0, T node1) {
-		if (!(containsNode(node0) && containsNode(node1)))
-			return Double.POSITIVE_INFINITY;
-		return matrix.get(indexOf(node0), indexOf(node1));
-	}
-
-	@Override
-	public Set<Edge<T>> getEdgesFrom(T node) {
+	public Set<WeightedEdge<T>> getEdgesFrom(T node) {
 		if (!containsNode(node))
 			return null;
-		Set<Edge<T>> edges = new HashSet<>();
+		Set<WeightedEdge<T>> edges = new HashSet<>();
 		double[] matrixRow = matrix.getRow(indexOf(node));
 		for (int i = 0; i < matrixRow.length; i++)
 			if (matrixRow[i] != Double.POSITIVE_INFINITY)
-				edges.add(new Edge<T>(nodes.get(i), matrixRow[i]));
+				edges.add(new WeightedEdge<T>(nodes.get(i), matrixRow[i]));
 		return edges;
 	}
 

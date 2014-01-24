@@ -10,7 +10,7 @@ import node.position.Position;
  * @param <T>
  *            The class of your position instance.
  */
-public interface PositionNode<T extends Position<T>> extends ValueNode {
+public interface PositionNode<T extends Position<T>> extends Node {
 
 	public T getPosition();
 }

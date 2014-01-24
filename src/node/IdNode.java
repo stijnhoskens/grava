@@ -1,6 +1,6 @@
 package node;
 
-public class IdNode implements ValueNode {
+public class IdNode implements Node {
 	
 	private String id;
 

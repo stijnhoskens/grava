@@ -17,11 +17,13 @@ import edge.Edge;
  * 
  * @param <T>
  */
-public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
+public class MappedGraph<T extends Node, S extends Edge<T>>
+		implements
+			Graph<T, S> {
 
-	public final Map<T, Set<Edge<T>>> edges;
+	public final Map<T, Set<S>> edges;
 
-	public MappedGraph(Map<T, Set<Edge<T>>> edges) {
+	public MappedGraph(Map<T, Set<S>> edges) {
 		this.edges = edges;
 	}
 
@@ -29,19 +31,25 @@ public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
 		this.edges = new HashMap<>();
 	}
 
-	public MappedGraph(Graph<T, Edge<T>> graph, T seed) {
-		GraphExplorer<T, Edge<T>> explorer = new GraphExplorer<>(graph, seed);
+	public MappedGraph(Graph<T, S> graph, T seed) {
+		GraphExplorer<T, S> explorer = new GraphExplorer<>(graph, seed);
+		this.edges = explorer.getNodeMapping();
+	}
+
+	public MappedGraph(GraphExplorer<T, S> explorer) {
 		this.edges = explorer.getNodeMapping();
 	}
 
 	public void addNode(T node) {
-		edges.put(node, new HashSet<Edge<T>>());
+		if (edges.containsKey(node))
+			return;
+		edges.put(node, new HashSet<S>());
 	}
 
-	public void putEdge(T node, Edge<T> edge) {
-		Set<Edge<T>> existingEdges = edges.get(node);
+	public void putEdge(T node, S edge) {
+		Set<S> existingEdges = edges.get(node);
 		if (existingEdges == null) {
-			Set<Edge<T>> nodeEdges = new HashSet<>();
+			Set<S> nodeEdges = new HashSet<>();
 			nodeEdges.add(edge);
 			edges.put(node, nodeEdges);
 		} else
@@ -50,33 +58,43 @@ public class MappedGraph<T extends Node> implements Graph<T, Edge<T>> {
 
 	@Override
 	public Set<T> getNeighborsOf(T node) {
-		Set<Edge<T>> nodeEdges = edges.get(node);
+		Set<S> nodeEdges = edges.get(node);
 		if (nodeEdges == null)
 			return null;
 		Set<T> neighbors = new HashSet<>();
-		for (Edge<T> edge : nodeEdges)
-			neighbors.add(edge.getNode2());
+		for (S edge : nodeEdges)
+			neighbors.add(edge.getDestination());
 		return neighbors;
 	}
 
 	@Override
-	public double getCostBetween(T node0, T node1) {
-		for (Edge<T> edge : edges.get(node0))
-			if (edge.getNode2().equals(node1))
-				return edge.getCost();
-		return Double.POSITIVE_INFINITY;
-	}
-
-	@Override
-	public Set<Edge<T>> getEdgesFrom(T node) {
-		Set<Edge<T>> nodeEdges = edges.get(node);
+	public Set<S> getEdgesFrom(T node) {
+		Set<S> nodeEdges = edges.get(node);
 		if (nodeEdges == null)
 			return null;
 		return Collections.unmodifiableSet(nodeEdges);
 	}
 
+	/**
+	 * Use this method in other graph implementations to get all the nodes after
+	 * exploring it.
+	 * 
+	 * @return An unmodifiable view of the node set.
+	 */
 	Set<T> getNodes() {
 		return Collections.unmodifiableSet(edges.keySet());
 	}
 
+	/**
+	 * Use this method in other graph implementations to get all the edges after
+	 * exploring it.
+	 * 
+	 * @return An unmodifiable view of the edge set.
+	 */
+	Set<S> getEdges() {
+		Set<S> edgeSet = new HashSet<>();
+		for (Set<S> mapValue : edges.values())
+			edgeSet.addAll(mapValue);
+		return Collections.unmodifiableSet(edgeSet);
+	}
 }

@@ -1,9 +1,8 @@
 package graph;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,11 +24,7 @@ import edge.Edge;
  */
 public class GraphExplorer<T extends Node, S extends Edge<T>> {
 
-	private final Graph<T, S> graph;
-	private final T start;
-	private boolean isExplored = false;
-	private final List<T> exploredNodes = new ArrayList<>();
-	private final Set<S> exploredEdges = new HashSet<>();
+	private final Thread explorationThread; 
 	private final Map<T, Set<S>> map = new HashMap<>();
 
 	/**
@@ -42,48 +37,29 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 	 * @note Only nodes connected to the seed will be explored.
 	 */
 	public GraphExplorer(Graph<T, S> graph, T seed) {
-		this.graph = graph;
-		this.start = seed;
-		startExploring();
-	}
-
-	public Set<T> getNodes() {
-		try {
-			awaitExplorer();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return new HashSet<>(exploredNodes);
-	}
-
-	public Set<S> getEdges() {
-		try {
-			awaitExplorer();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return exploredEdges;
+		explorationThread = new Thread(new ExplorationRunner(graph, seed));
+		explorationThread.start();
 	}
 
 	public Map<T, Set<S>> getNodeMapping() {
 		try {
-			awaitExplorer();
+			explorationThread.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			// Try again until it succeeds.
+			return getNodeMapping();
 		}
-		return this.map;
-	}
-
-	private synchronized void awaitExplorer() throws InterruptedException {
-		while (!isExplored)
-			wait();
-	}
-
-	private void startExploring() {
-		new Thread(new ExplorationRunner()).start();
+		return Collections.unmodifiableMap(this.map);
 	}
 
 	private class ExplorationRunner implements Runnable {
+		
+		private final Graph<T, S> graph;
+		private final T seed;
+
+		public ExplorationRunner(Graph<T,S> graph, T seed) {
+			this.graph = graph;
+			this.seed = seed;
+		}
 
 		// Using a set ensures uniqueness of all items in it. This also enforces
 		// random polling, which means it's a form of non deterministic search.
@@ -91,21 +67,22 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 
 		@Override
 		public void run() {
-			q.add(start);
+			q.add(seed);
 			// This loop will terminate whenever all nodes of the graph are in
 			// the nodes set. That is, of course, when the graph is finite :)
 			while (!q.isEmpty()) {
 				T node = nextElement();
-				if (exploredNodes.contains(node))
+				if (isExplored(node))
 					continue;
 				Set<T> neighbors = graph.getNeighborsOf(node);
 				q.addAll(neighbors);
 				Set<S> edges = graph.getEdgesFrom(node);
-				exploredNodes.add(node);
 				map.put(node, edges);
 			}
-			isExplored = true;
-			GraphExplorer.this.notify();
+		}
+		
+		private boolean isExplored(T node) {
+			return map.keySet().contains(node);
 		}
 
 		private T nextElement() {

@@ -21,22 +21,9 @@ public class LinkedGraph<T extends LinkedNode<T, S>, S extends Edge<T>>
 		implements
 			Graph<T, S> {
 
-	public LinkedGraph(Graph<T, S> graph) {
-		// Do nothing, this implementation is stateless, so no data is
-		// necessary, all is contained within linkedNodes
-	}
-
 	@Override
 	public Set<T> getNeighborsOf(T node) {
 		return Collections.unmodifiableSet(node.getNeighbors());
-	}
-
-	@Override
-	public double getCostBetween(T node0, T node1) {
-		for (Edge<T> edge : node0.getEdges())
-			if (edge.getNode2().equals(node1))
-				return edge.getCost();
-		return Double.POSITIVE_INFINITY;
 	}
 
 	@Override
