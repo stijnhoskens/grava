@@ -24,7 +24,7 @@ import edge.Edge;
  */
 public class GraphExplorer<T extends Node, S extends Edge<T>> {
 
-	private final Thread explorationThread; 
+	private final Thread explorationThread;
 	private final Map<T, Set<S>> map = new HashMap<>();
 
 	/**
@@ -52,11 +52,11 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 	}
 
 	private class ExplorationRunner implements Runnable {
-		
+
 		private final Graph<T, S> graph;
 		private final T seed;
 
-		public ExplorationRunner(Graph<T,S> graph, T seed) {
+		public ExplorationRunner(Graph<T, S> graph, T seed) {
 			this.graph = graph;
 			this.seed = seed;
 		}
@@ -71,7 +71,7 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 			// This loop will terminate whenever all nodes of the graph are in
 			// the nodes set. That is, of course, when the graph is finite :)
 			while (!q.isEmpty()) {
-				T node = nextElement();
+				T node = poll();
 				if (isExplored(node))
 					continue;
 				Set<T> neighbors = graph.getNeighborsOf(node);
@@ -80,13 +80,17 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 				map.put(node, edges);
 			}
 		}
-		
+
 		private boolean isExplored(T node) {
-			return map.keySet().contains(node);
+			return map.containsKey(node);
 		}
 
-		private T nextElement() {
-			return q.iterator().next();
+		// Takes the next (randomly chosen) element from the q and removes it.
+		// TODO An implementation with a random queue (will be implemented).
+		private T poll() {
+			T next = q.iterator().next();
+			q.remove(next);
+			return next;
 		}
 	}
 }
