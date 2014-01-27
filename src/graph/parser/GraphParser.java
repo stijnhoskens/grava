@@ -12,8 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 import node.IdNode;
+import util.MultiMap;
 
 public class GraphParser {
+
+	private static Map<String, IdNode> nodes;
 
 	/**
 	 * Example file:
@@ -32,34 +35,29 @@ public class GraphParser {
 	 */
 	public static MappedGraph<IdNode, WeightedEdge<IdNode>> parse(String path)
 			throws IOException, IndexOutOfBoundsException {
+
 		BufferedReader reader = new BufferedReader(new FileReader(path));
 		String line = reader.readLine();
 		while (isComment(line))
 			// This line is a comment line.
 			line = reader.readLine();
 		// The next line contains all nodes.
-		Map<String, IdNode> nodes = getNodes(line);
-		Map<IdNode, Set<WeightedEdge<IdNode>>> map = new HashMap<>();
-		for (IdNode node : nodes.values())
-			map.put(node, new HashSet<WeightedEdge<IdNode>>());
+
+		nodes = getNodes(line);
+		MultiMap<IdNode, WeightedEdge<IdNode>> map = new MultiMap<>(
+				nodes.values());
+		
 		for (line = reader.readLine(); line != null; line = reader.readLine()) {
 			if (isComment(line))
 				continue;
-			int breakPoint = line.indexOf(":");
-			String nodeName = line.substring(0, breakPoint).trim();
-			IdNode node = nodes.get(nodeName);
-			Set<WeightedEdge<IdNode>> edges = map.get(node);
-			String rest = line.substring(breakPoint + 1).trim();
-			for (String token : rest.split(",")) {
-				String[] splitted = token.split(":");
-				edges.add(new WeightedEdge<IdNode>(
-						nodes.get(splitted[0].trim()), Double
-								.parseDouble(splitted[1].trim())));
-			}
+			IdNode node = getStartingNode(line);
+			map.get(node).addAll(getEdges(line));
 		}
+		
 		reader.close();
 		return new MappedGraph<IdNode, WeightedEdge<IdNode>>(map);
 	}
+
 	private static Map<String, IdNode> getNodes(String string) {
 		Map<String, IdNode> map = new HashMap<>();
 		for (String token : string.split(","))
@@ -69,6 +67,27 @@ public class GraphParser {
 
 	private static boolean isComment(String line) {
 		return line.startsWith("#") || line.trim().equals("");
+	}
+
+	private static IdNode getStartingNode(String line) {
+		int breakPoint = line.indexOf(":");
+		String nodeName = line.substring(0, breakPoint).trim();
+		return nodes.get(nodeName);
+	}
+
+	private static Set<WeightedEdge<IdNode>> getEdges(String line) {
+		int breakPoint = line.indexOf(":");
+		line = line.substring(breakPoint + 1).trim();
+		Set<WeightedEdge<IdNode>> edges = new HashSet<>();
+		for (String token : line.split(","))
+			edges.add(getEdge(token));
+		return edges;
+	}
+
+	private static WeightedEdge<IdNode> getEdge(String token) {
+		String[] splitted = token.split(":");
+		return new WeightedEdge<IdNode>(nodes.get(splitted[0].trim()),
+				Double.parseDouble(splitted[1].trim()));
 	}
 
 	public static void main(String args[]) {

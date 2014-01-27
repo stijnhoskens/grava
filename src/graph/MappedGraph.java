@@ -1,13 +1,13 @@
 package graph;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import node.Node;
+import util.MultiMap;
 import edge.Edge;
 import edge.ExplicitEdge;
 
@@ -23,22 +23,26 @@ public class MappedGraph<T extends Node, S extends Edge<T>>
 		implements
 			Graph<T, S> {
 
-	public final Map<T, Set<S>> edges;
+	public final MultiMap<T, S> edges;
 
-	public MappedGraph(Map<T, Set<S>> edges) {
+	public MappedGraph(MultiMap<T, S> edges) {
 		this.edges = edges;
-	}
-
-	public MappedGraph() {
-		this.edges = new HashMap<>();
-	}
-
-	public MappedGraph(Graph<T, S> graph, T seed) {
-		this(new GraphExplorer<>(graph, seed));
 	}
 
 	public MappedGraph(GraphExplorer<T, S> explorer) {
 		this.edges = explorer.getNodeMapping();
+	}
+	
+	public MappedGraph(Map<T, Set<S>> edges) {
+		this(new MultiMap<>(edges));
+	}
+
+	public MappedGraph() {
+		this(new MultiMap<T,S>());
+	}
+
+	public MappedGraph(Graph<T, S> graph, T seed) {
+		this(new GraphExplorer<>(graph, seed));
 	}
 
 	public void addNode(T node) {

@@ -1,12 +1,10 @@
 package graph;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import node.Node;
+import util.MultiMap;
 import edge.Edge;
 
 /**
@@ -25,7 +23,7 @@ import edge.Edge;
 public class GraphExplorer<T extends Node, S extends Edge<T>> {
 
 	private final Thread explorationThread;
-	private final Map<T, Set<S>> map = new HashMap<>();
+	private final MultiMap<T, S> map = new MultiMap<>();
 
 	/**
 	 * Starts exploring for all nodes & edges in the graph.
@@ -41,14 +39,14 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 		explorationThread.start();
 	}
 
-	public Map<T, Set<S>> getNodeMapping() {
+	public MultiMap<T, S> getNodeMapping() {
 		try {
 			explorationThread.join();
 		} catch (InterruptedException e) {
 			// Try again until it succeeds.
 			return getNodeMapping();
 		}
-		return Collections.unmodifiableMap(this.map);
+		return map.copy();
 	}
 
 	private class ExplorationRunner implements Runnable {
