@@ -4,10 +4,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import node.Node;
 import edge.Edge;
+import edge.ExplicitEdge;
 
 /**
  * Uses a map to map nodes to their corresponding edges, which in turn have a
@@ -91,10 +93,34 @@ public class MappedGraph<T extends Node, S extends Edge<T>>
 	 * 
 	 * @return An unmodifiable view of the edge set.
 	 */
-	Set<S> getEdges() {
-		Set<S> edgeSet = new HashSet<>();
-		for (Set<S> mapValue : edges.values())
-			edgeSet.addAll(mapValue);
-		return Collections.unmodifiableSet(edgeSet);
+	Set<ExplicitEdge<T, S>> getEdges() {
+		Set<ExplicitEdge<T, S>> explicit = new HashSet<>();
+		for (Entry<T, Set<S>> entry : edges.entrySet()) {
+			T node1 = entry.getKey();
+			for (S edge : entry.getValue()) {
+				T node2 = edge.getDestination();
+				S otherEdge = edgeBetween(node2, node1);
+				if (otherEdge == null)
+					explicit.add(new ExplicitEdge<T, S>(node1, edge));
+				else {
+					ExplicitEdge<T, S> explEdge = new ExplicitEdge<T, S>(edge,
+							otherEdge);
+					if (!explicit.contains(explEdge.switchNodes()))
+						// Optimization, the set will only contain one explicit
+						// edge between two nodes.
+						explicit.add(explEdge);
+				}
+			}
+		}
+		return explicit;
+	}
+	/**
+	 * Returns null if there is no such edge.
+	 */
+	private S edgeBetween(T node1, T node2) {
+		for (S edge : edges.get(node1))
+			if (edge.getDestination().equals(node2))
+				return edge;
+		return null;
 	}
 }
