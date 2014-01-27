@@ -31,7 +31,7 @@ public class GraphParser {
 	 * 
 	 */
 	public static MappedGraph<IdNode, WeightedEdge<IdNode>> parse(String path)
-			throws IOException {
+			throws IOException, IndexOutOfBoundsException {
 		BufferedReader reader = new BufferedReader(new FileReader(path));
 		String line = reader.readLine();
 		while (isComment(line))
@@ -42,19 +42,19 @@ public class GraphParser {
 		Map<IdNode, Set<WeightedEdge<IdNode>>> map = new HashMap<>();
 		for (IdNode node : nodes.values())
 			map.put(node, new HashSet<WeightedEdge<IdNode>>());
-		for (; line != null; line = reader.readLine()) {
+		for (line = reader.readLine(); line != null; line = reader.readLine()) {
 			if (isComment(line))
 				continue;
 			int breakPoint = line.indexOf(":");
 			String nodeName = line.substring(0, breakPoint).trim();
 			IdNode node = nodes.get(nodeName);
 			Set<WeightedEdge<IdNode>> edges = map.get(node);
-			String rest = line.substring(breakPoint + 1);
+			String rest = line.substring(breakPoint + 1).trim();
 			for (String token : rest.split(",")) {
 				String[] splitted = token.split(":");
 				edges.add(new WeightedEdge<IdNode>(
 						nodes.get(splitted[0].trim()), Double
-								.parseDouble(splitted[1])));
+								.parseDouble(splitted[1].trim())));
 			}
 		}
 		reader.close();
@@ -68,7 +68,15 @@ public class GraphParser {
 	}
 
 	private static boolean isComment(String line) {
-		return line.startsWith("#") || line.trim() == "";
+		return line.startsWith("#") || line.trim().equals("");
+	}
+
+	public static void main(String args[]) {
+		try {
+			parse("./parser/graph");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
