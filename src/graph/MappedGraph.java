@@ -34,8 +34,7 @@ public class MappedGraph<T extends Node, S extends Edge<T>>
 	}
 
 	public MappedGraph(Graph<T, S> graph, T seed) {
-		GraphExplorer<T, S> explorer = new GraphExplorer<>(graph, seed);
-		this.edges = explorer.getNodeMapping();
+		this(new GraphExplorer<>(graph, seed));
 	}
 
 	public MappedGraph(GraphExplorer<T, S> explorer) {
