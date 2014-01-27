@@ -1,11 +1,14 @@
 package test;
 
-import edge.ExplicitEdge;
-import graph.ExplicitGraph;
+import static org.junit.Assert.*;
+import edge.WeightedEdge;
 import graph.Graph;
+import graph.GraphExplorer;
+import graph.parser.GraphParser;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import node.IdNode;
@@ -15,34 +18,37 @@ import org.junit.Test;
 
 public class GraphTest {
 
-	private Graph<?,?> graph;
+	private Graph<IdNode, WeightedEdge<IdNode>> graph;
 
 	private final IdNode S = new IdNode("S"), A = new IdNode("A"),
 			B = new IdNode("B"), C = new IdNode("C"), D = new IdNode("D"),
 			E = new IdNode("E"), F = new IdNode("F"), G = new IdNode("G");
-	
+
 	private Set<IdNode> nodes;
-	
-	private Set<ExplicitEdge<IdNode>> edges = new HashSet<>();
 
 	@Before
-	public void setUp() throws Exception { 
-		nodes = new HashSet<>(Arrays.asList(S,A,B,C,D,E,F,G));
-		edges.add(new ExplicitEdge<IdNode>(S, A, 3));
-		edges.add(new ExplicitEdge<IdNode>(S, D, 4));
-		edges.add(new ExplicitEdge<IdNode>(A, D, 5));
-		edges.add(new ExplicitEdge<IdNode>(A, B, 4));
-		edges.add(new ExplicitEdge<IdNode>(D, E, 2));
-		edges.add(new ExplicitEdge<IdNode>(B, E, 5));
-		edges.add(new ExplicitEdge<IdNode>(B, C, 4));
-		edges.add(new ExplicitEdge<IdNode>(E, F, 4));
-		edges.add(new ExplicitEdge<IdNode>(F, G, 3));
-		graph = new ExplicitGraph<>(nodes, edges);
+	public void setUp() throws Exception {
+		nodes = new HashSet<IdNode>(Arrays.asList(S, A, B, C, D, E, F, G));
+		graph = GraphParser.parse("./parser/graph");
 	}
 
 	@Test
-	public void test_GraphConversion() {
-		
+	public void test_graphParsing() {
+		GraphExplorer<IdNode, WeightedEdge<IdNode>> explorer = new GraphExplorer<>(
+				graph, S);
+		Map<IdNode, Set<WeightedEdge<IdNode>>> map = explorer.getNodeMapping();
+
+		// Still some error in graph exploration.
+		print(nodes);
+		print(map.keySet());
+
+		assertTrue(nodes.equals(map.keySet()));
+	}
+
+	private void print(Set<IdNode> nodes) {
+		for (IdNode node : nodes)
+			System.out.println(node.toString());
+		System.out.println("--");
 	}
 
 }
