@@ -46,7 +46,7 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 			// Try again until it succeeds.
 			return getNodeMapping();
 		}
-		return map.copy();
+		return new MultiMap<>(map);
 	}
 
 	private class ExplorationRunner implements Runnable {
