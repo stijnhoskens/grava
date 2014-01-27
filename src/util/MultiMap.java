@@ -41,4 +41,8 @@ public class MultiMap<K, V> extends HashMap<K, Set<V>> {
 			addKey(key);
 		get(key).addAll(values);
 	}
+	
+	public int count(K key) {
+		return get(key).size();
+	}
 }
