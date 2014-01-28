@@ -37,18 +37,7 @@ public class GraphTest {
 		GraphExplorer<IdNode, WeightedEdge<IdNode>> explorer = new GraphExplorer<>(
 				graph, S);
 		Map<IdNode, Set<WeightedEdge<IdNode>>> map = explorer.getNodeMapping();
-
-		// Still some error in graph exploration.
-		print(nodes);
-		print(map.keySet());
-
 		assertTrue(nodes.equals(map.keySet()));
-	}
-
-	private void print(Set<IdNode> nodes) {
-		for (IdNode node : nodes)
-			System.out.println(node.toString());
-		System.out.println("--");
 	}
 
 }

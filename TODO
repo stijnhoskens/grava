@@ -9,4 +9,4 @@
 + 	callback interface for GUI's, to see how the path searching evolves. 
 	PathEvolutionCallback for instance, with method pathExplored(Path path), a message queue can 
 	then reconstruct its full evolution
-+ 	test graph parser (unit tests) -> debug graph explorer, parser seems to do just fine.
++ 	test graph parser (unit tests)
