@@ -65,9 +65,7 @@ public class ExplicitEdge<T extends Node, S extends Edge<T>> {
 	 * the other way around.
 	 */
 	public ExplicitEdge<T, S> switchNodes() {
-		if (isDirected)
-			return null;
-		return new ExplicitEdge<>(edge2to1, edge1to2);
+		return isDirected() ? null : new ExplicitEdge<>(edge2to1, edge1to2);
 	}
 
 	public T getNode1() {
