@@ -1,19 +1,21 @@
 package test;
 
-import static org.junit.Assert.*;
+import edge.WeightedEdge;
+import graph.AdjacencyGraph;
+import graph.ExplicitGraph;
+import node.IdNode;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class GraphConversionTest extends GraphTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void test_conversion() {
+		ExplicitGraph<IdNode, WeightedEdge<IdNode>> explicit = new ExplicitGraph<>(
+				graph, S);
+		testCorrectness(explicit);
+		AdjacencyGraph<IdNode> adjacency = new AdjacencyGraph<>(graph, S);
+		testCorrectness(adjacency);
 	}
 
 }

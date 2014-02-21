@@ -72,6 +72,8 @@ public class GraphExplorer<T extends Node, S extends Edge<T>> {
 				T node = poll();
 				if (isExplored(node))
 					continue;
+				if(node == null)
+					System.out.println("fail");
 				Set<T> neighbors = graph.getNeighborsOf(node);
 				q.addAll(neighbors);
 				Set<S> edges = graph.getEdgesFrom(node);
