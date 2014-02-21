@@ -93,6 +93,12 @@ public class ExplicitEdge<T extends Node, S extends Edge<T>> {
 	}
 
 	@Override
+	public String toString() {
+		String inBetween = isDirected() ? "" : "<";
+		return getNode1().toString() + inBetween + "->" + getNode2().toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

@@ -32,13 +32,13 @@ public class MappedGraph<T extends Node, S extends Edge<T>>
 	public MappedGraph(GraphExplorer<T, S> explorer) {
 		this.edges = explorer.getNodeMapping();
 	}
-	
+
 	public MappedGraph(Map<T, Set<S>> edges) {
 		this(new MultiMap<>(edges));
 	}
 
 	public MappedGraph() {
-		this(new MultiMap<T,S>());
+		this(new MultiMap<T, S>());
 	}
 
 	public MappedGraph(Graph<T, S> graph, T seed) {
@@ -48,17 +48,11 @@ public class MappedGraph<T extends Node, S extends Edge<T>>
 	public void addNode(T node) {
 		if (edges.containsKey(node))
 			return;
-		edges.put(node, new HashSet<S>());
+		edges.addKey(node);
 	}
 
 	public void putEdge(T node, S edge) {
-		Set<S> existingEdges = edges.get(node);
-		if (existingEdges == null) {
-			Set<S> nodeEdges = new HashSet<>();
-			nodeEdges.add(edge);
-			edges.put(node, nodeEdges);
-		} else
-			existingEdges.add(edge);
+		edges.addValue(node, edge);
 	}
 
 	@Override
@@ -86,7 +80,7 @@ public class MappedGraph<T extends Node, S extends Edge<T>>
 	 * 
 	 * @return An unmodifiable view of the node set.
 	 */
-	Set<T> getNodes() {
+	public Set<T> getNodes() {
 		return Collections.unmodifiableSet(edges.keySet());
 	}
 
@@ -96,7 +90,7 @@ public class MappedGraph<T extends Node, S extends Edge<T>>
 	 * 
 	 * @return An unmodifiable view of the edge set.
 	 */
-	Set<ExplicitEdge<T, S>> getEdges() {
+	public Set<ExplicitEdge<T, S>> getEdges() {
 		Set<ExplicitEdge<T, S>> explicit = new HashSet<>();
 		for (Entry<T, Set<S>> entry : edges.entrySet()) {
 			T node1 = entry.getKey();

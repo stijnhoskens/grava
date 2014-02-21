@@ -50,8 +50,11 @@ public class GraphParser {
 		for (line = reader.readLine(); line != null; line = reader.readLine()) {
 			if (isComment(line))
 				continue;
-			IdNode node = getStartingNode(line);
-			map.get(node).addAll(getEdges(line));
+			int breakPoint = line.indexOf(":");
+			String nodeName = line.substring(0, breakPoint).trim();
+			String neighbors = line.substring(breakPoint + 1).trim();
+			IdNode node = nodes.get(nodeName);
+			map.get(node).addAll(getEdges(neighbors));
 		}
 		
 		reader.close();
@@ -69,15 +72,7 @@ public class GraphParser {
 		return line.startsWith("#") || line.trim().equals("");
 	}
 
-	private static IdNode getStartingNode(String line) {
-		int breakPoint = line.indexOf(":");
-		String nodeName = line.substring(0, breakPoint).trim();
-		return nodes.get(nodeName);
-	}
-
 	private static Set<WeightedEdge<IdNode>> getEdges(String line) {
-		int breakPoint = line.indexOf(":");
-		line = line.substring(breakPoint + 1).trim();
 		Set<WeightedEdge<IdNode>> edges = new HashSet<>();
 		for (String token : line.split(","))
 			edges.add(getEdge(token));

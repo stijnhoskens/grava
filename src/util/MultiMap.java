@@ -1,5 +1,6 @@
 package util;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,12 +9,12 @@ import java.util.Set;
 public class MultiMap<K, V> extends HashMap<K, Set<V>> {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public MultiMap() {
-		
+
 	}
-	
-	public MultiMap(Map<K,Set<V>> map) {
+
+	public MultiMap(Map<K, Set<V>> map) {
 		super(map);
 	}
 
@@ -36,12 +37,12 @@ public class MultiMap<K, V> extends HashMap<K, Set<V>> {
 		get(key).add(value);
 	}
 
-	public void addValues(K key, Set<V> values) {
+	public void addValues(K key, Collection<V> values) {
 		if (!containsKey(key))
 			addKey(key);
 		get(key).addAll(values);
 	}
-	
+
 	public int count(K key) {
 		return get(key).size();
 	}
