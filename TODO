@@ -5,7 +5,7 @@
 + 	create a maze generator for testing purposes (http://en.wikipedia.org/wiki/Maze_generation_algorithm).
 + 	graph conversion? partly done, still needs a proper way to go from one way edges to two way edges and vice versa,
 	as used to convert between mapped and explicit graphs.
-+ 	test graph conversion.
+v 	test graph conversion.
 + 	callback interface for GUI's, to see how the path searching evolves. 
 	PathEvolutionCallback for instance, with method pathExplored(Path path), a message queue can 
 	then reconstruct its full evolution
