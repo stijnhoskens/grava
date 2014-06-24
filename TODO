@@ -1,3 +1,6 @@
++ 	FULL REFACTOR: go from basic to complicated
++ 	gravix?
+
 + 	fix generics errors in algorithm package.
 + 	do a benchmark test to see which graph implementation is the most efficient.
 v 	review LinkedGraph, does it need a nodes set? can't it be a shallow interface? 
