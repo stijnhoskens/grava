@@ -1,19 +1,32 @@
 package grava.graph;
 
+import java.util.Collection;
 import java.util.Set;
 
-public interface Graph<T> {
+public interface Graph<V, E extends Edge<V>> {
 	
-	Set<T> getVertices();
+	Set<V> getVertices();
 	
-	Set<Edge<T>> getEdges();
+	boolean addVertex(V v);
+	
+	void addVertices(Collection<V> vertices);
+	
+	boolean removeVertex(V v);
+	
+	boolean containsVertex(V v);
+	
+	Set<E> getEdges();
+	
+	boolean addEdge(E e);
+	
+	void addEdges(Collection<E> edges);
+	
+	boolean removeEdge(E e);
+	
+	boolean removeEdgesBetween(V u, V v);
 
-	boolean areNeighbours(T u, T v);
+	boolean areNeighbours(V u, V v);
 	
-	boolean isIsolated(T u);
-	
-	boolean isComplete();
-	
-	int degreeOf(T u);
+	Set<V> neighboursOf(V v);
 	
 }

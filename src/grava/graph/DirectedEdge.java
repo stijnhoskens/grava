@@ -1,20 +1,16 @@
 package grava.graph;
 
-public class DirectedEdge<T> extends Edge<T> {
+public class DirectedEdge<V> extends Edge<V> implements Directed<V> {
 
-	public DirectedEdge(T tail, T head) {
+	public DirectedEdge(V tail, V head) {
 		super(tail, head);
 	}
-
-	public DirectedEdge(T loopedVertex) {
-		super(loopedVertex);
-	}
 	
-	public T getTail() {
+	public V getTail() {
 		return tail;
 	}
 	
-	public T getHead() {
+	public V getHead() {
 		return head;
 	}
 

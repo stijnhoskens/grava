@@ -5,46 +5,31 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Edge<T> {
+public class Edge<V> {
 
-	protected T tail;
-	protected T head;
-	private Set<T> vertices;
+	protected V tail;
+	protected V head;
+	private Set<V> vertices;
 
-	private Edge(Set<T> vertices) {
+	private Edge(Set<V> vertices) {
 		this.vertices = Collections.unmodifiableSet(vertices);
 	}
 
-	public Edge(T tail, T head) {
+	public Edge(V tail, V head) {
 		this(new HashSet<>(Arrays.asList(tail, head)));
 		this.tail = tail;
 		this.head = head;
 	}
 
-	public Edge(T loopedVertex) {
-		this(loopedVertex, loopedVertex);
-	}
-
-	public Set<T> asSet() {
+	public Set<V> asSet() {
 		return vertices;
 	}
 
-	public boolean isLoop() {
-		return vertices.size() == 1;
+	public boolean isAdjacentTo(Edge<V> other) {
+		return vertices.stream().anyMatch(u -> other.asSet().contains(u));
 	}
 
-	public boolean isAdjacentTo(Edge<T> other) {
-		Set<T> intersection = new HashSet<>(vertices);
-		intersection.retainAll(other.asSet());
-		return !intersection.isEmpty();
-	}
-
-	public boolean contains(T vertex) {
+	public boolean contains(V vertex) {
 		return vertices.contains(vertex);
 	}
-
-	public boolean isParallelTo(Edge<T> other) {
-		return vertices.equals(other.asSet());
-	}
-
 }
