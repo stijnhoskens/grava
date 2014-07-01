@@ -13,34 +13,15 @@ abstract class AbstractMapped<V, E extends Link<V>> implements Graph<V, E> {
 
 	protected MultiMap<V, E> verticesToEdges = new MultiMap<>();
 
-	/**
-	 * Constructs a mapped graph consisting of the given set of vertices and
-	 * edges.
-	 * 
-	 * @param vertices
-	 *            the initial set of vertices
-	 * @param edges
-	 *            the initial set of edges
-	 */
 	public AbstractMapped(Set<V> vertices, Set<E> edges) {
 		edges.forEach(this::addEdge);
 		vertices.forEach(this::addVertex);
 	}
 
-	/**
-	 * Constructs a mapped graph consisting of the given set of vertices. The
-	 * resulting graph contains no edges.
-	 * 
-	 * @param vertices
-	 *            the initial set of vertices
-	 */
-	public AbstractMapped(Set<V> vertices) {
-		this(vertices, Collections.emptySet());
+	public AbstractMapped(Set<E> edges) {
+		this(Collections.emptySet(), edges);
 	}
 
-	/**
-	 * Creates an empty mapped graph containing no vertices nor edges.
-	 */
 	public AbstractMapped() {
 
 	}
