@@ -3,6 +3,12 @@ package grava.graph.mapped;
 import grava.edge.interfaces.Directed;
 import grava.graph.Graph;
 
+/**
+ * Similar to MappedGraph, but suited for directed edges.
+ * 
+ * @see MappedGraph
+ */
+
 public class MappedDiGraph<V, E extends Directed<V>> extends
 		AbstractMapped<V, E> implements Graph<V, E> {
 

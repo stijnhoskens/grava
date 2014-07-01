@@ -1,6 +1,6 @@
 package grava.graph;
 
-import grava.edge.interfaces.Linked;
+import grava.edge.interfaces.Link;
 
 import java.util.Optional;
 import java.util.Set;
@@ -14,33 +14,49 @@ import java.util.Set;
  * @param <V>
  *            The type of vertices, this can be any type.
  * @param <E>
- *            The type of edges, being either directed or non-directed.
+ *            The type of edges, being either directed or non-directed, weighted
+ *            or non-weighted.
  */
-public interface Graph<V, E extends Linked<V>> {
+public interface Graph<V, E extends Link<V>> {
 
 	/**
 	 * Returns the set of vertices.
+	 * 
+	 * @return the set of vertices.
 	 */
 	Set<V> getVertices();
 
 	/**
 	 * Adds the given vertex to the graph. If the vertex happens to be already
 	 * in the graph, nothing happens.
+	 * 
+	 * @param v
+	 *            the vertex to be added
 	 */
 	void addVertex(V v);
 
 	/**
-	 * Removes the given vertex. Returns true iff an actual element was removed.
+	 * Removes the given vertex.
+	 * 
+	 * @param v
+	 *            the vertex to be removed
+	 * @return true iff an actual element was removed.
 	 */
 	boolean removeVertex(V v);
 
 	/**
 	 * Returns true iff the vertex is contained within the graph
+	 * 
+	 * @param v
+	 *            the vertex whose presence is to be tested
+	 * @return true if the given vertex is contained in the graph
 	 */
 	boolean containsVertex(V v);
 
 	/**
 	 * Returns the set of edges.
+	 * 
+	 * @return the set of edges
 	 */
 	Set<E> getEdges();
 
@@ -49,22 +65,48 @@ public interface Graph<V, E extends Linked<V>> {
 	 * the graph, nothing happens. If one of the vertices did not appear in the
 	 * vertex set before, it is added. This way, a connected graph can be
 	 * constructed by only using this method.
+	 * 
+	 * @param e
+	 *            the edge to be added
 	 */
 	void addEdge(E e);
 
 	/**
-	 * Removes the given edge. Returns true iff an actual element was removed.
+	 * Removes the given edge.
+	 * 
+	 * @param e
+	 *            the edge to be removed
+	 * @return true iff an actual element was removed.
 	 */
 	boolean removeEdge(E e);
 
 	/**
-	 * Removes the edge between the given vertices. Returns true iff an actual
-	 * element was removed.
+	 * Removes the edge between the given vertices. In case of a directed graph,
+	 * the first argument has to be the tail, the second the head.
+	 * 
+	 * @note This method is also the main reason why the graph represented by
+	 *       this class has to be simple. In the presence of parallel edges this
+	 *       method has a non-determined behavior.
+	 * 
+	 * @param u
+	 *            the first end-vertex (in case of a digraph, the tail)
+	 * @param v
+	 *            the second end-vertex (in case of a digraph, the head)
+	 * @return true iff an actual element was removed
 	 */
 	boolean removeEdgeBetween(V u, V v);
 
 	/**
-	 * Returns true iff there exist an edge between the given vertices.
+	 * Tests whether there exist an edge between the given vertices. In case of
+	 * a directed graph, the first argument has to be the tail, the second the
+	 * head. So there has to be a directed edge leading from the first vertex to
+	 * the second one.
+	 * 
+	 * @param u
+	 *            the first end-vertex (in case of a digraph, the tail)
+	 * @param v
+	 *            the second end-vertex (in case of a digraph, the head)
+	 * @return true if the two are neighbours
 	 */
 	boolean areNeighbours(V u, V v);
 
@@ -72,17 +114,35 @@ public interface Graph<V, E extends Linked<V>> {
 	 * Returns the set of all neighbours of the given vertices. In other words,
 	 * for every u in the result, areNeighbours(v,u) == true. And none of the
 	 * other vertices not contained in the set have an edge to v.
+	 * 
+	 * @param v
+	 *            the vertex whose neighbours are to be retrieved
+	 * @return the set of all neighbours of the given vertex
 	 */
 	Set<V> neighboursOf(V v);
 
 	/**
 	 * Returns all edges containing the given vertex. In other words, for each e
-	 * in the result, e.contains(v), and none of the other edges do.
+	 * in the result, e.contains(v), and none of the other edges do. In case of
+	 * a directed graph, the set contains all edges having the given vertex as
+	 * its tail.
+	 * 
+	 * @param v
+	 *            the vertex whose edges are to be retrieved
+	 * @return the set of edges of the given vertex
 	 */
 	Set<E> edgesOf(V v);
 
 	/**
-	 * Returns an optional edge between the given vertices.
+	 * Returns an optional edge between the given vertices. This optional
+	 * embodies the fact that there might be an edge between two vertices.
+	 * 
+	 * @param u
+	 *            the first end-vertex (in case of a digraph, the tail)
+	 * @param v
+	 *            the second end-vertex (in case of a digraph, the head)
+	 * @return an optional possibly containing the edge between the two given
+	 *         vertices
 	 */
 	Optional<E> edgeBetween(V u, V v);
 

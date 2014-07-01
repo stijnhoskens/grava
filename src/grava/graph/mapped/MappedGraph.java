@@ -1,8 +1,17 @@
 package grava.graph.mapped;
 
-import grava.edge.interfaces.Linked;
+import grava.edge.interfaces.Link;
 
-public class MappedGraph<V, E extends Linked<V>> extends AbstractMapped<V, E> {
+/**
+ * A concrete implementation of the graph interface having each vertex map to
+ * their corresponding edges. This implementation is preferred if frequent
+ * access to neighbours or edges of vertices is required. This is the case for
+ * search algorithms etc. Use with caution, as this implementation can't be used
+ * for digraphs, use the MappedDiGraph instead.
+ * 
+ * @see MappedDiGraph
+ */
+public class MappedGraph<V, E extends Link<V>> extends AbstractMapped<V, E> {
 
 	@Override
 	public void addEdge(E e) {

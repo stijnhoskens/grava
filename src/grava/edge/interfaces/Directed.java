@@ -7,7 +7,7 @@ package grava.edge.interfaces;
  * @param <V>
  *            The type of vertices which it connects.
  */
-public interface Directed<V> extends Linked<V> {
+public interface Directed<V> extends Link<V> {
 
 	/**
 	 * Returns the tail.

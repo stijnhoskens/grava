@@ -1,6 +1,6 @@
 package grava.graph.mapped;
 
-import grava.edge.interfaces.Linked;
+import grava.edge.interfaces.Link;
 import grava.graph.Graph;
 import grava.util.MultiMap;
 
@@ -9,13 +9,18 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-abstract class AbstractMapped<V, E extends Linked<V>> implements Graph<V, E> {
+abstract class AbstractMapped<V, E extends Link<V>> implements Graph<V, E> {
 
 	protected MultiMap<V, E> verticesToEdges = new MultiMap<>();
 
 	/**
 	 * Constructs a mapped graph consisting of the given set of vertices and
 	 * edges.
+	 * 
+	 * @param vertices
+	 *            the initial set of vertices
+	 * @param edges
+	 *            the initial set of edges
 	 */
 	public AbstractMapped(Set<V> vertices, Set<E> edges) {
 		edges.forEach(this::addEdge);
@@ -25,6 +30,9 @@ abstract class AbstractMapped<V, E extends Linked<V>> implements Graph<V, E> {
 	/**
 	 * Constructs a mapped graph consisting of the given set of vertices. The
 	 * resulting graph contains no edges.
+	 * 
+	 * @param vertices
+	 *            the initial set of vertices
 	 */
 	public AbstractMapped(Set<V> vertices) {
 		this(vertices, Collections.emptySet());
@@ -82,7 +90,7 @@ abstract class AbstractMapped<V, E extends Linked<V>> implements Graph<V, E> {
 
 	@Override
 	public Set<V> neighboursOf(V v) {
-		return edgesOf(v).stream().map(Linked::asSet).filter(u -> !u.equals(v))
+		return edgesOf(v).stream().map(Link::asSet).filter(u -> !u.equals(v))
 				.collect(HashSet::new, Set::addAll, Set::addAll);
 	}
 

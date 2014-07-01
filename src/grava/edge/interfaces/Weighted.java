@@ -7,7 +7,7 @@ package grava.edge.interfaces;
  * @param <V>
  *            The type of vertices which it connects.
  */
-public interface Weighted<V> extends Linked<V> {
+public interface Weighted<V> extends Link<V> {
 
 	/**
 	 * Returns the weight.

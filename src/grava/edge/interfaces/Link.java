@@ -9,7 +9,7 @@ import java.util.Set;
  * @param <V>
  *            The type of vertices which it connects.
  */
-public interface Linked<V> {
+public interface Link<V> {
 
 	/**
 	 * Returns the linked vertices as a set.

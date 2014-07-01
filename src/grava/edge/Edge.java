@@ -1,6 +1,6 @@
 package grava.edge;
 
-import grava.edge.interfaces.Linked;
+import grava.edge.interfaces.Link;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * @param <V>
  *            The type of vertices which it connects.
  */
-public class Edge<V> implements Linked<V> {
+public class Edge<V> implements Link<V> {
 
 	private Set<V> vertices;
 
