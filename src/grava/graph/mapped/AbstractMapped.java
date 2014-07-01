@@ -1,6 +1,6 @@
 package grava.graph.mapped;
 
-import grava.graph.Edge;
+import grava.edge.interfaces.Linked;
 import grava.graph.Graph;
 import grava.util.MultiMap;
 
@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-abstract class AbstractMapped<V, E extends Edge<V>> implements Graph<V, E> {
+abstract class AbstractMapped<V, E extends Linked<V>> implements Graph<V, E> {
 
 	protected MultiMap<V, E> verticesToEdges = new MultiMap<>();
 
@@ -65,9 +65,15 @@ abstract class AbstractMapped<V, E extends Edge<V>> implements Graph<V, E> {
 				.collect(HashSet::new, Set::addAll, Set::addAll);
 	}
 
-	abstract Optional<E> edgeBetween(V u, V v);
+	@Override
+	public Optional<E> edgeBetween(V u, V v) {
+		return edgesOf(u).stream().filter(e -> e.contains(v)).findAny();
+	}
 
-	abstract Set<E> edgesOf(V v);
+	@Override
+	public Set<E> edgesOf(V v) {
+		return verticesToEdges.get(v);
+	}
 
 	@Override
 	public boolean areNeighbours(V u, V v) {
@@ -76,7 +82,7 @@ abstract class AbstractMapped<V, E extends Edge<V>> implements Graph<V, E> {
 
 	@Override
 	public Set<V> neighboursOf(V v) {
-		return edgesOf(v).stream().map(Edge::asSet).filter(u -> !u.equals(v))
+		return edgesOf(v).stream().map(Linked::asSet).filter(u -> !u.equals(v))
 				.collect(HashSet::new, Set::addAll, Set::addAll);
 	}
 

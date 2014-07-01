@@ -1,21 +1,18 @@
 package grava.graph.mapped;
 
-import grava.graph.DirectedEdge;
+import grava.edge.interfaces.Directed;
 import grava.graph.Graph;
 
-import java.util.Optional;
-import java.util.Set;
-
-public class MappedDiGraph<V> extends AbstractMapped<V, DirectedEdge<V>>
-		implements Graph<V, DirectedEdge<V>> {
+public class MappedDiGraph<V, E extends Directed<V>> extends
+		AbstractMapped<V, E> implements Graph<V, E> {
 
 	@Override
-	public void addEdge(DirectedEdge<V> e) {
+	public void addEdge(E e) {
 		verticesToEdges.addValue(e.getTail(), e);
 	}
 
 	@Override
-	public boolean removeEdge(DirectedEdge<V> e) {
+	public boolean removeEdge(E e) {
 		return verticesToEdges.removeValue(e.getTail(), e);
 	}
 
@@ -27,13 +24,4 @@ public class MappedDiGraph<V> extends AbstractMapped<V, DirectedEdge<V>>
 		}
 		return false;
 	}
-
-	Optional<DirectedEdge<V>> edgeBetween(V u, V v) {
-		return edgesOf(u).stream().filter(e -> e.getHead().equals(v)).findAny();
-	}
-
-	Set<DirectedEdge<V>> edgesOf(V v) {
-		return verticesToEdges.get(v);
-	}
-
 }

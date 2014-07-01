@@ -1,5 +1,8 @@
 package grava.graph;
 
+import grava.edge.interfaces.Linked;
+
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -9,11 +12,11 @@ import java.util.Set;
  * Otherwise, correctness is not guaranteed.
  *
  * @param <V>
- *            The vertices, this can be any type.
+ *            The type of vertices, this can be any type.
  * @param <E>
- *            The edges, being either directed or non-directed.
+ *            The type of edges, being either directed or non-directed.
  */
-public interface Graph<V, E extends Edge<V>> {
+public interface Graph<V, E extends Linked<V>> {
 
 	/**
 	 * Returns the set of vertices.
@@ -71,5 +74,16 @@ public interface Graph<V, E extends Edge<V>> {
 	 * other vertices not contained in the set have an edge to v.
 	 */
 	Set<V> neighboursOf(V v);
+
+	/**
+	 * Returns all edges containing the given vertex. In other words, for each e
+	 * in the result, e.contains(v), and none of the other edges do.
+	 */
+	Set<E> edgesOf(V v);
+
+	/**
+	 * Returns an optional edge between the given vertices.
+	 */
+	Optional<E> edgeBetween(V u, V v);
 
 }
