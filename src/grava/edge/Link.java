@@ -1,4 +1,4 @@
-package grava.edge.interfaces;
+package grava.edge;
 
 import java.util.Set;
 
@@ -17,6 +17,15 @@ public interface Link<V> {
 	 * @return the linked vertices as a set
 	 */
 	Set<V> asSet();
+
+	/**
+	 * Returns the set of tails of the link. These are the vertices through
+	 * which the link can be entered. In reality this will be a set containing
+	 * the tail vertex for arcs, and a set containing both vertices for edges.
+	 * 
+	 * @return the tails as a set
+	 */
+	Set<V> tails();
 
 	/**
 	 * Returns true iff the given vertex is contained in the link, or in other

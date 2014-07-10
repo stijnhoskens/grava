@@ -3,8 +3,7 @@ package grava.graph;
 import java.util.HashSet;
 import java.util.Set;
 
-import grava.edge.interfaces.Link;
-import grava.graph.mapped.MappedGraph;
+import grava.edge.Link;
 
 public class Graphs {
 

@@ -1,6 +1,6 @@
 package grava.graph;
 
-import grava.edge.interfaces.Link;
+import grava.edge.Link;
 
 import java.util.Optional;
 import java.util.Set;

@@ -1,14 +1,12 @@
 package grava.edge;
 
-import grava.edge.interfaces.Weighted;
-
 /**
  * Represents a weighted edge between two vertices.
  *
  * @param <V>
  *            The type of vertices which it connects.
  */
-public class WeightedEdge<V> extends Edge<V> implements Weighted<V> {
+public class WeightedEdge<V> extends Edge<V> implements WeightedLink<V> {
 
 	private double weight;
 

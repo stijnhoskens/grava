@@ -1,11 +1,11 @@
 package grava.walk;
 
+import grava.edge.Link;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-
-import grava.edge.interfaces.Link;
 
 public class Walk<V, E extends Link<V>> {
 

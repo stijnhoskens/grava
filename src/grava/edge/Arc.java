@@ -1,6 +1,7 @@
 package grava.edge;
 
-import grava.edge.interfaces.Directed;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Represents a directed edge or arc between two vertices.
@@ -8,7 +9,7 @@ import grava.edge.interfaces.Directed;
  * @param <V>
  *            The type of vertices which it connects.
  */
-public class Arc<V> extends Edge<V> implements Directed<V> {
+public class Arc<V> extends Edge<V> implements Link<V> {
 
 	private V tail;
 	private V head;
@@ -28,14 +29,17 @@ public class Arc<V> extends Edge<V> implements Directed<V> {
 		this.head = head;
 	}
 
-	@Override
 	public V getTail() {
 		return tail;
 	}
 
-	@Override
 	public V getHead() {
 		return head;
+	}
+
+	@Override
+	public Set<V> tails() {
+		return Collections.unmodifiableSet(Collections.singleton(tail));
 	}
 
 }

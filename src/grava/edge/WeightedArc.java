@@ -1,15 +1,12 @@
 package grava.edge;
 
-import grava.edge.interfaces.Directed;
-import grava.edge.interfaces.Weighted;
-
 /**
  * Represents a weighted directed edge or weighted arc between two vertices.
  *
  * @param <V>
  *            The type of vertices which it connects.
  */
-public class WeightedArc<V> extends Arc<V> implements Weighted<V>, Directed<V> {
+public class WeightedArc<V> extends Arc<V> implements WeightedLink<V> {
 
 	private double weight;
 

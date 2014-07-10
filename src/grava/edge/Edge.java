@@ -1,9 +1,6 @@
 package grava.edge;
 
-import grava.edge.interfaces.Link;
-
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,18 +24,23 @@ public class Edge<V> implements Link<V> {
 	 *            the second vertex
 	 */
 	public Edge(V u, V v) {
-		vertices = Stream.of(u, v).collect(
-				Collectors.toCollection(HashSet::new));
+		vertices = Collections.unmodifiableSet(Stream.of(u, v).collect(
+				Collectors.toSet()));
 	}
 
 	@Override
 	public Set<V> asSet() {
-		return Collections.unmodifiableSet(vertices);
+		return vertices;
 	}
 
 	@Override
 	public boolean contains(V v) {
 		return vertices.contains(v);
+	}
+
+	@Override
+	public Set<V> tails() {
+		return vertices;
 	}
 
 }

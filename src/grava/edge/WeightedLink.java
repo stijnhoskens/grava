@@ -1,4 +1,4 @@
-package grava.edge.interfaces;
+package grava.edge;
 
 /**
  * Provides an interface for weighted edges. These weighted edges have an
@@ -7,7 +7,7 @@ package grava.edge.interfaces;
  * @param <V>
  *            The type of vertices which it connects.
  */
-public interface Weighted<V> extends Link<V> {
+public interface WeightedLink<V> extends Link<V> {
 
 	/**
 	 * Returns the weight.
