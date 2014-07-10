@@ -13,9 +13,8 @@ public class Walk<V, E extends Link<V>> {
 	private final List<E> edges;
 
 	public Walk(V start) {
-		vertices = new ArrayList<>();
-		edges = new ArrayList<>();
-		vertices.add(start);
+		vertices = Collections.singletonList(start);
+		edges = Collections.emptyList();
 	}
 
 	public List<V> getVertices() {

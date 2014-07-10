@@ -7,13 +7,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A concrete implementation of the graph interface having each vertex map to
  * their corresponding edges. This implementation is preferred if frequent
  * access to neighbours or edges of vertices is required. This is the case for
- * search algorithms etc. Use with caution, as this implementation can't be used
- * for digraphs, use the MappedDiGraph instead.
+ * search algorithms etc.
  * 
  * @see MappedDiGraph
  */
@@ -84,7 +85,10 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public Optional<E> edgeBetween(V u, V v) {
-		return edgesOf(u).stream().filter(e -> e.contains(v)).findAny();
+		return edgesOf(u)
+				.stream()
+				.filter(e -> e.asSet().equals(
+						Stream.of(u, v).collect(Collectors.toSet()))).findAny();
 	}
 
 	@Override
