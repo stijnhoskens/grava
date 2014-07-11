@@ -34,7 +34,7 @@ public abstract class GraphTestMethods {
 			cf_arc = new Arc<>(c, f), cd_arc = new Arc<>(c, d),
 			df_arc = new Arc<>(d, f);
 	private final Set<Edge<Node>> edges = Stream.of(ab, bc, be, ef, cf, cd, df)
-			.collect(Collectors.toSet());;
+			.collect(Collectors.toSet());
 	private final Set<Arc<Node>> arcs = Stream.of(ab_arc, bc_arc, be_arc,
 			ef_arc, cf_arc, cd_arc, df_arc).collect(Collectors.toSet());;
 
@@ -116,11 +116,28 @@ public abstract class GraphTestMethods {
 		assertTrue(graph.getEdges().contains(ae));
 		assertTrue(graph.removeEdgeBetween(a, e));
 		assertTrue(graph.getEdges().equals(edges));
+		graph.addEdge(ae);
+		assertFalse(graph.getEdges().equals(edges));
+		assertTrue(graph.removeEdgeBetween(e, a));
+		assertTrue(graph.getEdges().equals(edges));
+
+		// Deletion method 2 for directed graphs
+		Arc<Node> ae_arc = new Arc<>(a, e);
+		digraph.addEdge(ae_arc);
+		assertFalse(digraph.getEdges().equals(arcs));
+		assertTrue(digraph.getEdges().containsAll(arcs));
+		assertEquals(arcs.size() + 1, digraph.getEdges().size());
+		assertTrue(digraph.getEdges().contains(ae_arc));
+		assertFalse(digraph.removeEdgeBetween(e, a));
+		assertFalse(digraph.getEdges().equals(arcs));
+		assertTrue(digraph.removeEdgeBetween(a, e));
+		assertTrue(digraph.getEdges().equals(arcs));
 
 	}
 
 	@Test
 	public void testNeighbourship() {
+
 		assertTrue(graph.areNeighbours(a, b));
 		assertTrue(graph.areNeighbours(b, c));
 		assertTrue(graph.areNeighbours(b, e));
@@ -128,6 +145,15 @@ public abstract class GraphTestMethods {
 		assertTrue(graph.areNeighbours(c, f));
 		assertTrue(graph.areNeighbours(c, d));
 		assertTrue(graph.areNeighbours(d, f));
+
+		assertTrue(graph.areNeighbours(b, a));
+		assertTrue(graph.areNeighbours(c, b));
+		assertTrue(graph.areNeighbours(e, b));
+		assertTrue(graph.areNeighbours(f, e));
+		assertTrue(graph.areNeighbours(f, c));
+		assertTrue(graph.areNeighbours(d, c));
+		assertTrue(graph.areNeighbours(f, d));
+
 		assertFalse(graph.areNeighbours(a, a));
 		int nbOfTotalNeighbourships = 0;
 		for (Node n1 : nodes)
@@ -135,5 +161,88 @@ public abstract class GraphTestMethods {
 				if (graph.areNeighbours(n1, n2))
 					nbOfTotalNeighbourships++;
 		assertEquals(2 * edges.size(), nbOfTotalNeighbourships);
+
+		// Directed Graph
+		assertTrue(digraph.areNeighbours(a, b));
+		assertTrue(digraph.areNeighbours(b, c));
+		assertTrue(digraph.areNeighbours(b, e));
+		assertTrue(digraph.areNeighbours(e, f));
+		assertTrue(digraph.areNeighbours(c, f));
+		assertTrue(digraph.areNeighbours(c, d));
+		assertTrue(digraph.areNeighbours(d, f));
+
+		assertFalse(digraph.areNeighbours(b, a));
+		assertFalse(digraph.areNeighbours(c, b));
+		assertFalse(digraph.areNeighbours(e, b));
+		assertFalse(digraph.areNeighbours(f, e));
+		assertFalse(digraph.areNeighbours(f, c));
+		assertFalse(digraph.areNeighbours(d, c));
+		assertFalse(digraph.areNeighbours(f, d));
+
+		assertFalse(digraph.areNeighbours(a, a));
+
+		int nbOfTotalDirectedNeighbourships = 0;
+		for (Node n1 : nodes)
+			for (Node n2 : nodes)
+				if (digraph.areNeighbours(n1, n2))
+					nbOfTotalDirectedNeighbourships++;
+		assertEquals(arcs.size(), nbOfTotalDirectedNeighbourships);
+	}
+
+	@Test
+	public void testNeighbourhood() {
+		
+		Set<Node> neighboursOfA = graph.neighboursOf(a);
+		assertTrue(neighboursOfA.remove(b));
+		assertEquals(0, neighboursOfA.size());
+		Set<Node> neighboursOfB = graph.neighboursOf(b);
+		assertTrue(neighboursOfB.remove(a));
+		assertTrue(neighboursOfB.remove(c));
+		assertTrue(neighboursOfB.remove(e));
+		assertEquals(0, neighboursOfB.size());
+		Set<Node> neighboursOfC = graph.neighboursOf(c);
+		assertTrue(neighboursOfC.remove(b));
+		assertTrue(neighboursOfC.remove(d));
+		assertTrue(neighboursOfC.remove(f));
+		assertEquals(0, neighboursOfC.size());
+		Set<Node> neighboursOfD = graph.neighboursOf(d);
+		assertTrue(neighboursOfD.remove(c));
+		assertTrue(neighboursOfD.remove(f));
+		assertEquals(0, neighboursOfD.size());
+		Set<Node> neighboursOfE = graph.neighboursOf(e);
+		assertTrue(neighboursOfE.remove(b));
+		assertTrue(neighboursOfE.remove(f));
+		assertEquals(0, neighboursOfE.size());
+		Set<Node> neighboursOfF = graph.neighboursOf(f);
+		assertTrue(neighboursOfF.remove(c));
+		assertTrue(neighboursOfF.remove(d));
+		assertTrue(neighboursOfF.remove(e));
+		assertEquals(0, neighboursOfF.size());
+		
+		// Directed
+		Set<Node> directedNeighboursOfA = digraph.neighboursOf(a);
+		assertTrue(directedNeighboursOfA.remove(b));
+		assertEquals(0, directedNeighboursOfA.size());
+		Set<Node> directedNeighboursOfB = digraph.neighboursOf(b);
+		assertTrue(directedNeighboursOfB.remove(c));
+		assertTrue(directedNeighboursOfB.remove(e));
+		assertEquals(0, directedNeighboursOfB.size());
+		Set<Node> directedNeighboursOfC = digraph.neighboursOf(c);
+		assertTrue(directedNeighboursOfC.remove(d));
+		assertTrue(directedNeighboursOfC.remove(f));
+		assertEquals(0, directedNeighboursOfC.size());
+		Set<Node> directedNeighboursOfD = digraph.neighboursOf(d);
+		assertTrue(directedNeighboursOfD.remove(f));
+		assertEquals(0, directedNeighboursOfD.size());
+		Set<Node> directedNeighboursOfE = digraph.neighboursOf(e);
+		assertTrue(directedNeighboursOfE.remove(f));
+		assertEquals(0, directedNeighboursOfE.size());
+		Set<Node> directedNeighboursOfF = digraph.neighboursOf(f);
+		assertEquals(0, directedNeighboursOfF.size());
+	}
+	
+	@Test
+	public void testEdgesOf() {
+		
 	}
 }

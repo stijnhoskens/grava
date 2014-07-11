@@ -103,8 +103,8 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public Set<V> neighboursOf(V v) {
-		return edgesOf(v).stream().map(Link::asSet).filter(u -> !u.equals(v))
-				.collect(HashSet::new, Set::addAll, Set::addAll);
+		return edgesOf(v).stream().map(Link::asSet).flatMap(Set::stream)
+				.filter(u -> !u.equals(v)).collect(Collectors.toSet());
 	}
 
 	@Override
