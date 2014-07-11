@@ -8,8 +8,10 @@ import java.util.Set;
 /**
  * A graph contains a set of vertices and a set of edges. These edges connect
  * two vertices or nodes with each other. Graphs using this representation
- * should remain simple, meaning they have no parallel edges or loops.
- * Otherwise, correctness is not guaranteed.
+ * remain simple, meaning they have no parallel edges or loops. If parallel
+ * edges or loops are to be added, they are ignored. Looped edges can't be
+ * created anyway, and parallel edges are regarded the same so they are omitted
+ * in a set.
  *
  * @param <V>
  *            The type of vertices, this can be any type.

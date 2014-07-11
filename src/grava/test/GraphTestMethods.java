@@ -2,6 +2,7 @@ package grava.test;
 
 import static org.junit.Assert.*;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,27 +16,28 @@ import grava.graph.Graph;
 
 public abstract class GraphTestMethods {
 
-	private final Graph<Node, Edge<Node>> graph;
-	private final Graph<Node, Arc<Node>> digraph;
+	protected final Graph<Node, Edge<Node>> graph;
+	protected final Graph<Node, Arc<Node>> digraph;
 
-	private final Node a = new Node("a"), b = new Node("b"), c = new Node("c"),
-			d = new Node("d"), e = new Node("e"), f = new Node("f");
-	private final Set<Node> nodes = Stream.of(a, b, c, d, e, f).collect(
+	protected final Node a = new Node("a"), b = new Node("b"),
+			c = new Node("c"), d = new Node("d"), e = new Node("e"),
+			f = new Node("f");
+	protected final Set<Node> nodes = Stream.of(a, b, c, d, e, f).collect(
 			Collectors.toSet());
-	private final Edge<Node> ab = new Edge<>(a, b), bc = new Edge<>(b, c),
+	protected final Edge<Node> ab = new Edge<>(a, b), bc = new Edge<>(b, c),
 			be = new Edge<>(b, e), ef = new Edge<>(e, f),
 			cf = new Edge<>(c, f), cd = new Edge<>(c, d),
 			df = new Edge<>(d, f);
 	/*
 	 * All arcs go from the lowest in lexicographic order to the highest.
 	 */
-	private final Arc<Node> ab_arc = new Arc<>(a, b), bc_arc = new Arc<>(b, c),
-			be_arc = new Arc<>(b, e), ef_arc = new Arc<>(e, f),
-			cf_arc = new Arc<>(c, f), cd_arc = new Arc<>(c, d),
-			df_arc = new Arc<>(d, f);
-	private final Set<Edge<Node>> edges = Stream.of(ab, bc, be, ef, cf, cd, df)
-			.collect(Collectors.toSet());
-	private final Set<Arc<Node>> arcs = Stream.of(ab_arc, bc_arc, be_arc,
+	protected final Arc<Node> ab_arc = new Arc<>(a, b),
+			bc_arc = new Arc<>(b, c), be_arc = new Arc<>(b, e),
+			ef_arc = new Arc<>(e, f), cf_arc = new Arc<>(c, f),
+			cd_arc = new Arc<>(c, d), df_arc = new Arc<>(d, f);
+	protected final Set<Edge<Node>> edges = Stream.of(ab, bc, be, ef, cf, cd,
+			df).collect(Collectors.toSet());
+	protected final Set<Arc<Node>> arcs = Stream.of(ab_arc, bc_arc, be_arc,
 			ef_arc, cf_arc, cd_arc, df_arc).collect(Collectors.toSet());;
 
 	/**
@@ -63,10 +65,10 @@ public abstract class GraphTestMethods {
 
 	@Test
 	public void testContainment() {
-		assertTrue(graph.getVertices().equals(nodes));
-		assertTrue(graph.getEdges().equals(edges));
-		assertTrue(digraph.getVertices().equals(nodes));
-		assertTrue(digraph.getEdges().equals(arcs));
+		assertEquals(nodes, graph.getVertices());
+		assertEquals(edges, graph.getEdges());
+		assertEquals(nodes, digraph.getVertices());
+		assertEquals(arcs, digraph.getEdges());
 	}
 
 	@Test
@@ -74,7 +76,7 @@ public abstract class GraphTestMethods {
 
 		// Addition
 		graph.addVertex(a);
-		assertTrue(graph.getVertices().equals(nodes));
+		assertEquals(nodes, graph.getVertices());
 		Node g = new Node("g");
 		graph.addVertex(g);
 		assertFalse(graph.getVertices().equals(nodes));
@@ -85,7 +87,7 @@ public abstract class GraphTestMethods {
 
 		// Deletion
 		assertTrue(graph.removeVertex(g));
-		assertTrue(graph.getVertices().equals(nodes));
+		assertEquals(nodes, graph.getVertices());
 		assertFalse(graph.removeVertex(g));
 
 	}
@@ -95,43 +97,43 @@ public abstract class GraphTestMethods {
 
 		// Addition
 		graph.addEdge(ab);
-		assertTrue(graph.getVertices().equals(nodes));
+		assertEquals(nodes, graph.getVertices());
 		Edge<Node> ae = new Edge<>(a, e);
 		graph.addEdge(ae);
-		assertFalse(graph.getEdges().equals(edges));
+		assertNotEquals(edges, graph.getEdges());
 		assertTrue(graph.getEdges().containsAll(edges));
 		assertEquals(edges.size() + 1, graph.getEdges().size());
 		assertTrue(graph.getEdges().contains(ae));
 
 		// Deletion method 1
 		assertTrue(graph.removeEdge(ae));
-		assertTrue(graph.getEdges().equals(edges));
+		assertEquals(edges, graph.getEdges());
 		assertFalse(graph.removeEdge(ae));
 
 		// Deletion method 2
 		graph.addEdge(ae);
-		assertFalse(graph.getEdges().equals(edges));
+		assertNotEquals(edges, graph.getEdges());
 		assertTrue(graph.getEdges().containsAll(edges));
 		assertEquals(edges.size() + 1, graph.getEdges().size());
 		assertTrue(graph.getEdges().contains(ae));
 		assertTrue(graph.removeEdgeBetween(a, e));
-		assertTrue(graph.getEdges().equals(edges));
+		assertEquals(edges, graph.getEdges());
 		graph.addEdge(ae);
-		assertFalse(graph.getEdges().equals(edges));
+		assertNotEquals(edges, graph.getEdges());
 		assertTrue(graph.removeEdgeBetween(e, a));
-		assertTrue(graph.getEdges().equals(edges));
+		assertEquals(edges, graph.getEdges());
 
 		// Deletion method 2 for directed graphs
 		Arc<Node> ae_arc = new Arc<>(a, e);
 		digraph.addEdge(ae_arc);
-		assertFalse(digraph.getEdges().equals(arcs));
+		assertNotEquals(arcs, digraph.getEdges());
 		assertTrue(digraph.getEdges().containsAll(arcs));
 		assertEquals(arcs.size() + 1, digraph.getEdges().size());
 		assertTrue(digraph.getEdges().contains(ae_arc));
 		assertFalse(digraph.removeEdgeBetween(e, a));
-		assertFalse(digraph.getEdges().equals(arcs));
+		assertNotEquals(arcs, digraph.getEdges());
 		assertTrue(digraph.removeEdgeBetween(a, e));
-		assertTrue(digraph.getEdges().equals(arcs));
+		assertEquals(arcs, digraph.getEdges());
 
 	}
 
@@ -191,7 +193,7 @@ public abstract class GraphTestMethods {
 
 	@Test
 	public void testNeighbourhood() {
-		
+
 		Set<Node> neighboursOfA = graph.neighboursOf(a);
 		assertTrue(neighboursOfA.remove(b));
 		assertEquals(0, neighboursOfA.size());
@@ -218,7 +220,7 @@ public abstract class GraphTestMethods {
 		assertTrue(neighboursOfF.remove(d));
 		assertTrue(neighboursOfF.remove(e));
 		assertEquals(0, neighboursOfF.size());
-		
+
 		// Directed
 		Set<Node> directedNeighboursOfA = digraph.neighboursOf(a);
 		assertTrue(directedNeighboursOfA.remove(b));
@@ -240,9 +242,88 @@ public abstract class GraphTestMethods {
 		Set<Node> directedNeighboursOfF = digraph.neighboursOf(f);
 		assertEquals(0, directedNeighboursOfF.size());
 	}
-	
+
 	@Test
 	public void testEdgesOf() {
+
+		Set<Edge<Node>> edgesOfA = graph.edgesOf(a);
+		assertTrue(edgesOfA.remove(ab));
+		assertEquals(0, edgesOfA.size());
+		Set<Edge<Node>> edgesOfB = graph.edgesOf(b);
+		assertTrue(edgesOfB.remove(ab));
+		assertTrue(edgesOfB.remove(bc));
+		assertTrue(edgesOfB.remove(be));
+		assertEquals(0, edgesOfB.size());
+		Set<Edge<Node>> edgesOfC = graph.edgesOf(c);
+		assertTrue(edgesOfC.remove(bc));
+		assertTrue(edgesOfC.remove(cd));
+		assertTrue(edgesOfC.remove(cf));
+		assertEquals(0, edgesOfC.size());
+		Set<Edge<Node>> edgesOfD = graph.edgesOf(d);
+		assertTrue(edgesOfD.remove(cd));
+		assertTrue(edgesOfD.remove(df));
+		assertEquals(0, edgesOfD.size());
+		Set<Edge<Node>> edgesOfE = graph.edgesOf(e);
+		assertTrue(edgesOfE.remove(be));
+		assertTrue(edgesOfE.remove(ef));
+		assertEquals(0, edgesOfE.size());
+		Set<Edge<Node>> edgesOfF = graph.edgesOf(f);
+		assertTrue(edgesOfF.remove(cf));
+		assertTrue(edgesOfF.remove(df));
+		assertTrue(edgesOfF.remove(ef));
+		assertEquals(0, edgesOfF.size());
+
+		// Directed
+		Set<Arc<Node>> arcsOfA = digraph.edgesOf(a);
+		assertTrue(arcsOfA.remove(ab_arc));
+		assertEquals(0, arcsOfA.size());
+		Set<Arc<Node>> arcsOfB = digraph.edgesOf(b);
+		assertTrue(arcsOfB.remove(bc_arc));
+		assertTrue(arcsOfB.remove(be_arc));
+		assertEquals(0, arcsOfB.size());
+		Set<Arc<Node>> arcsOfC = digraph.edgesOf(c);
+		assertTrue(arcsOfC.remove(cd_arc));
+		assertTrue(arcsOfC.remove(cf_arc));
+		assertEquals(0, arcsOfC.size());
+		Set<Arc<Node>> arcsOfD = digraph.edgesOf(d);
+		assertTrue(arcsOfD.remove(df_arc));
+		assertEquals(0, arcsOfD.size());
+		Set<Arc<Node>> arcsOfE = digraph.edgesOf(e);
+		assertTrue(arcsOfE.remove(ef_arc));
+		assertEquals(0, arcsOfE.size());
+		Set<Arc<Node>> arcsOfF = digraph.edgesOf(f);
+		assertEquals(0, arcsOfF.size());
+
+	}
+
+	@Test
+	public void testEdgeBetween() {
+		
+		nodes.forEach(n1 -> nodes.forEach(n2 -> {
+			Optional<Edge<Node>> optional = graph.edgeBetween(n1, n2);
+			if (graph.areNeighbours(n1, n2)) {
+				assertTrue(optional.isPresent());
+				Edge<Node> edge = optional.get();
+				assertTrue(edges.contains(edge));
+				assertTrue(edge.contains(n1));
+				assertTrue(edge.contains(n2));
+			}
+			else
+				assertFalse(optional.isPresent());
+		}));
+		
+		nodes.forEach(n1 -> nodes.forEach(n2 -> {
+			Optional<Arc<Node>> optional = digraph.edgeBetween(n1, n2);
+			if (digraph.areNeighbours(n1, n2)) {
+				assertTrue(optional.isPresent());
+				Arc<Node> arc = optional.get();
+				assertTrue(arcs.contains(arc));
+				assertEquals(n1, arc.getTail());
+				assertEquals(n2, arc.getHead());
+			}
+			else
+				assertFalse(optional.isPresent());
+		}));
 		
 	}
 }

@@ -2,13 +2,12 @@ package grava.graph;
 
 import grava.edge.Link;
 import grava.util.MultiMap;
+import grava.util.SetUtils;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A concrete implementation of the graph interface having each vertex map to
@@ -62,8 +61,6 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public void addVertex(V v) {
-		if (verticesToEdges.containsKey(v))
-			return;
 		verticesToEdges.addKey(v);
 	}
 
@@ -79,16 +76,14 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public Set<E> getEdges() {
-		return verticesToEdges.values().stream()
-				.collect(HashSet::new, Set::addAll, Set::addAll);
+		return verticesToEdges.values().stream().flatMap(Set::stream)
+				.collect(Collectors.toSet());
 	}
 
 	@Override
 	public Optional<E> edgeBetween(V u, V v) {
-		return edgesOf(u)
-				.stream()
-				.filter(e -> e.asSet().equals(
-						Stream.of(u, v).collect(Collectors.toSet()))).findAny();
+		return edgesOf(u).stream()
+				.filter(e -> e.asSet().equals(SetUtils.setOf(u, v))).findAny();
 	}
 
 	@Override
@@ -124,5 +119,4 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 		optional.ifPresent(e -> removeEdge(e));
 		return optional.isPresent();
 	}
-
 }

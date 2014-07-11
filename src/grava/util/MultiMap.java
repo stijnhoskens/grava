@@ -11,42 +11,42 @@ public class MultiMap<K, V> extends HashMap<K, Set<V>> {
 	private static final long serialVersionUID = 1L;
 
 	public void addKey(K key) {
+		if (containsKey(key))
+			return;
 		put(key, new HashSet<V>());
 	}
 
 	public void addValue(K key, V value) {
-		if (!containsKey(key))
-			addKey(key);
+		addKey(key);
 		get(key).add(value);
 	}
 
 	public void addValues(K key, Collection<V> values) {
-		if (!containsKey(key))
-			addKey(key);
+		addKey(key);
 		get(key).addAll(values);
 	}
 
 	public int count(K key) {
-		if(!containsKey(key))
+		if (!containsKey(key))
 			return 0;
 		return get(key).size();
 	}
-	
+
 	public boolean containsValue(K key, V value) {
-		if(!containsKey(key))
+		if (!containsKey(key))
 			return false;
 		return get(key).contains(value);
 	}
-	
+
 	public boolean removeValue(K key, V value) {
-		if(!containsKey(key))
+		if (!containsKey(key))
 			return false;
 		return get(key).remove(value);
 	}
-	
-	@Override 
+
+	@Override
 	public Set<V> get(Object key) {
-		if(!containsKey(key))
+		if (!containsKey(key))
 			return Collections.emptySet();
 		return super.get(key);
 	}

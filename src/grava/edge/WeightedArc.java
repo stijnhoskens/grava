@@ -1,5 +1,7 @@
 package grava.edge;
 
+import grava.exceptions.LoopException;
+
 /**
  * Represents a weighted directed edge or weighted arc between two vertices.
  *
@@ -20,8 +22,10 @@ public class WeightedArc<V> extends Arc<V> implements WeightedLink<V> {
 	 *            the head
 	 * @param weight
 	 *            the weight
+	 * @throws LoopException
+	 *             if the created arc forms a loop
 	 */
-	public WeightedArc(V tail, V head, double weight) {
+	public WeightedArc(V tail, V head, double weight) throws LoopException {
 		super(tail, head);
 		this.weight = weight;
 	}

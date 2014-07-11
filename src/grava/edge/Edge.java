@@ -1,9 +1,9 @@
 package grava.edge;
 
-import java.util.Collections;
+import grava.exceptions.LoopException;
+import grava.util.SetUtils;
+
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Represents an edge or link between two vertices.
@@ -22,10 +22,13 @@ public class Edge<V> implements Link<V> {
 	 *            the first vertex
 	 * @param v
 	 *            the second vertex
+	 * @throws LoopException
+	 *             if the created edge forms a loop
 	 */
-	public Edge(V u, V v) {
-		vertices = Collections.unmodifiableSet(Stream.of(u, v).collect(
-				Collectors.toSet()));
+	public Edge(V u, V v) throws LoopException {
+		if (u.equals(v))
+			throw new LoopException(u);
+		vertices = SetUtils.unmodifiableSetOf(u, v);
 	}
 
 	@Override
@@ -41,6 +44,32 @@ public class Edge<V> implements Link<V> {
 	@Override
 	public Set<V> tails() {
 		return vertices;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((vertices == null) ? 0 : vertices.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Edge<?> other = (Edge<?>) obj;
+		if (vertices == null) {
+			if (other.vertices != null)
+				return false;
+		} else if (!vertices.equals(other.vertices))
+			return false;
+		return true;
 	}
 
 }

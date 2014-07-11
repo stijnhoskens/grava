@@ -4,7 +4,8 @@ import java.util.Set;
 
 /**
  * Provides an interface for linkages between vertices (read: edges). These
- * links contain two vertices.
+ * links contain two vertices. A requirement of these links is that they
+ * shouldn't allow loops.
  *
  * @param <V>
  *            The type of vertices which it connects.

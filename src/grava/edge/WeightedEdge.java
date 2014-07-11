@@ -1,5 +1,7 @@
 package grava.edge;
 
+import grava.exceptions.LoopException;
+
 /**
  * Represents a weighted edge between two vertices.
  *
@@ -19,8 +21,10 @@ public class WeightedEdge<V> extends Edge<V> implements WeightedLink<V> {
 	 *            the second vertex
 	 * @param weight
 	 *            the weight associated to the link between the two
+	 * @throws LoopException
+	 *             if the created edge forms a loop
 	 */
-	public WeightedEdge(V u, V v, double weight) {
+	public WeightedEdge(V u, V v, double weight) throws LoopException {
 		super(u, v);
 		this.weight = weight;
 	}
