@@ -38,22 +38,14 @@ public interface Graph<V, E extends Link<V>> {
 	void addVertex(V v);
 
 	/**
-	 * Removes the given vertex.
+	 * Removes the given vertex. If the given vertex is somehow connected
+	 * through some edges, those edges are also removed.
 	 * 
 	 * @param v
 	 *            the vertex to be removed
 	 * @return true iff an actual element was removed.
 	 */
 	boolean removeVertex(V v);
-
-	/**
-	 * Returns true iff the vertex is contained within the graph
-	 * 
-	 * @param v
-	 *            the vertex whose presence is to be tested
-	 * @return true if the given vertex is contained in the graph
-	 */
-	boolean containsVertex(V v);
 
 	/**
 	 * Returns the set of edges.

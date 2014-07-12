@@ -83,13 +83,16 @@ public abstract class GraphTestMethods {
 		assertTrue(graph.getVertices().containsAll(nodes));
 		assertEquals(nodes.size() + 1, graph.getVertices().size());
 		assertTrue(graph.getVertices().contains(g));
-		assertTrue(graph.containsVertex(g));
+		assertTrue(graph.getVertices().contains(g));
 
 		// Deletion
 		assertTrue(graph.removeVertex(g));
 		assertEquals(nodes, graph.getVertices());
 		assertFalse(graph.removeVertex(g));
 
+		// Deletion of a connected vertex
+		assertTrue(graph.removeVertex(a));
+		assertFalse(graph.areNeighbours(b, a));
 	}
 
 	@Test
@@ -298,7 +301,7 @@ public abstract class GraphTestMethods {
 
 	@Test
 	public void testEdgeBetween() {
-		
+
 		nodes.forEach(n1 -> nodes.forEach(n2 -> {
 			Optional<Edge<Node>> optional = graph.edgeBetween(n1, n2);
 			if (graph.areNeighbours(n1, n2)) {
@@ -307,11 +310,10 @@ public abstract class GraphTestMethods {
 				assertTrue(edges.contains(edge));
 				assertTrue(edge.contains(n1));
 				assertTrue(edge.contains(n2));
-			}
-			else
+			} else
 				assertFalse(optional.isPresent());
 		}));
-		
+
 		nodes.forEach(n1 -> nodes.forEach(n2 -> {
 			Optional<Arc<Node>> optional = digraph.edgeBetween(n1, n2);
 			if (digraph.areNeighbours(n1, n2)) {
@@ -320,10 +322,9 @@ public abstract class GraphTestMethods {
 				assertTrue(arcs.contains(arc));
 				assertEquals(n1, arc.getTail());
 				assertEquals(n2, arc.getHead());
-			}
-			else
+			} else
 				assertFalse(optional.isPresent());
 		}));
-		
+
 	}
 }

@@ -2,20 +2,17 @@ package grava.graph;
 
 import grava.edge.Link;
 import grava.util.MultiMap;
-import grava.util.SetUtils;
+import static grava.util.SetUtils.*;
 
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * A concrete implementation of the graph interface having each vertex map to
  * their corresponding edges. This implementation is preferred if frequent
  * access to neighbours or edges of vertices is required. This is the case for
  * search algorithms etc.
- * 
- * @see MappedDiGraph
  */
 public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
@@ -65,25 +62,25 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 	}
 
 	@Override
+	// TODO This method can use some performance tuning!
 	public boolean removeVertex(V v) {
-		return verticesToEdges.remove(v) != null;
-	}
-
-	@Override
-	public boolean containsVertex(V v) {
-		return verticesToEdges.containsKey(v);
+		if (!getVertices().contains(v))
+			return false;
+		getEdges().stream().filter(e -> e.contains(v))
+				.forEach(e -> removeEdge(e));
+		verticesToEdges.remove(v);
+		return true;
 	}
 
 	@Override
 	public Set<E> getEdges() {
-		return verticesToEdges.values().stream().flatMap(Set::stream)
-				.collect(Collectors.toSet());
+		return flatten(verticesToEdges.values());
 	}
 
 	@Override
 	public Optional<E> edgeBetween(V u, V v) {
-		return edgesOf(u).stream()
-				.filter(e -> e.asSet().equals(SetUtils.setOf(u, v))).findAny();
+		return edgesOf(u).stream().filter(e -> e.asSet().equals(setOf(u, v)))
+				.findAny();
 	}
 
 	@Override
@@ -98,8 +95,8 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public Set<V> neighboursOf(V v) {
-		return edgesOf(v).stream().map(Link::asSet).flatMap(Set::stream)
-				.filter(u -> !u.equals(v)).collect(Collectors.toSet());
+		return setOf(edgesOf(v).stream().map(Link::asSet).flatMap(Set::stream)
+				.filter(u -> !u.equals(v)));
 	}
 
 	@Override
