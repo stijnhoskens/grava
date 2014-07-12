@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Before;
@@ -326,5 +327,24 @@ public abstract class GraphTestMethods {
 				assertFalse(optional.isPresent());
 		}));
 
+	}
+
+	@Test
+	public void benchmarkEdgesOf() {
+		IntStream.rangeClosed(1, 10000).forEach(i -> {
+			nodes.stream().forEach(n -> {
+				graph.edgesOf(n);
+			});
+		});
+	}
+
+	@Test
+	public void benchmarkExplicitSetAccess() {
+		IntStream.rangeClosed(1, 1000).forEach(i -> {
+			nodes.stream().forEach(n -> {
+				graph.getVertices();
+				graph.getEdges();
+			});
+		});
 	}
 }
