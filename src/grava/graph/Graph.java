@@ -22,7 +22,8 @@ import java.util.Set;
 public interface Graph<V, E extends Link<V>> {
 
 	/**
-	 * Returns the set of vertices.
+	 * Returns the set of vertices. This set is assumed to be unmodifiable, all
+	 * adjustments should be done using addVertex and removeVertex.
 	 * 
 	 * @return the set of vertices.
 	 */
@@ -48,7 +49,8 @@ public interface Graph<V, E extends Link<V>> {
 	boolean removeVertex(V v);
 
 	/**
-	 * Returns the set of edges.
+	 * Returns the set of edges. This set is assumed to be unmodifiable, all
+	 * adjustments should be done using addEdge and removeEdge.
 	 * 
 	 * @return the set of edges
 	 */
@@ -107,7 +109,8 @@ public interface Graph<V, E extends Link<V>> {
 	/**
 	 * Returns the set of all neighbours of the given vertices. In other words,
 	 * for every u in the result, areNeighbours(v,u) == true. And none of the
-	 * other vertices not contained in the set have an edge to v.
+	 * other vertices not contained in the set have an edge to v. This set is
+	 * assumed to be unmodifiable.
 	 * 
 	 * @param v
 	 *            the vertex whose neighbours are to be retrieved
@@ -119,7 +122,7 @@ public interface Graph<V, E extends Link<V>> {
 	 * Returns all edges containing the given vertex. In other words, for each e
 	 * in the result, e.contains(v), and none of the other edges do. In case of
 	 * a directed graph, the set contains all edges having the given vertex as
-	 * its tail.
+	 * its tail. This set is assumed to be unmodifiable.
 	 * 
 	 * @param v
 	 *            the vertex whose edges are to be retrieved

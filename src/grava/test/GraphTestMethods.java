@@ -14,6 +14,7 @@ import org.junit.Test;
 import grava.edge.Arc;
 import grava.edge.Edge;
 import grava.graph.Graph;
+import static grava.util.SetUtils.*;
 
 public abstract class GraphTestMethods {
 
@@ -198,105 +199,39 @@ public abstract class GraphTestMethods {
 	@Test
 	public void testNeighbourhood() {
 
-		Set<Node> neighboursOfA = graph.neighboursOf(a);
-		assertTrue(neighboursOfA.remove(b));
-		assertEquals(0, neighboursOfA.size());
-		Set<Node> neighboursOfB = graph.neighboursOf(b);
-		assertTrue(neighboursOfB.remove(a));
-		assertTrue(neighboursOfB.remove(c));
-		assertTrue(neighboursOfB.remove(e));
-		assertEquals(0, neighboursOfB.size());
-		Set<Node> neighboursOfC = graph.neighboursOf(c);
-		assertTrue(neighboursOfC.remove(b));
-		assertTrue(neighboursOfC.remove(d));
-		assertTrue(neighboursOfC.remove(f));
-		assertEquals(0, neighboursOfC.size());
-		Set<Node> neighboursOfD = graph.neighboursOf(d);
-		assertTrue(neighboursOfD.remove(c));
-		assertTrue(neighboursOfD.remove(f));
-		assertEquals(0, neighboursOfD.size());
-		Set<Node> neighboursOfE = graph.neighboursOf(e);
-		assertTrue(neighboursOfE.remove(b));
-		assertTrue(neighboursOfE.remove(f));
-		assertEquals(0, neighboursOfE.size());
-		Set<Node> neighboursOfF = graph.neighboursOf(f);
-		assertTrue(neighboursOfF.remove(c));
-		assertTrue(neighboursOfF.remove(d));
-		assertTrue(neighboursOfF.remove(e));
-		assertEquals(0, neighboursOfF.size());
+		assertEquals(setOf(b), graph.neighboursOf(a));
+		assertEquals(setOf(a, c, e), graph.neighboursOf(b));
+		assertEquals(setOf(b, d, f), graph.neighboursOf(c));
+		assertEquals(setOf(c, f), graph.neighboursOf(d));
+		assertEquals(setOf(b, f), graph.neighboursOf(e));
+		assertEquals(setOf(c, d, e), graph.neighboursOf(f));
 
 		// Directed
-		Set<Node> directedNeighboursOfA = digraph.neighboursOf(a);
-		assertTrue(directedNeighboursOfA.remove(b));
-		assertEquals(0, directedNeighboursOfA.size());
-		Set<Node> directedNeighboursOfB = digraph.neighboursOf(b);
-		assertTrue(directedNeighboursOfB.remove(c));
-		assertTrue(directedNeighboursOfB.remove(e));
-		assertEquals(0, directedNeighboursOfB.size());
-		Set<Node> directedNeighboursOfC = digraph.neighboursOf(c);
-		assertTrue(directedNeighboursOfC.remove(d));
-		assertTrue(directedNeighboursOfC.remove(f));
-		assertEquals(0, directedNeighboursOfC.size());
-		Set<Node> directedNeighboursOfD = digraph.neighboursOf(d);
-		assertTrue(directedNeighboursOfD.remove(f));
-		assertEquals(0, directedNeighboursOfD.size());
-		Set<Node> directedNeighboursOfE = digraph.neighboursOf(e);
-		assertTrue(directedNeighboursOfE.remove(f));
-		assertEquals(0, directedNeighboursOfE.size());
-		Set<Node> directedNeighboursOfF = digraph.neighboursOf(f);
-		assertEquals(0, directedNeighboursOfF.size());
+		assertEquals(setOf(b), digraph.neighboursOf(a));
+		assertEquals(setOf(c, e), digraph.neighboursOf(b));
+		assertEquals(setOf(d, f), digraph.neighboursOf(c));
+		assertEquals(setOf(f), digraph.neighboursOf(d));
+		assertEquals(setOf(f), digraph.neighboursOf(e));
+		assertEquals(setOf(), digraph.neighboursOf(f));
 	}
 
 	@Test
 	public void testEdgesOf() {
 
-		Set<Edge<Node>> edgesOfA = graph.edgesOf(a);
-		assertTrue(edgesOfA.remove(ab));
-		assertEquals(0, edgesOfA.size());
-		Set<Edge<Node>> edgesOfB = graph.edgesOf(b);
-		assertTrue(edgesOfB.remove(ab));
-		assertTrue(edgesOfB.remove(bc));
-		assertTrue(edgesOfB.remove(be));
-		assertEquals(0, edgesOfB.size());
-		Set<Edge<Node>> edgesOfC = graph.edgesOf(c);
-		assertTrue(edgesOfC.remove(bc));
-		assertTrue(edgesOfC.remove(cd));
-		assertTrue(edgesOfC.remove(cf));
-		assertEquals(0, edgesOfC.size());
-		Set<Edge<Node>> edgesOfD = graph.edgesOf(d);
-		assertTrue(edgesOfD.remove(cd));
-		assertTrue(edgesOfD.remove(df));
-		assertEquals(0, edgesOfD.size());
-		Set<Edge<Node>> edgesOfE = graph.edgesOf(e);
-		assertTrue(edgesOfE.remove(be));
-		assertTrue(edgesOfE.remove(ef));
-		assertEquals(0, edgesOfE.size());
-		Set<Edge<Node>> edgesOfF = graph.edgesOf(f);
-		assertTrue(edgesOfF.remove(cf));
-		assertTrue(edgesOfF.remove(df));
-		assertTrue(edgesOfF.remove(ef));
-		assertEquals(0, edgesOfF.size());
+		assertEquals(setOf(ab), graph.edgesOf(a));
+		assertEquals(setOf(ab, bc, be), graph.edgesOf(b));
+		assertEquals(setOf(bc, cd, cf), graph.edgesOf(c));
+		assertEquals(setOf(cd, df), graph.edgesOf(d));
+		assertEquals(setOf(be, ef), graph.edgesOf(e));
+		assertEquals(setOf(cf, df, ef), graph.edgesOf(f));
 
 		// Directed
-		Set<Arc<Node>> arcsOfA = digraph.edgesOf(a);
-		assertTrue(arcsOfA.remove(ab_arc));
-		assertEquals(0, arcsOfA.size());
-		Set<Arc<Node>> arcsOfB = digraph.edgesOf(b);
-		assertTrue(arcsOfB.remove(bc_arc));
-		assertTrue(arcsOfB.remove(be_arc));
-		assertEquals(0, arcsOfB.size());
-		Set<Arc<Node>> arcsOfC = digraph.edgesOf(c);
-		assertTrue(arcsOfC.remove(cd_arc));
-		assertTrue(arcsOfC.remove(cf_arc));
-		assertEquals(0, arcsOfC.size());
-		Set<Arc<Node>> arcsOfD = digraph.edgesOf(d);
-		assertTrue(arcsOfD.remove(df_arc));
-		assertEquals(0, arcsOfD.size());
-		Set<Arc<Node>> arcsOfE = digraph.edgesOf(e);
-		assertTrue(arcsOfE.remove(ef_arc));
-		assertEquals(0, arcsOfE.size());
-		Set<Arc<Node>> arcsOfF = digraph.edgesOf(f);
-		assertEquals(0, arcsOfF.size());
+		assertEquals(setOf(ab_arc), digraph.edgesOf(a));
+		assertEquals(setOf(bc_arc, be_arc), digraph.edgesOf(b));
+		assertEquals(setOf(cd_arc, cf_arc), digraph.edgesOf(c));
+		assertEquals(setOf(df_arc), digraph.edgesOf(d));
+		assertEquals(setOf(ef_arc), digraph.edgesOf(e));
+		assertEquals(setOf(), digraph.edgesOf(f));
 
 	}
 

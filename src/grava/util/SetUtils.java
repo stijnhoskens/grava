@@ -12,6 +12,10 @@ public class SetUtils {
 		return stream.collect(Collectors.toSet());
 	}
 
+	public static <T> Set<T> unmodifiableSetOf(Stream<T> stream) {
+		return Collections.unmodifiableSet(setOf(stream));
+	}
+
 	@SafeVarargs
 	public static <T> Set<T> setOf(T... values) {
 		return Stream.of(values).collect(Collectors.toSet());
@@ -19,8 +23,7 @@ public class SetUtils {
 
 	@SafeVarargs
 	public static <T> Set<T> unmodifiableSetOf(T... values) {
-		return Collections.unmodifiableSet(Stream.of(values).collect(
-				Collectors.toSet()));
+		return Collections.unmodifiableSet(setOf(values));
 	}
 
 	public static <T> Set<T> flatten(Collection<Set<T>> c) {

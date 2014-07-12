@@ -18,6 +18,8 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	private MultiMap<V, E> verticesToEdges = new MultiMap<>();
 
+	private MultiMap<V, E> verticesToConnectingEdges = new MultiMap<>();
+
 	/**
 	 * Constructs a mapped graph consisting of the given set of vertices and
 	 * edges.
@@ -62,12 +64,10 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 	}
 
 	@Override
-	// TODO This method can use some performance tuning!
 	public boolean removeVertex(V v) {
 		if (!getVertices().contains(v))
 			return false;
-		getEdges().stream().filter(e -> e.contains(v))
-				.forEach(e -> removeEdge(e));
+		verticesToConnectingEdges.get(v).forEach(this::removeEdge);
 		verticesToEdges.remove(v);
 		return true;
 	}
@@ -85,7 +85,7 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public Set<E> edgesOf(V v) {
-		return verticesToEdges.get(v);
+		return Collections.unmodifiableSet(verticesToEdges.get(v));
 	}
 
 	@Override
@@ -95,13 +95,14 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public Set<V> neighboursOf(V v) {
-		return setOf(edgesOf(v).stream().map(Link::asSet).flatMap(Set::stream)
-				.filter(u -> !u.equals(v)));
+		return unmodifiableSetOf(edgesOf(v).stream().map(Link::asSet)
+				.flatMap(Set::stream).filter(u -> !u.equals(v)));
 	}
 
 	@Override
 	public void addEdge(E e) {
 		e.tails().forEach(v -> verticesToEdges.addValue(v, e));
+		e.asSet().forEach(v -> verticesToConnectingEdges.addValue(v, e));
 	}
 
 	@Override

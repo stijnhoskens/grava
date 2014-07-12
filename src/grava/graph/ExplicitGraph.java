@@ -102,13 +102,14 @@ public class ExplicitGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public Set<V> neighboursOf(V v) {
-		return setOf(edgesOf(v).stream().map(Link::asSet).flatMap(Set::stream)
-				.filter(u -> !u.equals(v)));
+		return unmodifiableSetOf(edgesOf(v).stream().map(Link::asSet)
+				.flatMap(Set::stream).filter(u -> !u.equals(v)));
 	}
 
 	@Override
 	public Set<E> edgesOf(V v) {
-		return setOf(edges.stream().filter(e -> e.tails().contains(v)));
+		return unmodifiableSetOf(edges.stream().filter(
+				e -> e.tails().contains(v)));
 	}
 
 	@Override
