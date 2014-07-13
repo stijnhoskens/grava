@@ -2,6 +2,7 @@ package grava.util;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,7 +28,15 @@ public class SetUtils {
 	}
 
 	public static <T> Set<T> flatten(Collection<Set<T>> c) {
-		return c.stream().flatMap(Set::stream).collect(Collectors.toSet());
+		return flatten(c.stream());
+	}
+
+	public static <T> Set<T> flatten(Stream<Set<T>> stream) {
+		return stream.flatMap(Set::stream).collect(Collectors.toSet());
+	}
+
+	public static <T> Set<T> copyOf(Collection<T> c) {
+		return new HashSet<>(c);
 	}
 
 }

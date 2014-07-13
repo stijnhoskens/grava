@@ -34,4 +34,8 @@ public class WeightedArc<V> extends Arc<V> implements WeightedLink<V> {
 	public double getWeight() {
 		return weight;
 	}
+
+	public static <V> WeightedArc<V> unitWeightedArc(V u, V v) {
+		return new WeightedArc<V>(u, v, 1d);
+	}
 }

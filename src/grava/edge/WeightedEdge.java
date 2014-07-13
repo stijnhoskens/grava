@@ -34,4 +34,8 @@ public class WeightedEdge<V> extends Edge<V> implements WeightedLink<V> {
 		return weight;
 	}
 
+	public static <V> WeightedEdge<V> unitWeightedEdge(V u, V v) {
+		return new WeightedEdge<V>(u, v, 1d);
+	}
+
 }

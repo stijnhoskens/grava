@@ -11,7 +11,7 @@ import java.util.Set;
  * @param <V>
  *            The type of vertices which it connects.
  */
-public class Arc<V> extends Edge<V> implements Link<V> {
+public class Arc<V> extends AbstractLink<V> {
 
 	private V tail;
 	private V head;
@@ -44,37 +44,6 @@ public class Arc<V> extends Edge<V> implements Link<V> {
 	@Override
 	public Set<V> tails() {
 		return Collections.unmodifiableSet(Collections.singleton(tail));
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((head == null) ? 0 : head.hashCode());
-		result = prime * result + ((tail == null) ? 0 : tail.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Arc<?> other = (Arc<?>) obj;
-		if (head == null) {
-			if (other.head != null)
-				return false;
-		} else if (!head.equals(other.head))
-			return false;
-		if (tail == null) {
-			if (other.tail != null)
-				return false;
-		} else if (!tail.equals(other.tail))
-			return false;
-		return true;
 	}
 
 }

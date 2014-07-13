@@ -13,7 +13,7 @@ import java.util.Set;
 public interface Link<V> {
 
 	/**
-	 * Returns the linked vertices as a set.
+	 * Returns the linked vertices as a set. This set is unmodifiable.
 	 * 
 	 * @return the linked vertices as a set
 	 */

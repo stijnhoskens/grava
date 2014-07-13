@@ -1,9 +1,9 @@
 package grava.graph;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import static grava.util.SetUtils.flatten;
 import grava.edge.Link;
+
+import java.util.Set;
 
 public class Graphs {
 
@@ -27,8 +27,8 @@ public class Graphs {
 
 	public static <V, E extends Link<V>> Graph<V, E> subgraphInducedByVertices(
 			Set<V> vertices, Graph<V, E> graph) {
-		Set<E> edgesOfVertices = vertices.stream().map(v -> graph.edgesOf(v))
-				.collect(HashSet::new, Set::addAll, Set::addAll);
+		Set<E> edgesOfVertices = flatten(vertices.stream().map(
+				v -> graph.edgesOf(v)));
 		return new MappedGraph<V, E>(edgesOfVertices);
 	}
 

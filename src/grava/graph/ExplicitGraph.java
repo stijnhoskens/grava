@@ -13,7 +13,7 @@ import static grava.util.SetUtils.*;
  * holds a set of vertices and a set of edges. This implementation is preferred
  * if regular access to the set of vertices and the set of edges is required.
  */
-public class ExplicitGraph<V, E extends Link<V>> implements Graph<V, E> {
+public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 
 	private final Set<V> vertices = new HashSet<>();
 	private final Set<E> edges = new HashSet<>();
@@ -65,7 +65,7 @@ public class ExplicitGraph<V, E extends Link<V>> implements Graph<V, E> {
 	public boolean removeVertex(V v) {
 		if (!getVertices().contains(v))
 			return false;
-		new HashSet<>(getEdges()).stream().filter(e -> e.contains(v))
+		copyOf(getEdges()).stream().filter(e -> e.contains(v))
 				.forEach(e -> removeEdge(e));
 		vertices.remove(v);
 		return true;
@@ -88,25 +88,6 @@ public class ExplicitGraph<V, E extends Link<V>> implements Graph<V, E> {
 	}
 
 	@Override
-	public boolean removeEdgeBetween(V u, V v) {
-		Optional<E> optional = edgeBetween(u, v);
-		optional.ifPresent(e -> removeEdge(e));
-		return optional.isPresent();
-	}
-
-	@Override
-	public boolean areNeighbours(V u, V v) {
-		return edges.stream().anyMatch(
-				e -> e.tails().contains(u) && e.asSet().equals(setOf(u, v)));
-	}
-
-	@Override
-	public Set<V> neighboursOf(V v) {
-		return unmodifiableSetOf(edgesOf(v).stream().map(Link::asSet)
-				.flatMap(Set::stream).filter(u -> !u.equals(v)));
-	}
-
-	@Override
 	public Set<E> edgesOf(V v) {
 		return unmodifiableSetOf(edges.stream().filter(
 				e -> e.tails().contains(v)));
@@ -114,8 +95,7 @@ public class ExplicitGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	@Override
 	public Optional<E> edgeBetween(V u, V v) {
-		return edgesOf(u).stream().filter(e -> e.asSet().equals(setOf(u, v)))
-				.findAny();
+		return edges.stream().filter(e -> e.tails().contains(u))
+				.filter(e -> e.asSet().equals(setOf(u, v))).findAny();
 	}
-
 }

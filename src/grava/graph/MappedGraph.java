@@ -14,7 +14,7 @@ import java.util.Set;
  * access to neighbours or edges of vertices is required. This is the case for
  * search algorithms etc.
  */
-public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
+public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 
 	private MultiMap<V, E> verticesToEdges = new MultiMap<>();
 
@@ -89,11 +89,6 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 	}
 
 	@Override
-	public boolean areNeighbours(V u, V v) {
-		return edgeBetween(u, v).isPresent();
-	}
-
-	@Override
 	public Set<V> neighboursOf(V v) {
 		return unmodifiableSetOf(edgesOf(v).stream().map(Link::asSet)
 				.flatMap(Set::stream).filter(u -> !u.equals(v)));
@@ -109,12 +104,5 @@ public class MappedGraph<V, E extends Link<V>> implements Graph<V, E> {
 	public boolean removeEdge(E e) {
 		return e.tails().stream()
 				.allMatch(v -> verticesToEdges.removeValue(v, e));
-	}
-
-	@Override
-	public boolean removeEdgeBetween(V u, V v) {
-		Optional<E> optional = edgeBetween(u, v);
-		optional.ifPresent(e -> removeEdge(e));
-		return optional.isPresent();
 	}
 }
