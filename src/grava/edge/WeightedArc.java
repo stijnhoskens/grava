@@ -30,6 +30,21 @@ public class WeightedArc<V> extends Arc<V> implements WeightedLink<V> {
 		this.weight = weight;
 	}
 
+	/**
+	 * Constructs a weighted arc accepting the first argument as its tail and
+	 * the second as its head. The resulting weight is 1.
+	 * 
+	 * @param tail
+	 *            the tail
+	 * @param head
+	 *            the head
+	 * @throws LoopException
+	 *             if the created arc forms a loop
+	 */
+	public WeightedArc(V tail, V head) throws LoopException {
+		this(tail, head, 1d);
+	}
+
 	@Override
 	public double getWeight() {
 		return weight;

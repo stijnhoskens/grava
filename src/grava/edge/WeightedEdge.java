@@ -29,13 +29,24 @@ public class WeightedEdge<V> extends Edge<V> implements WeightedLink<V> {
 		this.weight = weight;
 	}
 
+	/**
+	 * Constructs an edge between the given vertices with unit weight, meaning
+	 * the weight is 1.
+	 * 
+	 * @param u
+	 *            the first vertex
+	 * @param v
+	 *            the second vertex
+	 * @throws LoopException
+	 *             if the created edge forms a loop
+	 */
+	public WeightedEdge(V u, V v) throws LoopException {
+		this(u, v, 1d);
+	}
+
 	@Override
 	public double getWeight() {
 		return weight;
-	}
-
-	public static <V> WeightedEdge<V> unitWeightedEdge(V u, V v) {
-		return new WeightedEdge<V>(u, v, 1d);
 	}
 
 }
