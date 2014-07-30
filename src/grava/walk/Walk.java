@@ -61,12 +61,18 @@ public class Walk<V, E extends Link<V>> {
 	}
 
 	public boolean isCycle() {
-		List<V> v = v();
-		v.remove(endVertex());
-		List<E> e = e();
-		e.remove(e.size() - 1);
-		Walk<V, E> walk = new Walk<>(v, e);
-		return isClosed() && walk.isPath();
+		return isClosed() && subWalk(0, vertices.size() - 2).isPath();
+	}
+
+	/**
+	 * Returns a subwalk containing the walk starting in the vertex specified by
+	 * from, and ending in the vertex specified by to. Both these vertices are
+	 * inclusive.
+	 */
+	public Walk<V, E> subWalk(int from, int to) {
+		List<V> v = v().subList(from, to + 1);
+		List<E> e = e().subList(from, to);
+		return new Walk<V, E>(v, e);
 	}
 
 	private Walk(List<V> vertices, List<E> edges) {
