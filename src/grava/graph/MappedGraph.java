@@ -30,8 +30,7 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 *            the initial set of edges
 	 */
 	public MappedGraph(Set<V> vertices, Set<E> edges) {
-		edges.forEach(this::addEdge);
-		vertices.forEach(this::addVertex);
+		super(vertices, edges);
 	}
 
 	/**
@@ -50,7 +49,18 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 * Creates an empty mapped graph containing no vertices nor edges.
 	 */
 	public MappedGraph() {
+		super(Collections.emptySet(), Collections.emptySet());
+	}
 
+	/**
+	 * Constructs a mapped graph consisting of the set of vertices and edges
+	 * contained by the given graph.
+	 * 
+	 * @param graph
+	 *            the graph containing the set of vertices and edges
+	 */
+	public MappedGraph(Graph<V, E> graph) {
+		super(graph);
 	}
 
 	@Override

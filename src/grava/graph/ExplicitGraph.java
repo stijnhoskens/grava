@@ -28,8 +28,7 @@ public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 *            the initial set of edges
 	 */
 	public ExplicitGraph(Set<V> vertices, Set<E> edges) {
-		edges.forEach(this::addEdge);
-		vertices.forEach(this::addVertex);
+		super(vertices, edges);
 	}
 
 	/**
@@ -48,7 +47,18 @@ public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 * Creates an empty explicit graph containing no vertices nor edges.
 	 */
 	public ExplicitGraph() {
+		super(Collections.emptySet(), Collections.emptySet());
+	}
 
+	/**
+	 * Constructs an explicit graph consisting of the set of vertices and edges
+	 * contained by the given graph.
+	 * 
+	 * @param graph
+	 *            the graph containing the set of vertices and edges
+	 */
+	public ExplicitGraph(Graph<V, E> graph) {
+		super(graph);
 	}
 
 	@Override
