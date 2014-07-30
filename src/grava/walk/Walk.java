@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+// TODO checks op consistentie?
 public class Walk<V, E extends Link<V>> {
 
 	private final List<V> vertices;
@@ -38,9 +39,21 @@ public class Walk<V, E extends Link<V>> {
 		vertices.add(v);
 	}
 
+	public void extend(E e) {
+		V v = e.asSet().stream().filter(u -> !u.equals(endVertex())).findAny()
+				.get();
+		extend(e, v);
+	}
+
 	public Walk<V, E> getExtended(E e, V v) {
 		Walk<V, E> walk = new Walk<>(v(), e());
 		walk.extend(e, v);
+		return walk;
+	}
+
+	public Walk<V, E> getExtended(E e) {
+		Walk<V, E> walk = new Walk<>(v(), e());
+		walk.extend(e);
 		return walk;
 	}
 

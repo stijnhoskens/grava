@@ -94,6 +94,18 @@ public interface Graph<V, E extends Link<V>> extends Searchable<V, E> {
 	boolean removeEdgeBetween(V u, V v);
 
 	/**
+	 * Returns the set of all neighbours of the given vertices. In other words,
+	 * for every u in the result, areNeighbours(v,u) == true. And none of the
+	 * other vertices not contained in the set have an edge to v. This set is
+	 * assumed to be unmodifiable.
+	 * 
+	 * @param v
+	 *            the vertex whose neighbours are to be retrieved
+	 * @return the set of all neighbours of the given vertex
+	 */
+	Set<V> neighboursOf(V v);
+
+	/**
 	 * Tests whether there exist an edge between the given vertices. In case of
 	 * a directed graph, the first argument has to be the tail, the second the
 	 * head. So there has to be a directed edge leading from the first vertex to
