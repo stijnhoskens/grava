@@ -1,13 +1,14 @@
 package grava.walk;
 
 import grava.edge.Link;
+import grava.exceptions.IllegalWalkException;
+import static grava.util.SetUtils.setOf;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-// TODO checks op consistentie?
 public class Walk<V, E extends Link<V>> {
 
 	private final List<V> vertices;
@@ -34,24 +35,32 @@ public class Walk<V, E extends Link<V>> {
 		return vertices.get(vertices.size() - 1);
 	}
 
-	public void extend(E e, V v) {
+	public void extend(E e, V v) throws IllegalWalkException {
+		if (!isProperExtension(e, v))
+			throw new IllegalWalkException();
 		edges.add(e);
 		vertices.add(v);
 	}
 
 	public void extend(E e) {
+		if (!isProperExtension(e))
+			throw new IllegalWalkException();
 		V v = e.asSet().stream().filter(u -> !u.equals(endVertex())).findAny()
 				.get();
 		extend(e, v);
 	}
 
 	public Walk<V, E> getExtended(E e, V v) {
+		if (!isProperExtension(e, v))
+			throw new IllegalWalkException();
 		Walk<V, E> walk = new Walk<>(v(), e());
 		walk.extend(e, v);
 		return walk;
 	}
 
 	public Walk<V, E> getExtended(E e) {
+		if (!isProperExtension(e))
+			throw new IllegalWalkException();
 		Walk<V, E> walk = new Walk<>(v(), e());
 		walk.extend(e);
 		return walk;
@@ -99,5 +108,14 @@ public class Walk<V, E extends Link<V>> {
 
 	private List<E> e() {
 		return new ArrayList<>(edges);
+	}
+
+	private boolean isProperExtension(E e) {
+		return e.tails().contains(endVertex());
+	}
+
+	private boolean isProperExtension(E e, V v) {
+		return e.tails().contains(endVertex())
+				&& setOf(v, endVertex()).equals(e.asSet());
 	}
 }

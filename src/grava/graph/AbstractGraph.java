@@ -6,7 +6,7 @@ import grava.edge.Link;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
+abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 
 	/**
 	 * Constructs a graph consisting of the set of vertices and edges contained
@@ -32,6 +32,10 @@ public abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E>
 		vertices.forEach(this::addVertex);
 	}
 
+	public AbstractGraph() {
+
+	}
+
 	@Override
 	public boolean removeEdgeBetween(V u, V v) {
 		Optional<E> optional = edgeBetween(u, v);
@@ -43,7 +47,7 @@ public abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E>
 	public boolean areNeighbours(V u, V v) {
 		return edgeBetween(u, v).isPresent();
 	}
-	
+
 	@Override
 	public Set<V> neighboursOf(V v) {
 		return unmodifiableSetOf(edgesOf(v).stream().map(Link::asSet)
