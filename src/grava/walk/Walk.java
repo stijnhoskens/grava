@@ -37,14 +37,14 @@ public class Walk<V, E extends Link<V>> {
 
 	public void extend(E e, V v) throws IllegalWalkException {
 		if (!isProperExtension(e, v))
-			throw new IllegalWalkException();
+			throw new IllegalWalkException(this, e, v);
 		edges.add(e);
 		vertices.add(v);
 	}
 
 	public void extend(E e) {
 		if (!isProperExtension(e))
-			throw new IllegalWalkException();
+			throw new IllegalWalkException(this, e);
 		V v = e.asSet().stream().filter(u -> !u.equals(endVertex())).findAny()
 				.get();
 		extend(e, v);
@@ -52,7 +52,7 @@ public class Walk<V, E extends Link<V>> {
 
 	public Walk<V, E> getExtended(E e, V v) {
 		if (!isProperExtension(e, v))
-			throw new IllegalWalkException();
+			throw new IllegalWalkException(this, e, v);
 		Walk<V, E> walk = new Walk<>(v(), e());
 		walk.extend(e, v);
 		return walk;
@@ -60,7 +60,7 @@ public class Walk<V, E extends Link<V>> {
 
 	public Walk<V, E> getExtended(E e) {
 		if (!isProperExtension(e))
-			throw new IllegalWalkException();
+			throw new IllegalWalkException(this, e);
 		Walk<V, E> walk = new Walk<>(v(), e());
 		walk.extend(e);
 		return walk;
