@@ -42,7 +42,7 @@ public class Walk<V, E extends Link<V>> {
 		vertices.add(v);
 	}
 
-	public void extend(E e) {
+	public void extend(E e) throws IllegalWalkException {
 		if (!isProperExtension(e))
 			throw new IllegalWalkException(this, e);
 		V v = e.asSet().stream().filter(u -> !u.equals(endVertex())).findAny()
@@ -50,18 +50,18 @@ public class Walk<V, E extends Link<V>> {
 		extend(e, v);
 	}
 
-	public Walk<V, E> getExtended(E e, V v) {
+	public Walk<V, E> getExtended(E e, V v) throws IllegalWalkException {
 		if (!isProperExtension(e, v))
 			throw new IllegalWalkException(this, e, v);
-		Walk<V, E> walk = new Walk<>(v(), e());
+		Walk<V, E> walk = new Walk<>(vCopy(), eCopy());
 		walk.extend(e, v);
 		return walk;
 	}
 
-	public Walk<V, E> getExtended(E e) {
+	public Walk<V, E> getExtended(E e) throws IllegalWalkException {
 		if (!isProperExtension(e))
 			throw new IllegalWalkException(this, e);
-		Walk<V, E> walk = new Walk<>(v(), e());
+		Walk<V, E> walk = new Walk<>(vCopy(), eCopy());
 		walk.extend(e);
 		return walk;
 	}
@@ -90,10 +90,14 @@ public class Walk<V, E extends Link<V>> {
 	 * Returns a subwalk containing the walk starting in the vertex specified by
 	 * from, and ending in the vertex specified by to. Both these vertices are
 	 * inclusive.
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             when the given indices provide an illegal range.
 	 */
-	public Walk<V, E> subWalk(int from, int to) {
-		List<V> v = v().subList(from, to + 1);
-		List<E> e = e().subList(from, to);
+	public Walk<V, E> subWalk(int from, int to)
+			throws IndexOutOfBoundsException {
+		List<V> v = vCopy().subList(from, to + 1);
+		List<E> e = eCopy().subList(from, to);
 		return new Walk<V, E>(v, e);
 	}
 
@@ -102,11 +106,11 @@ public class Walk<V, E extends Link<V>> {
 		this.edges = edges;
 	}
 
-	private List<V> v() {
+	private List<V> vCopy() {
 		return new ArrayList<>(vertices);
 	}
 
-	private List<E> e() {
+	private List<E> eCopy() {
 		return new ArrayList<>(edges);
 	}
 
@@ -115,7 +119,6 @@ public class Walk<V, E extends Link<V>> {
 	}
 
 	private boolean isProperExtension(E e, V v) {
-		return e.tails().contains(endVertex())
-				&& setOf(v, endVertex()).equals(e.asSet());
+		return isProperExtension(e) && setOf(v, endVertex()).equals(e.asSet());
 	}
 }

@@ -1,72 +1,46 @@
 package grava.graph;
 
-import grava.edge.WeightedLink;
+import grava.edge.WeightedArc;
+import grava.exceptions.IllegalDimensionException;
+import grava.exceptions.LoopException;
+import grava.search.Searchable;
 import grava.util.DistanceMatrix;
+import static grava.util.SetUtils.setOf;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.IntStream;
 
-public class MatrixGraph<V, E extends WeightedLink<V>> extends AbstractGraph<V, E> {
+public class MatrixGraph<V> implements Searchable<V, WeightedArc<V>> {
 
-	public MatrixGraph(List<V> vertices, DistanceMatrix matrix) {
-		
-	}
-	
-	public MatrixGraph(Set<V> vertices, Set<E> edges) {
-		super(vertices, edges);
-	}
+	private final List<V> vertices;
+	private final DistanceMatrix matrix;
 
-	public MatrixGraph(Graph<V, E> graph) {
-		super(graph);
-	}
-
-	@Override
-	public Set<V> getVertices() {
-		// TODO Auto-generated method stub
-		return null;
+	public MatrixGraph(List<V> vertices, DistanceMatrix matrix)
+			throws IllegalDimensionException {
+		if (vertices.size() != matrix.size())
+			throw new IllegalDimensionException(vertices.size(), matrix.size());
+		for (int i = 0; i < matrix.size(); i++)
+			if (matrix.value(i, i) != DistanceMatrix.UNREACHABLE)
+				throw new LoopException(vertices.get(i));
+		this.vertices = vertices;
+		this.matrix = matrix;
 	}
 
-	@Override
-	public void addVertex(V v) {
-		// TODO Auto-generated method stub
-
+	public MatrixGraph(List<V> vertices, double[][] matrix)
+			throws IllegalDimensionException {
+		this(vertices, new DistanceMatrix(matrix));
 	}
 
 	@Override
-	public boolean removeVertex(V v) {
-		// TODO Auto-generated method stub
-		return false;
+	public Set<WeightedArc<V>> edgesOf(V v) {
+		int i = vertices.indexOf(v);
+		if (i == -1)
+			return Collections.emptySet();
+		double[] row = matrix.getRow(i);
+		return setOf(IntStream.range(0, row.length)
+				.filter(j -> row[j] != DistanceMatrix.UNREACHABLE)
+				.mapToObj(j -> new WeightedArc<V>(v, vertices.get(j), row[j])));
 	}
-
-	@Override
-	public Set<E> getEdges() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void addEdge(E e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean removeEdge(E e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Optional<E> edgeBetween(V u, V v) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<E> edgesOf(V v) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
