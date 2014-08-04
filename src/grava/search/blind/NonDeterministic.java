@@ -7,18 +7,20 @@ import grava.walk.Walk;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class NonDeterministic<V, E extends Link<V>> extends AbstractBlind<V, E> {
 
 	@Override
-	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start, V end) {
+	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
+			Predicate<V> termination) {
 		Set<Walk<V, E>> walks = new HashSet<Walk<V, E>>();
 		walks.add(new Walk<V, E>(start));
 		while (!walks.isEmpty()) {
 			Walk<V, E> walk = walks.stream().findAny().get();
 			Set<Walk<V, E>> newWalks = getNewWalks(graph, walk);
 			for (Walk<V, E> w : newWalks) {
-				if (w.endVertex().equals(end))
+				if (termination.test(w.endVertex()))
 					return Optional.of(w);
 				if (w.isPath())
 					walks.add(w);

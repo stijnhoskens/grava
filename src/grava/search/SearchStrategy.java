@@ -1,9 +1,9 @@
 package grava.search;
 
-import java.util.Optional;
-
 import grava.edge.Link;
 import grava.walk.Walk;
+
+import java.util.Optional;
 
 public interface SearchStrategy<V, E extends Link<V>> {
 

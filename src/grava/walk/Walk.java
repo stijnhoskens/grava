@@ -23,6 +23,10 @@ public class Walk<V, E extends Link<V>> {
 		return Collections.unmodifiableList(vertices);
 	}
 
+	public int length() {
+		return vertices.size();
+	}
+
 	public List<E> getEdges() {
 		return Collections.unmodifiableList(edges);
 	}
