@@ -1,20 +1,21 @@
 package grava.test;
 
-import static org.junit.Assert.*;
+import static grava.util.SetUtils.setOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+import grava.edge.Arc;
+import grava.edge.Edge;
+import grava.graph.Graph;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import grava.edge.Arc;
-import grava.edge.Edge;
-import grava.graph.Graph;
-import static grava.util.SetUtils.*;
 
 public abstract class GraphTestMethods {
 
@@ -24,8 +25,7 @@ public abstract class GraphTestMethods {
 	protected final Node a = new Node("a"), b = new Node("b"),
 			c = new Node("c"), d = new Node("d"), e = new Node("e"),
 			f = new Node("f");
-	protected final Set<Node> nodes = Stream.of(a, b, c, d, e, f).collect(
-			Collectors.toSet());
+	protected final Set<Node> nodes = setOf(Stream.of(a, b, c, d, e, f));
 	protected final Edge<Node> ab = new Edge<>(a, b), bc = new Edge<>(b, c),
 			be = new Edge<>(b, e), ef = new Edge<>(e, f),
 			cf = new Edge<>(c, f), cd = new Edge<>(c, d),
@@ -37,10 +37,10 @@ public abstract class GraphTestMethods {
 			bc_arc = new Arc<>(b, c), be_arc = new Arc<>(b, e),
 			ef_arc = new Arc<>(e, f), cf_arc = new Arc<>(c, f),
 			cd_arc = new Arc<>(c, d), df_arc = new Arc<>(d, f);
-	protected final Set<Edge<Node>> edges = Stream.of(ab, bc, be, ef, cf, cd,
-			df).collect(Collectors.toSet());
-	protected final Set<Arc<Node>> arcs = Stream.of(ab_arc, bc_arc, be_arc,
-			ef_arc, cf_arc, cd_arc, df_arc).collect(Collectors.toSet());;
+	protected final Set<Edge<Node>> edges = setOf(Stream.of(ab, bc, be, ef, cf,
+			cd, df));
+	protected final Set<Arc<Node>> arcs = setOf(Stream.of(ab_arc, bc_arc,
+			be_arc, ef_arc, cf_arc, cd_arc, df_arc));
 
 	/**
 	 * Use this constructor to provide implementations of the graph interfaces
