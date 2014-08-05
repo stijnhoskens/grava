@@ -1,9 +1,7 @@
 package grava.search.heuristic;
 
-public interface Heuristic<V> {
+import java.util.function.ToDoubleFunction;
 
-	double h(V vertex, V end);
-
-	double h(V vertex);
+public interface Heuristic<V> extends ToDoubleFunction<V> {
 
 }

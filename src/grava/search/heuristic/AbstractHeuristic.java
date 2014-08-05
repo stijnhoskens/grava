@@ -8,8 +8,10 @@ public abstract class AbstractHeuristic<V> implements Heuristic<V> {
 		this.end = end;
 	}
 
-	public double h(V vertex) {
+	public double applyAsDouble(V vertex) {
 		return h(vertex, end);
 	}
+
+	public abstract double h(V vertex, V end);
 
 }
