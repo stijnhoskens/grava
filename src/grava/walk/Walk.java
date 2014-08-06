@@ -11,8 +11,8 @@ import java.util.List;
 
 public class Walk<V, E extends Link<V>> {
 
-	private final List<V> vertices;
-	private final List<E> edges;
+	protected final List<V> vertices;
+	protected final List<E> edges;
 
 	public Walk(V start) {
 		vertices = Collections.singletonList(start);
