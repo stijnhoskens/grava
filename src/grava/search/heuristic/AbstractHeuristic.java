@@ -1,17 +1,30 @@
 package grava.search.heuristic;
 
-public abstract class AbstractHeuristic<V> implements Heuristic<V> {
+import java.util.Comparator;
 
-	private V end;
+import grava.edge.Link;
+import grava.search.AbstractSearch;
+import grava.walk.Walk;
 
-	public AbstractHeuristic(V end) {
-		this.end = end;
+public abstract class AbstractHeuristic<V, E extends Link<V>> extends
+		AbstractSearch<V, E> {
+
+	protected final Heuristic<V> h;
+
+	public AbstractHeuristic(Heuristic<V> h) {
+		this.h = h;
 	}
 
-	public double applyAsDouble(V vertex) {
-		return h(vertex, end);
+	protected Comparator<Walk<V, E>> heuristicComparator() {
+		return Comparator.comparing(Walk::endVertex,
+				heuristicVertexComparator());
 	}
 
-	public abstract double h(V vertex, V end);
+	protected Comparator<V> heuristicVertexComparator() {
+		return Comparator.comparingDouble(h);
+	}
 
+	protected Comparator<Walk<V, E>> reversedHeuristicComparator() {
+		return heuristicComparator().reversed();
+	}
 }

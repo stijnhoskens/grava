@@ -39,7 +39,7 @@ public class IterativeDeepening<V, E extends Link<V>> extends
 				for (Walk<V, E> w : newWalks) {
 					if (termination.test(w.endVertex()))
 						return Optional.of(w);
-					if (w.isPath())
+					if (isStillPath(walk, w))
 						q.addFirst(w);
 				}
 			}

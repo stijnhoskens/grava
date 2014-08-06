@@ -39,6 +39,10 @@ public class Walk<V, E extends Link<V>> {
 		return vertices.get(vertices.size() - 1);
 	}
 
+	public boolean contains(V v) {
+		return vertices.contains(v);
+	}
+
 	public void extend(E e, V v) throws IllegalWalkException {
 		if (!isProperExtension(e, v))
 			throw new IllegalWalkException(this, e, v);

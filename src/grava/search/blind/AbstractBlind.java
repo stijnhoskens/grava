@@ -2,8 +2,8 @@ package grava.search.blind;
 
 import grava.edge.Link;
 import grava.search.AbstractSearch;
+import grava.search.SearchStrategy;
 import grava.search.Searchable;
-import grava.search.VagueSearchStrategy;
 import grava.walk.Walk;
 
 import java.util.ArrayDeque;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public abstract class AbstractBlind<V, E extends Link<V>> extends
-		AbstractSearch<V, E> implements VagueSearchStrategy<V, E> {
+		AbstractSearch<V, E> implements SearchStrategy<V, E> {
 
 	protected final Deque<Walk<V, E>> q = new ArrayDeque<>();
 
@@ -27,16 +27,10 @@ public abstract class AbstractBlind<V, E extends Link<V>> extends
 			for (Walk<V, E> w : newWalks) {
 				if (termination.test(w.endVertex()))
 					return Optional.of(w);
-				if (w.isPath())
-					addToQ.accept(w);
+				if (isStillPath(walk, w))
+					q.addFirst(w);
 			}
 		}
 		return Optional.empty();
 	}
-
-	@Override
-	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start, V end) {
-		return findPath(graph, start, v -> v.equals(end));
-	}
-
 }
