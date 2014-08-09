@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.function.Predicate;
 
-public class AStar<V, E extends WeightedLink<V>> extends AbstractOptimal<V, E> {
+public class AStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
 
 	public AStar(Heuristic<V> h) {
 		super(h);
@@ -19,7 +19,7 @@ public class AStar<V, E extends WeightedLink<V>> extends AbstractOptimal<V, E> {
 	@Override
 	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
 			Predicate<V> termination) {
-		Queue<Walk<V, E>> q = new PriorityQueue<>(costComparator());
+		Queue<Walk<V, E>> q = new PriorityQueue<>(fComparator());
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {
 			Walk<V, E> walk = q.poll();
@@ -30,17 +30,6 @@ public class AStar<V, E extends WeightedLink<V>> extends AbstractOptimal<V, E> {
 			branchAndBound(q);
 		}
 		return Optional.empty();
-	}
-
-	private void branchAndBound(Queue<Walk<V, E>> q) {
-		q.forEach(w1 -> {
-			final double cost = totalCostOf(w1);
-			final V endVertex = w1.endVertex();
-			if (q.stream().anyMatch(
-					w2 -> w2.contains(endVertex) && cost >= totalCostOf(w2)
-							&& !w1.equals(w2)))
-				q.remove(w1);
-		});
 	}
 
 }
