@@ -1,8 +1,8 @@
 package grava.test.ninepuzzle;
 
-import java.util.Arrays;
-
 import grava.exceptions.IllegalDimensionException;
+
+import java.util.Arrays;
 
 public class NinePuzzleConfiguration {
 
@@ -21,28 +21,40 @@ public class NinePuzzleConfiguration {
 				{ 3, 4, 5 }, { 6, 7, 8 } });
 	}
 
-	public int getEntry(int row, int col) {
-		return entries[row][col];
+	public int getEntry(MatrixPosition pos) {
+		return entries[pos.getRow()][pos.getColumn()];
 	}
 
-	public int getEntry(Position pos) {
-		return getEntry(pos.getY(), pos.getY());
+	private void setEntry(MatrixPosition pos, int val) {
+		entries[pos.getRow()][pos.getColumn()] = val;
 	}
 
 	public NinePuzzleConfiguration moveEmptySquare(Direction d) {
-		Position posOf0 = null;
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-				if (getEntry(i, j) == 0)
-					posOf0 = new Position(j, i);
-		Position neighbour = d.getNeighbour(posOf0);
+		MatrixPosition posOf0 = new MatrixPosition(0, 0);
+		while (getEntry(posOf0) != 0)
+			posOf0 = posOf0.next();
+		MatrixPosition neighbour = d.getNeighbour(posOf0);
 		if (neighbour == null)
 			return null;
-		int otherEntry = getEntry(neighbour);
-		int[][] otherEntries = Arrays.copyOf(entries, 3);
-		otherEntries[neighbour.getY()][neighbour.getX()] = 0;
-		otherEntries[posOf0.getY()][posOf0.getX()] = otherEntry;
-		return new NinePuzzleConfiguration(otherEntries);
+		return withTheseSwitched(posOf0, neighbour);
+	}
+
+	private NinePuzzleConfiguration withTheseSwitched(MatrixPosition p1,
+			MatrixPosition p2) {
+		int p1Entry = getEntry(p1);
+		int p2Entry = getEntry(p2);
+		NinePuzzleConfiguration puzzle = new NinePuzzleConfiguration(
+				copyOf(entries));
+		puzzle.setEntry(p1, p2Entry);
+		puzzle.setEntry(p2, p1Entry);
+		return puzzle;
+	}
+
+	private int[][] copyOf(int[][] array) {
+		int[][] newArray = new int[3][3];
+		for (int i = 0; i < newArray.length; i++)
+			newArray[i] = Arrays.copyOf(array[i], 3);
+		return newArray;
 	}
 
 	@Override
@@ -66,5 +78,4 @@ public class NinePuzzleConfiguration {
 			return false;
 		return true;
 	}
-
 }

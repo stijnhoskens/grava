@@ -1,41 +1,41 @@
 package grava.test.ninepuzzle;
 
-public enum Direction {
+enum Direction {
 	UP {
 		@Override
-		protected Position getNeighbour(Position p) {
-			if (p.getY() == 0)
+		public MatrixPosition getNeighbour(MatrixPosition p) {
+			if (p.getRow() == 0)
 				return null;
-			return new Position(p.getX(), p.getY() - 1);
+			return new MatrixPosition(p.getRow() - 1, p.getColumn());
 		}
 	},
 
 	RIGHT {
 		@Override
-		protected Position getNeighbour(Position p) {
-			if (p.getX() == 2)
+		public MatrixPosition getNeighbour(MatrixPosition p) {
+			if (p.getColumn() == 2)
 				return null;
-			return new Position(p.getX() + 1, p.getY());
+			return new MatrixPosition(p.getRow(), p.getColumn() + 1);
 		}
 	},
 
 	DOWN {
 		@Override
-		protected Position getNeighbour(Position p) {
-			if (p.getY() == 2)
+		public MatrixPosition getNeighbour(MatrixPosition p) {
+			if (p.getRow() == 2)
 				return null;
-			return new Position(p.getX(), p.getY() + 1);
+			return new MatrixPosition(p.getRow() + 1, p.getColumn());
 		}
 	},
 
 	LEFT {
 		@Override
-		protected Position getNeighbour(Position p) {
-			if (p.getX() == 0)
+		public MatrixPosition getNeighbour(MatrixPosition p) {
+			if (p.getColumn() == 0)
 				return null;
-			return new Position(p.getX() - 1, p.getY());
+			return new MatrixPosition(p.getRow(), p.getColumn() - 1);
 		}
 	};
 
-	protected abstract Position getNeighbour(Position p);
+	public abstract MatrixPosition getNeighbour(MatrixPosition p);
 }

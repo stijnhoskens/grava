@@ -12,8 +12,6 @@ import java.util.Set;
  */
 public class Edge<V> extends AbstractLink<V> {
 
-	private Set<V> vertices;
-
 	/**
 	 * Constructs an edge between the given vertices.
 	 * 

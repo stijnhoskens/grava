@@ -17,5 +17,4 @@ public class NinePuzzleGenerator implements
 				.map(d -> configuration.moveEmptySquare(d))
 				.filter(c -> c != null).map(c -> new Edge<>(configuration, c)));
 	}
-
 }

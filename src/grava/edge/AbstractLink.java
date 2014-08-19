@@ -7,7 +7,7 @@ import java.util.Set;
 
 public abstract class AbstractLink<V> implements Link<V> {
 
-	private Set<V> vertices;
+	protected Set<V> vertices;
 
 	public AbstractLink(V u, V v) throws LoopException {
 		if (u.equals(v))
