@@ -29,6 +29,8 @@ public class IterativeDeepening<V, E extends Link<V>> extends
 	@Override
 	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
 			Predicate<V> termination) {
+		if (termination.test(start))
+			return Optional.of(new Walk<V, E>(start));
 		for (int depth = 1; depth < maxDepth; depth++) {
 			q.add(new Walk<V, E>(start));
 			while (!q.isEmpty()) {

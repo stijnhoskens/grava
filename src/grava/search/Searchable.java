@@ -18,6 +18,7 @@ import grava.edge.Link;
  *            The type of edges, being either directed or non-directed, weighted
  *            or non-weighted.
  */
+@FunctionalInterface
 public interface Searchable<V, E extends Link<V>> {
 
 	/**

@@ -19,6 +19,8 @@ public class GreedySearch<V, E extends Link<V>> extends AbstractHeuristic<V, E> 
 	@Override
 	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
 			Predicate<V> termination) {
+		if (termination.test(start))
+			return Optional.of(new Walk<V, E>(start));
 		Queue<Walk<V, E>> q = new PriorityQueue<>(heuristicComparator());
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {

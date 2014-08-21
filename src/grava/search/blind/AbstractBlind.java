@@ -20,6 +20,8 @@ public abstract class AbstractBlind<V, E extends Link<V>> extends
 
 	protected Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
 			Predicate<V> termination, Consumer<Walk<V, E>> addToQ) {
+		if (termination.test(start))
+			return Optional.of(new Walk<V, E>(start));
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {
 			Walk<V, E> walk = q.pollFirst();
@@ -28,7 +30,7 @@ public abstract class AbstractBlind<V, E extends Link<V>> extends
 				if (termination.test(w.endVertex()))
 					return Optional.of(w);
 				if (isStillPath(walk, w))
-					q.addFirst(w);
+					addToQ.accept(w);
 			}
 		}
 		return Optional.empty();

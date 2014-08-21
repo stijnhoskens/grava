@@ -31,6 +31,8 @@ public class UniformCost<V, E extends WeightedLink<V>> extends
 
 	protected Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
 			Predicate<V> termination, Comparator<Walk<V, E>> comp) {
+		if (termination.test(start))
+			return Optional.of(new Walk<V, E>(start));
 		Queue<Walk<V, E>> q = new PriorityQueue<>(costComparator());
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {

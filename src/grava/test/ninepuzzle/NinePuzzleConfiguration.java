@@ -39,6 +39,12 @@ public class NinePuzzleConfiguration {
 		return withTheseSwitched(posOf0, neighbour);
 	}
 
+	// TODO
+	// public static Heuristic<NinePuzzleConfiguration> manhattanTo(
+	// NinePuzzleConfiguration goal) {
+	// return c ->
+	// }
+
 	private NinePuzzleConfiguration withTheseSwitched(MatrixPosition p1,
 			MatrixPosition p2) {
 		int p1Entry = getEntry(p1);
@@ -77,5 +83,10 @@ public class NinePuzzleConfiguration {
 		if (!Arrays.deepEquals(entries, other.entries))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return Arrays.deepToString(entries);
 	}
 }

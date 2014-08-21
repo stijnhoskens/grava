@@ -14,6 +14,8 @@ public class NonDeterministic<V, E extends Link<V>> extends AbstractBlind<V, E> 
 	@Override
 	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
 			Predicate<V> termination) {
+		if (termination.test(start))
+			return Optional.of(new Walk<V, E>(start));
 		Set<Walk<V, E>> walks = new HashSet<Walk<V, E>>();
 		walks.add(new Walk<V, E>(start));
 		while (!walks.isEmpty()) {

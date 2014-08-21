@@ -30,6 +30,8 @@ public class BeamSearch<V, E extends Link<V>> extends AbstractHeuristic<V, E> {
 	@Override
 	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
 			Predicate<V> termination) {
+		if (termination.test(start))
+			return Optional.of(new Walk<V, E>(start));
 		List<Walk<V, E>> q = new ArrayList<>();
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {

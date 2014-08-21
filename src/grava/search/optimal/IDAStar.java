@@ -19,6 +19,8 @@ public class IDAStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
 	@Override
 	public Optional<Walk<V, E>> findPath(Searchable<V, E> graph, V start,
 			Predicate<V> termination) {
+		if (termination.test(start))
+			return Optional.of(new Walk<V, E>(start));
 		double fBound = h.applyAsDouble(start);
 		while (true) {
 			Deque<Walk<V, E>> q = new ArrayDeque<>();
