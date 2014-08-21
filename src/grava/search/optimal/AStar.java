@@ -29,7 +29,7 @@ public class AStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
 				return Optional.of(walk);
 			getNewWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
 					.forEach(q::add);
-			branchAndBound(q);
+			// TODO branchAndBound(q);
 		}
 		return Optional.empty();
 	}

@@ -1,11 +1,15 @@
 package grava.test.ninepuzzle;
 
 import grava.exceptions.IllegalDimensionException;
+import grava.search.heuristic.Heuristic;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class NinePuzzleConfiguration {
 
+	private static final NinePuzzleConfiguration GOAL_STATE = new NinePuzzleConfiguration(
+			new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } });
 	private final int[][] entries;
 
 	public NinePuzzleConfiguration(int[][] entries) {
@@ -17,8 +21,7 @@ public class NinePuzzleConfiguration {
 	}
 
 	public boolean isCorrect() {
-		return Arrays.deepEquals(entries, new int[][] { { 0, 1, 2 },
-				{ 3, 4, 5 }, { 6, 7, 8 } });
+		return Arrays.deepEquals(entries, GOAL_STATE.entries);
 	}
 
 	public int getEntry(MatrixPosition pos) {
@@ -30,20 +33,26 @@ public class NinePuzzleConfiguration {
 	}
 
 	public NinePuzzleConfiguration moveEmptySquare(Direction d) {
-		MatrixPosition posOf0 = new MatrixPosition(0, 0);
-		while (getEntry(posOf0) != 0)
-			posOf0 = posOf0.next();
+		MatrixPosition posOf0 = positionOf(0);
 		MatrixPosition neighbour = d.getNeighbour(posOf0);
 		if (neighbour == null)
 			return null;
 		return withTheseSwitched(posOf0, neighbour);
 	}
 
-	// TODO
-	// public static Heuristic<NinePuzzleConfiguration> manhattanTo(
-	// NinePuzzleConfiguration goal) {
-	// return c ->
-	// }
+	public static Heuristic<NinePuzzleConfiguration> manhattanHeuristic() {
+		return c -> IntStream
+				.range(0, 9)
+				.map(x -> c.positionOf(x).manhattanTo(GOAL_STATE.positionOf(x)))
+				.sum();
+	}
+
+	private MatrixPosition positionOf(int val) {
+		MatrixPosition posOf = new MatrixPosition(0, 0);
+		while (getEntry(posOf) != val)
+			posOf = posOf.next();
+		return posOf;
+	}
 
 	private NinePuzzleConfiguration withTheseSwitched(MatrixPosition p1,
 			MatrixPosition p2) {

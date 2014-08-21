@@ -1,10 +1,14 @@
 package grava.test;
 
 import static org.junit.Assert.assertTrue;
-import grava.edge.Edge;
+import grava.edge.WeightedEdge;
 import grava.search.SearchStrategy;
 import grava.search.blind.BreadthFirst;
-import grava.search.blind.IterativeDeepening;
+import grava.search.heuristic.GreedySearch;
+import grava.search.heuristic.Heuristic;
+import grava.search.heuristic.HillClimbing1;
+import grava.search.optimal.AStar;
+import grava.search.optimal.IDAStar;
 import grava.test.ninepuzzle.NinePuzzleConfiguration;
 import grava.test.ninepuzzle.NinePuzzleGenerator;
 import grava.walk.Walk;
@@ -17,16 +21,11 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Implementation not to be tested here (due to the large subspace, 10! =
- * 3628800 states): depth first, non deterministic (due to its unpredictable
- * character)
- */
 public class NinePuzzleSearchTest {
 
 	private static NinePuzzleGenerator graph;
 	private static List<Pair> configs = new ArrayList<>();
-	private SearchStrategy<NinePuzzleConfiguration, Edge<NinePuzzleConfiguration>> search;
+	private SearchStrategy<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>> search;
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -49,8 +48,23 @@ public class NinePuzzleSearchTest {
 	}
 
 	@Test
-	public void testIterativeDeepening() {
-		search = new IterativeDeepening<>();
+	public void testGreedySearch() {
+		search = new GreedySearch<>(manhattan());
+	}
+
+	@Test
+	public void testHillClimbing1() {
+		search = new HillClimbing1<>(manhattan());
+	}
+
+	@Test
+	public void testAStar() {
+		search = new AStar<>(manhattan());
+	}
+
+	@Test
+	public void testIDAStar() {
+		search = new IDAStar<>(manhattan());
 	}
 
 	@After
@@ -58,7 +72,7 @@ public class NinePuzzleSearchTest {
 		System.out.println(search.getClass().getSimpleName() + ": ");
 		configs.forEach(pair -> {
 			long start = System.currentTimeMillis();
-			Optional<Walk<NinePuzzleConfiguration, Edge<NinePuzzleConfiguration>>> optional = getPath(pair
+			Optional<Walk<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>>> optional = getPath(pair
 					.getConfig());
 			assertTrue(optional.isPresent());
 			// optional.ifPresent(path -> print(path));
@@ -67,9 +81,14 @@ public class NinePuzzleSearchTest {
 		});
 	}
 
-	private Optional<Walk<NinePuzzleConfiguration, Edge<NinePuzzleConfiguration>>> getPath(
+	private static Heuristic<NinePuzzleConfiguration> manhattan() {
+		return NinePuzzleConfiguration.manhattanHeuristic();
+	}
+
+	private Optional<Walk<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>>> getPath(
 			NinePuzzleConfiguration config) {
-		return search.findPath(graph, config, puzzle -> puzzle.isCorrect());
+		return search.findPath(graph, config,
+				NinePuzzleConfiguration::isCorrect);
 	}
 
 	private static class Pair {
@@ -91,7 +110,7 @@ public class NinePuzzleSearchTest {
 	}
 
 	public static void print(
-			Walk<NinePuzzleConfiguration, Edge<NinePuzzleConfiguration>> walk) {
+			Walk<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>> walk) {
 		String print = "";
 		for (NinePuzzleConfiguration c : walk.getVertices())
 			print += " -> " + c.toString();

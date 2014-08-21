@@ -1,20 +1,22 @@
 package grava.test.ninepuzzle;
 
-import java.util.Arrays;
-import java.util.Set;
-
-import grava.edge.Edge;
+import grava.edge.WeightedEdge;
 import grava.search.Searchable;
 import grava.util.SetUtils;
 
-public class NinePuzzleGenerator implements
-		Searchable<NinePuzzleConfiguration, Edge<NinePuzzleConfiguration>> {
+import java.util.Arrays;
+import java.util.Set;
+
+public class NinePuzzleGenerator
+		implements
+		Searchable<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>> {
 
 	@Override
-	public Set<Edge<NinePuzzleConfiguration>> edgesOf(
+	public Set<WeightedEdge<NinePuzzleConfiguration>> edgesOf(
 			NinePuzzleConfiguration configuration) {
 		return SetUtils.setOf(Arrays.stream(Direction.values())
 				.map(d -> configuration.moveEmptySquare(d))
-				.filter(c -> c != null).map(c -> new Edge<>(configuration, c)));
+				.filter(c -> c != null)
+				.map(c -> new WeightedEdge<>(configuration, c)));
 	}
 }

@@ -49,4 +49,9 @@ class MatrixPosition {
 			return false;
 		return true;
 	}
+
+	public int manhattanTo(MatrixPosition other) {
+		return Math.abs(getRow() - other.getRow())
+				+ Math.abs(getColumn() - other.getColumn());
+	}
 }
