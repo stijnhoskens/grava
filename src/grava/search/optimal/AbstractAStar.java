@@ -4,7 +4,6 @@ import grava.edge.WeightedLink;
 import grava.search.heuristic.Heuristic;
 import grava.walk.Walk;
 
-import java.util.ArrayList;
 import java.util.Queue;
 
 public abstract class AbstractAStar<V, E extends WeightedLink<V>> extends
@@ -15,7 +14,7 @@ public abstract class AbstractAStar<V, E extends WeightedLink<V>> extends
 	}
 
 	protected void branchAndBound(Queue<Walk<V, E>> q) {
-		new ArrayList<>(q).forEach(w1 -> {
+		q.stream().forEach(w1 -> {
 			final double cost = totalCostOf(w1);
 			final V endVertex = w1.endVertex();
 			if (q.stream().anyMatch(

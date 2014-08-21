@@ -72,12 +72,11 @@ public class NinePuzzleSearchTest {
 		System.out.println(search.getClass().getSimpleName() + ": ");
 		configs.forEach(pair -> {
 			long start = System.currentTimeMillis();
-			Optional<Walk<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>>> optional = getPath(pair
-					.getConfig());
+			Optional<Walk<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>>> optional = getPath(pair.config);
 			assertTrue(optional.isPresent());
 			// optional.ifPresent(path -> print(path));
 			long diff = System.currentTimeMillis() - start;
-			System.out.println("- " + pair.getName() + ": " + diff + "ms");
+			System.out.println("- " + pair.name + ": " + diff + "ms");
 		});
 	}
 
@@ -98,14 +97,6 @@ public class NinePuzzleSearchTest {
 		public Pair(String name, NinePuzzleConfiguration config) {
 			this.name = name;
 			this.config = config;
-		}
-
-		public String getName() {
-			return this.name;
-		}
-
-		public NinePuzzleConfiguration getConfig() {
-			return this.config;
 		}
 	}
 
