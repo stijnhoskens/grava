@@ -28,7 +28,7 @@ public class AStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
 			if (termination.test(walk.endVertex()))
 				return Optional.of(walk);
 			getNewWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
-					.forEach(q::add);
+			/* .filter(w -> !isRedundant(q, w)) */.forEach(q::add);
 			// TODO branchAndBound(q);
 		}
 		return Optional.empty();
