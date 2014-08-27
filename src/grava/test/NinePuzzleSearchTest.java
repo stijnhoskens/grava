@@ -5,9 +5,9 @@ import grava.edge.WeightedEdge;
 import grava.search.SearchStrategy;
 import grava.search.blind.BreadthFirst;
 import grava.search.heuristic.GreedySearch;
-import grava.search.heuristic.Heuristic;
 import grava.search.heuristic.HillClimbing1;
 import grava.search.optimal.AStar;
+import grava.search.optimal.AStarHeuristic;
 import grava.search.optimal.IDAStar;
 import grava.test.ninepuzzle.NinePuzzleConfiguration;
 import grava.test.ninepuzzle.NinePuzzleGenerator;
@@ -36,10 +36,10 @@ public class NinePuzzleSearchTest {
 		// Termination can be reached in one step
 		configs.add(new Pair("easy", new NinePuzzleConfiguration(new int[][] {
 				{ 1, 0, 2 }, { 3, 4, 5 }, { 6, 7, 8 } })));
-		configs.add(new Pair("random_easy", new NinePuzzleConfiguration(
-				new int[][] { { 1, 2, 0 }, { 7, 4, 3 }, { 8, 6, 5 } })));
-		configs.add(new Pair("random_hard", new NinePuzzleConfiguration(
-				new int[][] { { 1, 8, 3 }, { 2, 0, 5 }, { 7, 4, 6 } })));
+		configs.add(new Pair("medium", new NinePuzzleConfiguration(new int[][] {
+				{ 1, 2, 0 }, { 7, 4, 3 }, { 8, 6, 5 } })));
+		configs.add(new Pair("hard", new NinePuzzleConfiguration(new int[][] {
+				{ 1, 8, 3 }, { 2, 0, 5 }, { 7, 4, 6 } })));
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class NinePuzzleSearchTest {
 		});
 	}
 
-	private static Heuristic<NinePuzzleConfiguration> manhattan() {
+	private static AStarHeuristic<NinePuzzleConfiguration> manhattan() {
 		return NinePuzzleConfiguration.manhattanHeuristic();
 	}
 

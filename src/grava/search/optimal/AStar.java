@@ -2,18 +2,27 @@ package grava.search.optimal;
 
 import grava.edge.WeightedLink;
 import grava.search.Searchable;
-import grava.search.heuristic.Heuristic;
 import grava.walk.Walk;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class AStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
 
-	public AStar(Heuristic<V> h) {
+	private final Set<V> alreadyEvaluated = new HashSet<>();
+	Queue<Walk<V, E>> q = new PriorityQueue<>(fComparator());
+	private Predicate<Walk<V, E>> consistencyFilter;
+
+	public AStar(AStarHeuristic<V> h) {
 		super(h);
+		if (h.isConsistent())
+			consistencyFilter = w -> !alreadyEvaluated.contains(w.endVertex());
+		else
+			consistencyFilter = w -> true;
 	}
 
 	@Override
@@ -21,17 +30,14 @@ public class AStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
 			Predicate<V> termination) {
 		if (termination.test(start))
 			return Optional.of(new Walk<V, E>(start));
-		Queue<Walk<V, E>> q = new PriorityQueue<>(fComparator());
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {
 			Walk<V, E> walk = q.poll();
 			if (termination.test(walk.endVertex()))
 				return Optional.of(walk);
 			getNewWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
-			/* .filter(w -> !isRedundant(q, w)) */.forEach(q::add);
-			// TODO branchAndBound(q);
+					.filter(consistencyFilter).forEach(q::add);
 		}
 		return Optional.empty();
 	}
-
 }

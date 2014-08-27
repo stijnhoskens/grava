@@ -39,7 +39,6 @@ public class IDAStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
 							q.addFirst(w);
 					}
 				}
-				// TODO branchAndBound(q);
 			}
 			if (fNew <= fBound)
 				return Optional.empty();
