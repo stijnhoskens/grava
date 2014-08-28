@@ -10,7 +10,7 @@ import java.util.Deque;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class IDAStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
+public class IDAStar<V, E extends WeightedLink<V>> extends AbstractOptimal<V, E> {
 
 	public IDAStar(Heuristic<V> h) {
 		super(h);

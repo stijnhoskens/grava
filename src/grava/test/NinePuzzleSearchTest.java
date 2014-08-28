@@ -11,6 +11,7 @@ import grava.search.optimal.AStarHeuristic;
 import grava.search.optimal.IDAStar;
 import grava.test.ninepuzzle.NinePuzzleConfiguration;
 import grava.test.ninepuzzle.NinePuzzleGenerator;
+import grava.util.Pair;
 import grava.walk.Walk;
 
 import java.util.ArrayList;
@@ -24,21 +25,21 @@ import org.junit.Test;
 public class NinePuzzleSearchTest {
 
 	private static NinePuzzleGenerator graph;
-	private static List<Pair> configs = new ArrayList<>();
+	private static List<Pair<String, NinePuzzleConfiguration>> configs = new ArrayList<>();
 	private SearchStrategy<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>> search;
 
 	@BeforeClass
 	public static void beforeClass() {
 		graph = new NinePuzzleGenerator();
 		// The end state is the start state
-		configs.add(new Pair("trivial", new NinePuzzleConfiguration(
+		configs.add(new Pair<>("trivial", new NinePuzzleConfiguration(
 				new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } })));
 		// Termination can be reached in one step
-		configs.add(new Pair("easy", new NinePuzzleConfiguration(new int[][] {
+		configs.add(new Pair<>("easy", new NinePuzzleConfiguration(new int[][] {
 				{ 1, 0, 2 }, { 3, 4, 5 }, { 6, 7, 8 } })));
-		configs.add(new Pair("medium", new NinePuzzleConfiguration(new int[][] {
-				{ 1, 2, 0 }, { 7, 4, 3 }, { 8, 6, 5 } })));
-		configs.add(new Pair("hard", new NinePuzzleConfiguration(new int[][] {
+		configs.add(new Pair<>("medium", new NinePuzzleConfiguration(
+				new int[][] { { 1, 2, 0 }, { 7, 4, 3 }, { 8, 6, 5 } })));
+		configs.add(new Pair<>("hard", new NinePuzzleConfiguration(new int[][] {
 				{ 1, 8, 3 }, { 2, 0, 5 }, { 7, 4, 6 } })));
 	}
 
@@ -72,11 +73,12 @@ public class NinePuzzleSearchTest {
 		System.out.println(search.getClass().getSimpleName() + ": ");
 		configs.forEach(pair -> {
 			long start = System.currentTimeMillis();
-			Optional<Walk<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>>> optional = getPath(pair.config);
+			Optional<Walk<NinePuzzleConfiguration, WeightedEdge<NinePuzzleConfiguration>>> optional = getPath(pair
+					.getSecond());
 			assertTrue(optional.isPresent());
 			// optional.ifPresent(path -> print(path));
 			long diff = System.currentTimeMillis() - start;
-			System.out.println("- " + pair.name + ": " + diff + "ms");
+			System.out.println("- " + pair.getFirst() + ": " + diff + "ms");
 		});
 	}
 
@@ -88,16 +90,6 @@ public class NinePuzzleSearchTest {
 			NinePuzzleConfiguration config) {
 		return search.findPath(graph, config,
 				NinePuzzleConfiguration::isCorrect);
-	}
-
-	private static class Pair {
-		private final String name;
-		private final NinePuzzleConfiguration config;
-
-		public Pair(String name, NinePuzzleConfiguration config) {
-			this.name = name;
-			this.config = config;
-		}
 	}
 
 	public static void print(

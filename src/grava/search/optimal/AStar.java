@@ -11,18 +11,16 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class AStar<V, E extends WeightedLink<V>> extends AbstractAStar<V, E> {
+public class AStar<V, E extends WeightedLink<V>> extends AbstractOptimal<V, E> {
 
 	private final Set<V> alreadyEvaluated = new HashSet<>();
-	Queue<Walk<V, E>> q = new PriorityQueue<>(fComparator());
-	private Predicate<Walk<V, E>> consistencyFilter;
+	private final Queue<Walk<V, E>> q = new PriorityQueue<>(fComparator());
+	private final Predicate<Walk<V, E>> consistencyFilter;
 
 	public AStar(AStarHeuristic<V> h) {
 		super(h);
-		if (h.isConsistent())
-			consistencyFilter = w -> !alreadyEvaluated.contains(w.endVertex());
-		else
-			consistencyFilter = w -> true;
+		consistencyFilter = h.isConsistent() ? w -> !alreadyEvaluated
+				.contains(w.endVertex()) : w -> true;
 	}
 
 	@Override
