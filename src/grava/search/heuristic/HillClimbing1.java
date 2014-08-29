@@ -26,7 +26,7 @@ public class HillClimbing1<V, E extends Link<V>> extends
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {
 			Walk<V, E> walk = q.pollFirst();
-			List<Walk<V, E>> newWalks = getNewWalksList(graph, walk);
+			List<Walk<V, E>> newWalks = newWalksList(graph, walk);
 			newWalks.sort(reversedHeuristicComparator());
 			for (Walk<V, E> w : newWalks) {
 				if (termination.test(w.endVertex()))

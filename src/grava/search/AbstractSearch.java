@@ -9,22 +9,25 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AbstractSearch<V, E extends Link<V>> implements
 		SearchStrategy<V, E> {
 
-	protected Set<Walk<V, E>> getNewWalks(Searchable<V, E> graph,
+	protected Set<Walk<V, E>> newWalks(Searchable<V, E> graph,
 			Walk<V, E> walk) {
-		informListenersOf(walk);
-		return setOf(graph.edgesOf(walk.endVertex()).stream()
-				.map(walk::getExtended));
+		return setOf(newWalksStream(graph, walk));
 	}
 
-	protected List<Walk<V, E>> getNewWalksList(Searchable<V, E> graph,
+	protected List<Walk<V, E>> newWalksList(Searchable<V, E> graph,
+			Walk<V, E> walk) {
+		return newWalksStream(graph, walk).collect(Collectors.toList());
+	}
+
+	private Stream<Walk<V, E>> newWalksStream(Searchable<V, E> graph,
 			Walk<V, E> walk) {
 		informListenersOf(walk);
-		return graph.edgesOf(walk.endVertex()).stream().map(walk::getExtended)
-				.collect(Collectors.toList());
+		return graph.edgesOf(walk.endVertex()).stream().map(walk::getExtended);
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class AStar<V, E extends WeightedLink<V>> extends AbstractOptimal<V, E> {
 			Walk<V, E> walk = q.poll();
 			if (termination.test(walk.endVertex()))
 				return Optional.of(walk);
-			getNewWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
+			newWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
 					.filter(consistencyFilter).forEach(q::add);
 		}
 		return Optional.empty();

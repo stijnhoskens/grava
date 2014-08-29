@@ -30,7 +30,7 @@ public class IDAStar<V, E extends WeightedLink<V>> extends AbstractOptimal<V, E>
 				Walk<V, E> walk = q.poll();
 				if (termination.test(walk.endVertex()))
 					return Optional.of(walk);
-				for (Walk<V, E> w : getNewWalks(graph, walk)) {
+				for (Walk<V, E> w : newWalks(graph, walk)) {
 					if (isStillPath(walk, w)) {
 						double fScore = fScoreOf(w);
 						if (fScore > fBound)

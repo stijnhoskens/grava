@@ -39,7 +39,7 @@ public class UniformCost<V, E extends WeightedLink<V>> extends
 			Walk<V, E> walk = q.poll();
 			if (termination.test(walk.endVertex()))
 				return Optional.of(walk);
-			getNewWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
+			newWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
 					.forEach(q::add);
 		}
 		return Optional.empty();
