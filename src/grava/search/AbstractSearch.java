@@ -24,7 +24,8 @@ public abstract class AbstractSearch<V, E extends Link<V>> implements
 		return newWalksStream(graph, walk).collect(Collectors.toList());
 	}
 
-	private Stream<Walk<V, E>> newWalksStream(Searchable<V, E> graph,
+	// TODO TRY TO USE THIS INSTEAD OF COLLECTED STREAMS
+	protected Stream<Walk<V, E>> newWalksStream(Searchable<V, E> graph,
 			Walk<V, E> walk) {
 		informListenersOf(walk);
 		return graph.edgesOf(walk.endVertex()).stream().map(walk::getExtended);

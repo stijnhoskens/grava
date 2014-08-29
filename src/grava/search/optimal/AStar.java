@@ -11,7 +11,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class AStar<V, E extends WeightedLink<V>> extends AbstractOptimal<V, E> {
+public class AStar<V, E extends WeightedLink<V>> extends AbstractEEOptimal<V, E> {
 
 	private final Set<V> alreadyEvaluated = new HashSet<>();
 	private final Queue<Walk<V, E>> q = new PriorityQueue<>(fComparator());

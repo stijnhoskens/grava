@@ -18,16 +18,7 @@ public abstract class AbstractOptimal<V, E extends WeightedLink<V>> extends
 		return Comparator.comparingDouble(AbstractOptimal::totalCostOf);
 	}
 
-	protected Comparator<Walk<V, E>> fComparator() {
-		return Comparator.comparingDouble(this::fScoreOf);
-	}
-
 	protected static <E extends WeightedLink<?>> double totalCostOf(Walk<?, E> w) {
 		return w.getEdges().stream().mapToDouble(WeightedLink::getWeight).sum();
-	}
-
-	protected double fScoreOf(Walk<V, E> w) {
-		return w.getEdges().stream().mapToDouble(WeightedLink::getWeight).sum()
-				+ h.applyAsDouble(w.endVertex());
 	}
 }
