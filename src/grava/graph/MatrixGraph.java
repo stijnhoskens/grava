@@ -5,7 +5,7 @@ import grava.exceptions.IllegalDimensionException;
 import grava.exceptions.LoopException;
 import grava.search.Searchable;
 import grava.util.DistanceMatrix;
-import static grava.util.SetUtils.setOf;
+import static grava.util.CollectionUtils.setOf;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -2,7 +2,7 @@ package grava.walk;
 
 import grava.edge.Link;
 import grava.exceptions.IllegalWalkException;
-import static grava.util.SetUtils.setOf;
+import static grava.util.CollectionUtils.setOf;
 
 import java.util.ArrayList;
 import java.util.Collections;

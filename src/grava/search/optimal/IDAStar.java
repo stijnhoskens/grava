@@ -10,7 +10,8 @@ import java.util.Deque;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class IDAStar<V, E extends WeightedLink<V>> extends AbstractEEOptimal<V, E> {
+public class IDAStar<V, E extends WeightedLink<V>> extends
+		AbstractEEOptimal<V, E> {
 
 	public IDAStar(Heuristic<V> h) {
 		super(h);
@@ -30,14 +31,12 @@ public class IDAStar<V, E extends WeightedLink<V>> extends AbstractEEOptimal<V, 
 				Walk<V, E> walk = q.poll();
 				if (termination.test(walk.endVertex()))
 					return Optional.of(walk);
-				for (Walk<V, E> w : newWalks(graph, walk)) {
-					if (isStillPath(walk, w)) {
-						double fScore = fScoreOf(w);
-						if (fScore > fBound)
-							fNew = Math.min(fScore, fNew);
-						else
-							q.addFirst(w);
-					}
+				for (Walk<V, E> w : filteredNewWalksAsSet(graph, walk)) {
+					double fScore = fScoreOf(w);
+					if (fScore > fBound)
+						fNew = Math.min(fScore, fNew);
+					else
+						q.addFirst(w);
 				}
 			}
 			if (fNew <= fBound)

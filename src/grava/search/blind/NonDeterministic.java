@@ -20,12 +20,11 @@ public class NonDeterministic<V, E extends Link<V>> extends AbstractBlind<V, E> 
 		walks.add(new Walk<V, E>(start));
 		while (!walks.isEmpty()) {
 			Walk<V, E> walk = walks.stream().findAny().get();
-			Set<Walk<V, E>> newWalks = newWalks(graph, walk);
+			Set<Walk<V, E>> newWalks = filteredNewWalksAsSet(graph, walk);
 			for (Walk<V, E> w : newWalks) {
 				if (termination.test(w.endVertex()))
 					return Optional.of(w);
-				if (isStillPath(walk, w))
-					walks.add(w);
+				walks.add(w);
 			}
 		}
 		return Optional.empty();

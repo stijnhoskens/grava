@@ -1,7 +1,7 @@
 package grava.edge;
 
 import grava.exceptions.LoopException;
-import grava.util.SetUtils;
+import grava.util.CollectionUtils;
 
 import java.util.Set;
 
@@ -12,7 +12,7 @@ public abstract class AbstractLink<V> implements Link<V> {
 	public AbstractLink(V u, V v) throws LoopException {
 		if (u.equals(v))
 			throw new LoopException(u);
-		vertices = SetUtils.unmodifiableSetOf(u, v);
+		vertices = CollectionUtils.unmodifiableSetOf(u, v);
 	}
 
 	@Override

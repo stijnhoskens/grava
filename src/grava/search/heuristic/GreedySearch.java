@@ -25,12 +25,11 @@ public class GreedySearch<V, E extends Link<V>> extends AbstractHeuristic<V, E> 
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {
 			Walk<V, E> walk = q.poll();
-			Set<Walk<V, E>> newWalks = newWalks(graph, walk);
+			Set<Walk<V, E>> newWalks = filteredNewWalksAsSet(graph, walk);
 			for (Walk<V, E> w : newWalks) {
 				if (termination.test(w.endVertex()))
 					return Optional.of(w);
-				if (isStillPath(walk, w))
-					q.add(w);
+				q.add(w);
 			}
 		}
 		return Optional.empty();

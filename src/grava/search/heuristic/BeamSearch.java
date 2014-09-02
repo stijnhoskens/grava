@@ -36,7 +36,7 @@ public class BeamSearch<V, E extends Link<V>> extends AbstractHeuristic<V, E> {
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {
 			List<Walk<V, E>> newQ = q.stream()
-					.flatMap(w -> newWalks(graph, w).stream())
+					.flatMap(w -> filteredNewWalksAsStream(graph, w))
 					.collect(Collectors.toList());
 			q.clear();
 			for (int i = 0; i < bw && !newQ.isEmpty(); i++) {

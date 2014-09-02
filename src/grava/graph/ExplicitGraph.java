@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import grava.edge.Link;
-import static grava.util.SetUtils.*;
+import static grava.util.CollectionUtils.*;
 
 /**
  * This implementation of a graph is explicit in the sense that it explicitly

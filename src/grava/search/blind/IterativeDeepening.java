@@ -37,12 +37,11 @@ public class IterativeDeepening<V, E extends Link<V>> extends
 				Walk<V, E> walk = q.pollFirst();
 				if (walk.length() >= depth)
 					continue;
-				Set<Walk<V, E>> newWalks = newWalks(graph, walk);
+				Set<Walk<V, E>> newWalks = filteredNewWalksAsSet(graph, walk);
 				for (Walk<V, E> w : newWalks) {
 					if (termination.test(w.endVertex()))
 						return Optional.of(w);
-					if (isStillPath(walk, w))
-						q.addFirst(w);
+					q.addFirst(w);
 				}
 			}
 		}

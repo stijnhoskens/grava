@@ -2,7 +2,7 @@ package grava.test.ninepuzzle;
 
 import grava.edge.WeightedEdge;
 import grava.search.Searchable;
-import static grava.util.SetUtils.setOf;
+import static grava.util.CollectionUtils.setOf;
 
 import java.util.Arrays;
 import java.util.Set;

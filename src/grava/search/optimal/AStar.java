@@ -11,7 +11,8 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class AStar<V, E extends WeightedLink<V>> extends AbstractEEOptimal<V, E> {
+public class AStar<V, E extends WeightedLink<V>> extends
+		AbstractEEOptimal<V, E> {
 
 	private final Set<V> alreadyEvaluated = new HashSet<>();
 	private final Queue<Walk<V, E>> q = new PriorityQueue<>(fComparator());
@@ -33,8 +34,8 @@ public class AStar<V, E extends WeightedLink<V>> extends AbstractEEOptimal<V, E>
 			Walk<V, E> walk = q.poll();
 			if (termination.test(walk.endVertex()))
 				return Optional.of(walk);
-			newWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
-					.filter(consistencyFilter).forEach(q::add);
+			filteredNewWalksAsStream(graph, walk).filter(consistencyFilter)
+					.forEach(q::add);
 		}
 		return Optional.empty();
 	}

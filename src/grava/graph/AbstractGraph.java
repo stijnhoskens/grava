@@ -1,6 +1,6 @@
 package grava.graph;
 
-import static grava.util.SetUtils.unmodifiableSetOf;
+import static grava.util.CollectionUtils.unmodifiableSetOf;
 import grava.edge.Link;
 
 import java.util.Optional;

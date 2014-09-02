@@ -28,8 +28,7 @@ public class EstimateExtendedUniformCost<V, E extends WeightedLink<V>> extends
 			Walk<V, E> walk = q.poll();
 			if (termination.test(walk.endVertex()))
 				return Optional.of(walk);
-			newWalks(graph, walk).stream().filter(w -> isStillPath(walk, w))
-					.forEach(q::add);
+			filteredNewWalksAsStream(graph, walk).forEach(q::add);
 		}
 		return Optional.empty();
 	}

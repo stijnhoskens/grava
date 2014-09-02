@@ -3,11 +3,12 @@ package grava.util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SetUtils {
+public class CollectionUtils {
 
 	public static <T> Set<T> setOf(Stream<T> stream) {
 		return stream.collect(Collectors.toSet());
@@ -37,6 +38,10 @@ public class SetUtils {
 
 	public static <T> Set<T> copyOf(Collection<T> c) {
 		return new HashSet<>(c);
+	}
+
+	public static <T> List<T> listOf(Stream<T> stream) {
+		return stream.collect(Collectors.toList());
 	}
 
 }

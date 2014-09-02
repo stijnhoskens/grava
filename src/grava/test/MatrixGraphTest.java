@@ -9,7 +9,7 @@ import grava.edge.WeightedArc;
 import grava.exceptions.IllegalDimensionException;
 import grava.exceptions.LoopException;
 import grava.graph.MatrixGraph;
-import static grava.util.SetUtils.setOf;
+import static grava.util.CollectionUtils.setOf;
 
 import org.junit.Before;
 import org.junit.Test;

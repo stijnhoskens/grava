@@ -1,6 +1,7 @@
 package grava.search;
 
-import static grava.util.SetUtils.setOf;
+import static grava.util.CollectionUtils.listOf;
+import static grava.util.CollectionUtils.setOf;
 import grava.edge.Link;
 import grava.walk.Walk;
 
@@ -8,27 +9,42 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AbstractSearch<V, E extends Link<V>> implements
 		SearchStrategy<V, E> {
 
-	protected Set<Walk<V, E>> newWalks(Searchable<V, E> graph,
+	protected Set<Walk<V, E>> filteredNewWalksAsSet(Searchable<V, E> graph,
 			Walk<V, E> walk) {
-		return setOf(newWalksStream(graph, walk));
+		return setOf(filteredNewWalksAsStream(graph, walk));
 	}
 
-	protected List<Walk<V, E>> newWalksList(Searchable<V, E> graph,
+	// protected Set<Walk<V, E>> newWalks(Searchable<V, E> graph, Walk<V, E>
+	// walk) {
+	// return setOf(newWalksStream(graph, walk));
+	// }
+
+	protected List<Walk<V, E>> filteredNewWalksAsList(Searchable<V, E> graph,
 			Walk<V, E> walk) {
-		return newWalksStream(graph, walk).collect(Collectors.toList());
+		return listOf(filteredNewWalksAsStream(graph, walk));
 	}
 
-	// TODO TRY TO USE THIS INSTEAD OF COLLECTED STREAMS
-	protected Stream<Walk<V, E>> newWalksStream(Searchable<V, E> graph,
-			Walk<V, E> walk) {
+	// protected List<Walk<V, E>> filteredNewWalksAsList(Searchable<V, E> graph,
+	// Walk<V, E> walk) {
+	// return newWalksStream(graph, walk).collect(Collectors.toList());
+	// }
+
+	// protected Stream<Walk<V, E>> newWalksStream(Searchable<V, E> graph,
+	// Walk<V, E> walk) {
+	// informListenersOf(walk);
+	// return graph.edgesOf(walk.endVertex()).stream().map(walk::getExtended);
+	// }
+
+	protected Stream<Walk<V, E>> filteredNewWalksAsStream(
+			Searchable<V, E> graph, Walk<V, E> walk) {
 		informListenersOf(walk);
-		return graph.edgesOf(walk.endVertex()).stream().map(walk::getExtended);
+		return graph.edgesOf(walk.endVertex()).stream().map(walk::getExtended)
+				.filter(w -> isStillPath(walk, w));
 	}
 
 	@Override

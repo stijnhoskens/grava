@@ -1,6 +1,6 @@
 package grava.graph;
 
-import static grava.util.SetUtils.flatten;
+import static grava.util.CollectionUtils.flatten;
 import grava.edge.Link;
 
 import java.util.Set;

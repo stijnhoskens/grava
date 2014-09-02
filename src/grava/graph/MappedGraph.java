@@ -2,7 +2,7 @@ package grava.graph;
 
 import grava.edge.Link;
 import grava.util.MultiMap;
-import static grava.util.SetUtils.*;
+import static grava.util.CollectionUtils.*;
 
 import java.util.Collections;
 import java.util.Optional;
