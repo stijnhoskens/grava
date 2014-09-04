@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 public class NinePuzzleConfiguration {
 
 	private static final NinePuzzleConfiguration GOAL_STATE = new NinePuzzleConfiguration(
-			new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } });
+			new int[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } });
 	private final int[][] entries;
 
 	public NinePuzzleConfiguration(int[][] entries) {

@@ -33,10 +33,10 @@ public class NinePuzzleSearchTest {
 		graph = new NinePuzzleGenerator();
 		// The end state is the start state
 		configs.add(new Pair<>("trivial", new NinePuzzleConfiguration(
-				new int[][] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } })));
+				new int[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } })));
 		// Termination can be reached in one step
 		configs.add(new Pair<>("easy", new NinePuzzleConfiguration(new int[][] {
-				{ 1, 0, 2 }, { 3, 4, 5 }, { 6, 7, 8 } })));
+				{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 0, 8 } })));
 		configs.add(new Pair<>("medium", new NinePuzzleConfiguration(
 				new int[][] { { 1, 2, 0 }, { 7, 4, 3 }, { 8, 6, 5 } })));
 		configs.add(new Pair<>("hard", new NinePuzzleConfiguration(new int[][] {
@@ -79,6 +79,8 @@ public class NinePuzzleSearchTest {
 			// optional.ifPresent(path -> print(path));
 			long diff = System.currentTimeMillis() - start;
 			System.out.println("- " + pair.getFirst() + ": " + diff + "ms");
+			System.out.print("Solution: ");
+			print(optional.get());
 		});
 	}
 
