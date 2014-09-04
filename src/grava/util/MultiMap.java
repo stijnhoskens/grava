@@ -10,15 +10,16 @@ public class MultiMap<K, V> extends HashMap<K, Set<V>> {
 
 	private static final long serialVersionUID = 1L;
 
-	public void addKey(K key) {
+	public boolean addKey(K key) {
 		if (containsKey(key))
-			return;
-		put(key, new HashSet<V>());
+			return false;
+		put(key, new HashSet<>());
+		return true;
 	}
 
-	public void addValue(K key, V value) {
+	public boolean addValue(K key, V value) {
 		addKey(key);
-		get(key).add(value);
+		return get(key).add(value);
 	}
 
 	public void addValues(K key, Collection<V> values) {

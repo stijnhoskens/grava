@@ -68,7 +68,8 @@ public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 
 	@Override
 	public void addVertex(V v) {
-		vertices.add(v);
+		if (vertices.add(v))
+			informListeners(l -> l.vertexAdded(v));
 	}
 
 	@Override
@@ -78,6 +79,7 @@ public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 		copyOf(getEdges()).stream().filter(e -> e.contains(v))
 				.forEach(e -> removeEdge(e));
 		vertices.remove(v);
+		informListeners(l -> l.vertexRemoved(v));
 		return true;
 	}
 
@@ -88,13 +90,17 @@ public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 
 	@Override
 	public void addEdge(E e) {
-		edges.add(e);
-		e.asSet().forEach(v -> vertices.add(v));
+		if (edges.add(e))
+			informListeners(l -> l.edgeAdded(e));
+		e.asSet().forEach(v -> addVertex(v));
 	}
 
 	@Override
 	public boolean removeEdge(E e) {
-		return edges.remove(e);
+		boolean isRemoved = edges.remove(e);
+		if (isRemoved)
+			informListeners(l -> l.edgeRemoved(e));
+		return isRemoved;
 	}
 
 	@Override

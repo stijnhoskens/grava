@@ -3,8 +3,10 @@ package grava.graph;
 import static grava.util.CollectionUtils.unmodifiableSetOf;
 import grava.edge.Link;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 
@@ -52,6 +54,20 @@ abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 	public Set<V> neighboursOf(V v) {
 		return unmodifiableSetOf(edgesOf(v).stream().map(Link::asSet)
 				.flatMap(Set::stream).filter(u -> !u.equals(v)));
+	}
+
+	private Set<GraphListener<V, E>> listeners = new HashSet<>();
+
+	public void addListener(GraphListener<V, E> l) {
+		listeners.add(l);
+	}
+
+	public void removeListener(GraphListener<V, E> l) {
+		listeners.remove(l);
+	}
+
+	protected void informListeners(Consumer<GraphListener<V, E>> action) {
+		listeners.forEach(action);
 	}
 
 }

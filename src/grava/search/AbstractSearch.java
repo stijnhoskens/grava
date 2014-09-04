@@ -19,26 +19,10 @@ public abstract class AbstractSearch<V, E extends Link<V>> implements
 		return setOf(filteredNewWalksAsStream(graph, walk));
 	}
 
-	// protected Set<Walk<V, E>> newWalks(Searchable<V, E> graph, Walk<V, E>
-	// walk) {
-	// return setOf(newWalksStream(graph, walk));
-	// }
-
 	protected List<Walk<V, E>> filteredNewWalksAsList(Searchable<V, E> graph,
 			Walk<V, E> walk) {
 		return listOf(filteredNewWalksAsStream(graph, walk));
 	}
-
-	// protected List<Walk<V, E>> filteredNewWalksAsList(Searchable<V, E> graph,
-	// Walk<V, E> walk) {
-	// return newWalksStream(graph, walk).collect(Collectors.toList());
-	// }
-
-	// protected Stream<Walk<V, E>> newWalksStream(Searchable<V, E> graph,
-	// Walk<V, E> walk) {
-	// informListenersOf(walk);
-	// return graph.edgesOf(walk.endVertex()).stream().map(walk::getExtended);
-	// }
 
 	protected Stream<Walk<V, E>> filteredNewWalksAsStream(
 			Searchable<V, E> graph, Walk<V, E> walk) {

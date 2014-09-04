@@ -1,5 +1,7 @@
 package grava.edge;
 
+import grava.util.Pair;
+
 import java.util.Set;
 
 /**
@@ -18,6 +20,13 @@ public interface Link<V> {
 	 * @return the linked vertices as a set
 	 */
 	Set<V> asSet();
+
+	/**
+	 * Returns the linked vertices as a pair.
+	 * 
+	 * @return the linked vertices as a pair
+	 */
+	Pair<V, V> asPair();
 
 	/**
 	 * Returns the set of tails of the link. These are the vertices through
