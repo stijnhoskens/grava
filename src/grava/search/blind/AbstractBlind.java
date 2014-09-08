@@ -22,6 +22,7 @@ public abstract class AbstractBlind<V, E extends Link<V>> extends
 			Predicate<V> termination, Consumer<Walk<V, E>> addToQ) {
 		if (termination.test(start))
 			return Optional.of(new Walk<V, E>(start));
+		q.clear();
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {
 			Walk<V, E> walk = q.pollFirst();

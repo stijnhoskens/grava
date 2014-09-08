@@ -79,8 +79,6 @@ public class NinePuzzleSearchTest {
 			// optional.ifPresent(path -> print(path));
 			long diff = System.currentTimeMillis() - start;
 			System.out.println("- " + pair.getFirst() + ": " + diff + "ms");
-			System.out.print("Solution: ");
-			print(optional.get());
 		});
 	}
 

@@ -29,6 +29,7 @@ public class AStar<V, E extends WeightedLink<V>> extends
 			Predicate<V> termination) {
 		if (termination.test(start))
 			return Optional.of(new Walk<V, E>(start));
+		q.clear();
 		q.add(new Walk<V, E>(start));
 		while (!q.isEmpty()) {
 			Walk<V, E> walk = q.poll();

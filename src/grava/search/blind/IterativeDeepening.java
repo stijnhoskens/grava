@@ -31,6 +31,7 @@ public class IterativeDeepening<V, E extends Link<V>> extends
 			Predicate<V> termination) {
 		if (termination.test(start))
 			return Optional.of(new Walk<V, E>(start));
+		q.clear();
 		for (int depth = 1; depth < maxDepth; depth++) {
 			q.add(new Walk<V, E>(start));
 			while (!q.isEmpty()) {
