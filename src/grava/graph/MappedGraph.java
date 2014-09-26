@@ -16,9 +16,9 @@ import java.util.Set;
  */
 public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 
-	private MultiMap<V, E> verticesToEdges = new MultiMap<>();
+	private MultiMap<V, E> verticesToEdges;
 
-	private MultiMap<V, E> verticesToConnectingEdges = new MultiMap<>();
+	private MultiMap<V, E> verticesToConnectingEdges;
 
 	/**
 	 * Constructs a mapped graph consisting of the given set of vertices and
@@ -49,7 +49,7 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 * Creates an empty mapped graph containing no vertices nor edges.
 	 */
 	public MappedGraph() {
-		super(Collections.emptySet(), Collections.emptySet());
+		this(Collections.emptySet(), Collections.emptySet());
 	}
 
 	/**
@@ -61,6 +61,12 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 */
 	public MappedGraph(Graph<V, E> graph) {
 		super(graph);
+	}
+
+	@Override
+	protected void initDataStructures() {
+		verticesToEdges = new MultiMap<>();
+		verticesToConnectingEdges = new MultiMap<>();
 	}
 
 	@Override
@@ -76,7 +82,7 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 
 	@Override
 	public boolean removeVertex(V v) {
-		if (!getVertices().contains(v))
+		if (!verticesToEdges.containsKey(v))
 			return false;
 		verticesToConnectingEdges.get(v).forEach(this::removeEdge);
 		verticesToEdges.remove(v);

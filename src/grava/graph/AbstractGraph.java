@@ -30,6 +30,7 @@ abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 	 *            the initial set of edges
 	 */
 	public AbstractGraph(Set<V> vertices, Set<E> edges) {
+		initDataStructures();
 		edges.forEach(this::addEdge);
 		vertices.forEach(this::addVertex);
 	}
@@ -69,5 +70,7 @@ abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 	protected void informListeners(Consumer<GraphListener<V, E>> action) {
 		listeners.forEach(action);
 	}
+
+	protected abstract void initDataStructures();
 
 }

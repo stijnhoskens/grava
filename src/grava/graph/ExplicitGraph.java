@@ -15,8 +15,8 @@ import static grava.util.CollectionUtils.*;
  */
 public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 
-	private final Set<V> vertices = new HashSet<>();
-	private final Set<E> edges = new HashSet<>();
+	private Set<V> vertices;
+	private Set<E> edges;
 
 	/**
 	 * Constructs an explicit graph consisting of the given set of vertices and
@@ -59,6 +59,12 @@ public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 */
 	public ExplicitGraph(Graph<V, E> graph) {
 		super(graph);
+	}
+
+	@Override
+	protected void initDataStructures() {
+		vertices = new HashSet<>();
+		edges = new HashSet<>();
 	}
 
 	@Override

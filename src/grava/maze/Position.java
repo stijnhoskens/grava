@@ -3,6 +3,7 @@ package grava.maze;
 import static java.lang.Math.pow;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
+import static java.lang.Math.sqrt;
 
 public class Position {
 
@@ -28,7 +29,13 @@ public class Position {
 	}
 
 	public double euclideanTo(Position other) {
-		return normDistanceTo(other, 2);
+		return sqrt(squareEuclideanTo(other));
+	}
+
+	public double squareEuclideanTo(Position other) {
+		double xDiff = x - other.x;
+		double yDiff = y - other.y;
+		return xDiff * xDiff + yDiff * yDiff;
 	}
 
 	public double normDistanceTo(Position other, int norm) {
