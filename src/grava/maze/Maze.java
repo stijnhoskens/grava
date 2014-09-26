@@ -25,9 +25,8 @@ public class Maze<V extends Positioned> extends MappedGraph<V, Edge<V>> {
 	@Override
 	public void addEdge(Edge<V> e) {
 		if (e.asPair().getFirst().getPosition()
-				.manhattanTo(e.asPair().getSecond().getPosition()) > 1)
-			return;
-		super.addEdge(e);
+				.manhattanTo(e.asPair().getSecond().getPosition()) == 1)
+			super.addEdge(e);
 	}
 
 	/**
