@@ -29,7 +29,7 @@ abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 	 * @param edges
 	 *            the initial set of edges
 	 */
-	public AbstractGraph(Set<V> vertices, Set<E> edges) {
+	public AbstractGraph(Iterable<V> vertices, Iterable<E> edges) {
 		initDataStructures();
 		edges.forEach(this::addEdge);
 		vertices.forEach(this::addVertex);
@@ -71,6 +71,11 @@ abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 		listeners.forEach(action);
 	}
 
+	/**
+	 * Use this method to initialize the datastructures used to store edges and
+	 * vertices, as it may not be implicitly initialized when using the various
+	 * constructors.
+	 */
 	protected abstract void initDataStructures();
 
 }

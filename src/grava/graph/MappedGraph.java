@@ -29,7 +29,7 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 * @param edges
 	 *            the initial set of edges
 	 */
-	public MappedGraph(Set<V> vertices, Set<E> edges) {
+	public MappedGraph(Iterable<V> vertices, Iterable<E> edges) {
 		super(vertices, edges);
 	}
 
@@ -41,7 +41,7 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 * @param edges
 	 *            the initial set of edges
 	 */
-	public MappedGraph(Set<E> edges) {
+	public MappedGraph(Iterable<E> edges) {
 		this(Collections.emptySet(), edges);
 	}
 

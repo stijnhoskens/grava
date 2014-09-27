@@ -27,7 +27,7 @@ public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 * @param edges
 	 *            the initial set of edges
 	 */
-	public ExplicitGraph(Set<V> vertices, Set<E> edges) {
+	public ExplicitGraph(Iterable<V> vertices, Iterable<E> edges) {
 		super(vertices, edges);
 	}
 
@@ -39,7 +39,7 @@ public class ExplicitGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	 * @param edges
 	 *            the initial set of edges
 	 */
-	public ExplicitGraph(Set<E> edges) {
+	public ExplicitGraph(Iterable<E> edges) {
 		this(Collections.emptySet(), edges);
 	}
 

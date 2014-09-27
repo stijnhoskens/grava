@@ -36,6 +36,10 @@ public class CollectionUtils {
 		return stream.flatMap(Set::stream).collect(Collectors.toSet());
 	}
 
+	public static <T> Stream<T> flattenedStream(Stream<Set<T>> stream) {
+		return stream.flatMap(Set::stream);
+	}
+
 	public static <T> Set<T> copyOf(Collection<T> c) {
 		return new HashSet<>(c);
 	}
