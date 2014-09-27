@@ -8,10 +8,26 @@ import java.util.Set;
 
 public class Graphs {
 
+	/**
+	 * Returns true iff the given graph is the null graph. That is, the given
+	 * graph has no edges.
+	 * 
+	 * @param graph
+	 *            The graph to be tested whether it is a null graph
+	 * @return true iff graph is the null graph
+	 */
 	public static boolean isNullGraph(Graph<?, ?> graph) {
 		return graph.getEdges().isEmpty();
 	}
 
+	/**
+	 * Returns true iff the given graph is a complete graph. That is, every pair
+	 * of distinct vertices is connected by an edge in the given graph.
+	 * 
+	 * @param graph
+	 *            The graph to be tested of its completeness
+	 * @return true iff graph is complete
+	 */
 	public static <V> boolean isComplete(Graph<V, ?> graph) {
 		int nbOfVertices = graph.getVertices().size();
 		return graph
@@ -20,6 +36,12 @@ public class Graphs {
 				.allMatch(v -> graph.neighboursOf(v).size() == nbOfVertices - 1);
 	}
 
+	/**
+	 * 
+	 * @param subgraph
+	 * @param graph
+	 * @return
+	 */
 	public static <V, E extends Link<V>> boolean isSubgraphOf(
 			Graph<V, E> subgraph, Graph<V, E> graph) {
 		return graph.getVertices().containsAll(subgraph.getVertices())
