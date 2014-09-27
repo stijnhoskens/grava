@@ -3,6 +3,7 @@ package grava.graph;
 import static grava.util.CollectionUtils.flattenedStream;
 import static grava.util.CollectionUtils.setOf;
 import grava.edge.Link;
+import grava.exceptions.NoSuchInducedSubgraphException;
 
 import java.util.Set;
 
@@ -37,10 +38,15 @@ public class Graphs {
 	}
 
 	/**
+	 * Returns true iff the first argument is a subgraph of the second. That is,
+	 * a graph is a subgraph of another, if the vertices and edges of the first
+	 * are subsets of the vertices and edges of the second.
 	 * 
 	 * @param subgraph
+	 *            The graph which is supposed to be the subgraph
 	 * @param graph
-	 * @return
+	 *            The graph of which the first argument should be a subgraph
+	 * @return true iff the first is a subgraph of the second
 	 */
 	public static <V, E extends Link<V>> boolean isSubgraphOf(
 			Graph<V, E> subgraph, Graph<V, E> graph) {
@@ -48,15 +54,28 @@ public class Graphs {
 				&& graph.getEdges().containsAll(subgraph.getEdges());
 	}
 
+	/**
+	 * 
+	 * @param vertices
+	 * @param graph
+	 * @return
+	 * @throws NoSuchInducedSubgraphException
+	 */
 	public static <V, E extends Link<V>> Graph<V, E> subgraphInducedByVertices(
-			Set<V> vertices, Graph<V, E> graph) {
+			Set<V> vertices, Graph<V, E> graph)
+			throws NoSuchInducedSubgraphException {
+		if (!graph.getVertices().containsAll(vertices))
+			throw new NoSuchInducedSubgraphException();
 		return new ExplicitGraph<V, E>(setOf(flattenedStream(
 				vertices.stream().map(v -> graph.edgesOf(v))).filter(
 				e -> vertices.containsAll(e.asSet()))));
 	}
 
 	public static <V, E extends Link<V>> Graph<V, E> subgraphInducedByEdges(
-			Set<E> edges, Graph<V, E> graph) {
+			Set<E> edges, Graph<V, E> graph)
+			throws NoSuchInducedSubgraphException {
+		if (!graph.getEdges().containsAll(edges))
+			throw new NoSuchInducedSubgraphException();
 		return new ExplicitGraph<V, E>(edges);
 	}
 
