@@ -2,9 +2,12 @@ package grava.graph;
 
 import static grava.util.CollectionUtils.flattenedStream;
 import static grava.util.CollectionUtils.setOf;
+import grava.edge.Arc;
+import grava.edge.Edge;
 import grava.edge.Link;
 import grava.exceptions.NoSuchInducedSubgraphException;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class Graphs {
@@ -134,5 +137,57 @@ public class Graphs {
 			Graph<V, E> g2) {
 		return g1.getVertices().equals(g2.getVertices())
 				&& g1.getEdges().equals(g2.getEdges());
+	}
+
+	/**
+	 * Returns true iff all vertices in the given graph are connected to each
+	 * other. This means there exists a walk between all pairs of vertices.
+	 * 
+	 * @note there exists some sort of randomness in this method (a seed element
+	 *       is randomly chosen), so execution times may vary
+	 * @note if the given graph is a digraph, this method returns its strong
+	 *       connectedness
+	 * 
+	 * @param graph
+	 *            the graph to be tested of its connectedness
+	 * @return true iff graph is connected
+	 */
+	public static <V> boolean isConnected(Graph<V, ?> graph) {
+		Optional<V> opt = graph.getVertices().stream().findAny();
+		if (!opt.isPresent())
+			return true;
+		V seed = opt.get();
+		Set<V> vertices = graph.getVertices();
+		Set<V> expanding = setOf(seed);
+		while (expanding.size() < vertices.size()) {
+			Set<V> previous = expanding;
+			expanding = setOf(expanding.stream().flatMap(
+					v -> graph.neighboursOf(v).stream()));
+			expanding.addAll(previous);
+			if (previous.size() == expanding.size())
+				return false;
+		}
+		return expanding.equals(vertices);
+	}
+
+	/**
+	 * Returns true iff all vertices in the given digraph are weakly connected
+	 * to each other. This means the underlying graph is connected (forgetting
+	 * about directions).
+	 * 
+	 * @note there exists some sort of randomness in this method (a seed element
+	 *       is randomly chosen), so execution times may vary
+	 * 
+	 * @see isConnected
+	 * 
+	 * @param digraph
+	 *            the digraph to be tested of its weak connectedness
+	 * @return true iff digraph is connected
+	 */
+	public static <V> boolean isWeaklyConnected(
+			Graph<V, ? extends Arc<V>> digraph) {
+		Set<Link<V>> asEdges = setOf(digraph.getEdges().stream()
+				.map(arc -> new Edge<V>(arc.getTail(), arc.getHead())));
+		return isConnected(new MappedGraph<>(digraph.getVertices(), asEdges));
 	}
 }

@@ -62,4 +62,6 @@ public class GraphsTest extends WithNodesAndEdges {
 		assertFalse(Graphs.equals(ab_graph,
 				Graphs.subgraphInducedByEdges(setOf(be, ef), total_graph)));
 	}
+
+	// TODO test is(Weakly)Connected
 }

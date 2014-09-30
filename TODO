@@ -1,5 +1,6 @@
 IMPORTANT
--	write all basic graph functionality
+-	write all basic graph functionality (trees)
+- 	dijkstra
 - 	gravix; look into applets
 - 	create a maze generator for testing purposes 
 	(http://en.wikipedia.org/wiki/Maze_generation_algorithm)
