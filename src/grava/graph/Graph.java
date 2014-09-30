@@ -132,4 +132,14 @@ public interface Graph<V, E extends Link<V>> extends Searchable<V, E> {
 	 */
 	Optional<E> edgeBetween(V u, V v);
 
+	/**
+	 * Returns the degree of the given vertex, in other words, it returns the
+	 * number of neighbours of the given vertex.
+	 * 
+	 * @param v
+	 *            the vertex whose degree is to be returned
+	 * @return the degree of v
+	 */
+	int degreeOf(V v);
+
 }

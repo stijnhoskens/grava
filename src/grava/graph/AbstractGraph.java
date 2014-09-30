@@ -57,6 +57,11 @@ abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 				.flatMap(Set::stream).filter(u -> !u.equals(v)));
 	}
 
+	@Override
+	public int degreeOf(V v) {
+		return edgesOf(v).size();
+	}
+
 	private Set<GraphListener<V, E>> listeners = new HashSet<>();
 
 	public void addListener(GraphListener<V, E> l) {

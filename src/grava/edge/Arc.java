@@ -13,9 +13,6 @@ import java.util.Set;
  */
 public class Arc<V> extends AbstractLink<V> {
 
-	private V tail;
-	private V head;
-
 	/**
 	 * Constructs an arc accepting the first argument as its tail and the second
 	 * as its head.
@@ -29,29 +26,26 @@ public class Arc<V> extends AbstractLink<V> {
 	 */
 	public Arc(V tail, V head) throws LoopException {
 		super(tail, head);
-		this.tail = tail;
-		this.head = head;
 	}
 
 	public V getTail() {
-		return tail;
+		return pair.getFirst();
 	}
 
 	public V getHead() {
-		return head;
+		return pair.getSecond();
 	}
 
 	@Override
 	public Set<V> tails() {
-		return Collections.unmodifiableSet(Collections.singleton(tail));
+		return Collections.unmodifiableSet(Collections.singleton(getTail()));
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((head == null) ? 0 : head.hashCode());
-		result = prime * result + ((tail == null) ? 0 : tail.hashCode());
+		int result = 1;
+		result = prime * result + ((pair == null) ? 0 : pair.hashCode());
 		return result;
 	}
 
@@ -64,15 +58,10 @@ public class Arc<V> extends AbstractLink<V> {
 		if (getClass() != obj.getClass())
 			return false;
 		Arc<?> other = (Arc<?>) obj;
-		if (head == null) {
-			if (other.head != null)
+		if (pair == null) {
+			if (other.pair != null)
 				return false;
-		} else if (!head.equals(other.head))
-			return false;
-		if (tail == null) {
-			if (other.tail != null)
-				return false;
-		} else if (!tail.equals(other.tail))
+		} else if (!pair.equals(other.pair))
 			return false;
 		return true;
 	}
