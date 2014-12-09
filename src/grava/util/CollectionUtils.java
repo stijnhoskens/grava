@@ -20,12 +20,12 @@ public class CollectionUtils {
 
 	@SafeVarargs
 	public static <T> Set<T> setOf(T... values) {
-		return Stream.of(values).collect(Collectors.toSet());
+		return setOf(Stream.of(values));
 	}
 
 	@SafeVarargs
 	public static <T> Set<T> unmodifiableSetOf(T... values) {
-		return Collections.unmodifiableSet(setOf(values));
+		return unmodifiableSetOf(Stream.of(values));
 	}
 
 	public static <T> Set<T> flatten(Collection<Set<T>> c) {
@@ -33,7 +33,7 @@ public class CollectionUtils {
 	}
 
 	public static <T> Set<T> flatten(Stream<Set<T>> stream) {
-		return stream.flatMap(Set::stream).collect(Collectors.toSet());
+		return flattenedStream(stream).collect(Collectors.toSet());
 	}
 
 	public static <T> Stream<T> flattenedStream(Stream<Set<T>> stream) {
