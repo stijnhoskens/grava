@@ -5,6 +5,13 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.sqrt;
 
+/**
+ * Positions hold an x- and a y-coordinate.
+ * 
+ * IMPORTANT: the axis system used throughout this library is defined as in
+ * classical mathematics. That is, the x-coordinate goes up while going to the
+ * right, and the y-coordinate goes up going up.
+ */
 public class Position {
 
 	public Position(int x, int y) {
@@ -47,6 +54,10 @@ public class Position {
 
 	public double infinityNormDistanceTo(Position other) {
 		return max(abs(x - other.x), abs(y - other.y));
+	}
+
+	public Position neighbor(Direction direction) {
+		return direction.neighborTo(this);
 	}
 
 	@Override

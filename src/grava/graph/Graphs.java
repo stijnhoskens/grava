@@ -66,7 +66,7 @@ public class Graphs {
 			throws NoSuchInducedSubgraphException {
 		if (!graph.getVertices().containsAll(vertices))
 			throw new NoSuchInducedSubgraphException();
-		return new ExplicitGraph<V, E>(setOf(flattenedStream(
+		return new MappedGraph<V, E>(setOf(flattenedStream(
 				vertices.stream().map(v -> graph.edgesOf(v))).filter(
 				e -> vertices.containsAll(e.asSet()))));
 	}
@@ -76,7 +76,7 @@ public class Graphs {
 			throws NoSuchInducedSubgraphException {
 		if (!graph.getEdges().containsAll(edges))
 			throw new NoSuchInducedSubgraphException();
-		return new ExplicitGraph<V, E>(edges);
+		return new MappedGraph<V, E>(edges);
 	}
 
 	public static <V> boolean isClique(Set<V> vertices, Graph<V, ?> graph) {
