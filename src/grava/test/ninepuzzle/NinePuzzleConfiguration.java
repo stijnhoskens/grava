@@ -1,7 +1,7 @@
 package grava.test.ninepuzzle;
 
 import grava.exceptions.IllegalDimensionException;
-import grava.search.optimal.AStarHeuristic;
+import grava.search.heuristic.Heuristic;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
@@ -40,21 +40,11 @@ public class NinePuzzleConfiguration {
 		return withTheseSwitched(posOf0, neighbour);
 	}
 
-	public static AStarHeuristic<NinePuzzleConfiguration> manhattanHeuristic() {
-		return new AStarHeuristic<NinePuzzleConfiguration>() {
-			@Override
-			public double applyAsDouble(NinePuzzleConfiguration value) {
-				return IntStream
-						.range(0, 9)
-						.map(x -> value.positionOf(x).manhattanTo(
-								GOAL_STATE.positionOf(x))).sum();
-			}
-
-			@Override
-			public boolean isConsistent() {
-				return true;
-			}
-		};
+	public static Heuristic<NinePuzzleConfiguration> manhattanHeuristic() {
+		return npc -> IntStream
+				.range(0, 9)
+				.map(x -> npc.positionOf(x).manhattanTo(
+						GOAL_STATE.positionOf(x))).sum();
 	}
 
 	private MatrixPosition positionOf(int val) {

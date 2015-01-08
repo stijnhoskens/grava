@@ -1,14 +1,13 @@
 package grava.graph;
 
+import static grava.util.CollectionUtils.setOf;
 import grava.edge.WeightedArc;
 import grava.exceptions.IllegalDimensionException;
 import grava.exceptions.LoopException;
 import grava.search.Searchable;
 import grava.util.DistanceMatrix;
-import static grava.util.CollectionUtils.setOf;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -94,7 +93,7 @@ public class MatrixGraph<V> implements Searchable<V, WeightedArc<V>> {
 	 * Returns a graph representing this searchable.
 	 */
 	public Graph<V, WeightedArc<V>> toGraph() {
-		return new MappedGraph<>(new HashSet<>(vertices), setOf(vertices
+		return new MappedGraph<>(vertices, setOf(vertices
 				.stream().flatMap(v -> edgesOf(v).stream())));
 	}
 }

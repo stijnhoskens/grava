@@ -5,9 +5,9 @@ import grava.edge.WeightedEdge;
 import grava.search.SearchStrategy;
 import grava.search.blind.BreadthFirst;
 import grava.search.heuristic.GreedySearch;
+import grava.search.heuristic.Heuristic;
 import grava.search.heuristic.HillClimbing1;
 import grava.search.optimal.AStar;
-import grava.search.optimal.AStarHeuristic;
 import grava.search.optimal.IDAStar;
 import grava.test.ninepuzzle.NinePuzzleConfiguration;
 import grava.test.ninepuzzle.NinePuzzleGenerator;
@@ -60,7 +60,7 @@ public class NinePuzzleSearchTest {
 
 	@Test
 	public void testAStar() {
-		search = new AStar<>(manhattan());
+		search = new AStar<>(manhattan(), true);
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class NinePuzzleSearchTest {
 		});
 	}
 
-	private static AStarHeuristic<NinePuzzleConfiguration> manhattan() {
+	private static Heuristic<NinePuzzleConfiguration> manhattan() {
 		return NinePuzzleConfiguration.manhattanHeuristic();
 	}
 

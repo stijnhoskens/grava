@@ -2,6 +2,7 @@ package grava.search.optimal;
 
 import grava.edge.WeightedLink;
 import grava.search.Searchable;
+import grava.search.heuristic.Heuristic;
 import grava.walk.Walk;
 
 import java.util.HashSet;
@@ -18,10 +19,14 @@ public class AStar<V, E extends WeightedLink<V>> extends
 	private final Queue<Walk<V, E>> q = new PriorityQueue<>(fComparator());
 	private final Predicate<Walk<V, E>> consistencyFilter;
 
-	public AStar(AStarHeuristic<V> h) {
+	/**
+	 * @param isHConsistent
+	 *            whether the given heuristic is consistent.
+	 */
+	public AStar(Heuristic<V> h, boolean isHConsistent) {
 		super(h);
-		consistencyFilter = h.isConsistent() ? w -> !alreadyEvaluated
-				.contains(w.endVertex()) : w -> true;
+		consistencyFilter = isHConsistent ? w -> !alreadyEvaluated.contains(w
+				.endVertex()) : w -> true;
 	}
 
 	@Override
