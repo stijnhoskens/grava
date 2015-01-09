@@ -56,8 +56,8 @@ public class Position {
 		return max(abs(x - other.x), abs(y - other.y));
 	}
 
-	public Position neighbor(Direction direction) {
-		return direction.neighborTo(this);
+	public Position neighbour(Direction direction) {
+		return direction.neighbourTo(this);
 	}
 
 	@Override

@@ -4,7 +4,7 @@ public enum Direction {
 
 	UP {
 		@Override
-		Position neighborTo(Position pos) {
+		Position neighbourTo(Position pos) {
 			return incrementY(pos, 1);
 		}
 
@@ -16,7 +16,7 @@ public enum Direction {
 
 	DOWN {
 		@Override
-		Position neighborTo(Position pos) {
+		Position neighbourTo(Position pos) {
 			return incrementY(pos, -1);
 		}
 
@@ -28,7 +28,7 @@ public enum Direction {
 
 	LEFT {
 		@Override
-		Position neighborTo(Position pos) {
+		Position neighbourTo(Position pos) {
 			return incrementX(pos, -1);
 		}
 
@@ -40,7 +40,7 @@ public enum Direction {
 
 	RIGHT {
 		@Override
-		Position neighborTo(Position pos) {
+		Position neighbourTo(Position pos) {
 			return incrementX(pos, 1);
 		}
 
@@ -50,7 +50,7 @@ public enum Direction {
 		}
 	};
 
-	abstract Position neighborTo(Position pos);
+	abstract Position neighbourTo(Position pos);
 	
 	public abstract Direction opposite();
 

@@ -16,12 +16,12 @@ public class MazeBuilder<V extends Positioned> {
 		this.vertices = vertices;
 	}
 
-	public Maze<V> withoutEdges() {
-		return new Maze<>(vertices);
+	public MappedMaze<V> withoutEdges() {
+		return new MappedMaze<>(vertices);
 	}
 
-	public Maze<V> withoutWalls() {
-		Maze<V> maze = new Maze<>(vertices);
+	public MappedMaze<V> withoutWalls() {
+		MappedMaze<V> maze = new MappedMaze<>(vertices);
 		vertices.forEach(v -> Arrays.stream(Direction.values()).forEach(
 				d -> maze.removeWall(v, d)));
 		return maze;
@@ -60,7 +60,7 @@ public class MazeBuilder<V extends Positioned> {
 	}
 
 	public static void main(String[] args) {
-		Maze<MazeNode> maze = MazeBuilder.square(1000, MazeNode::new)
+		MappedMaze<MazeNode> maze = MazeBuilder.square(1000, MazeNode::new)
 				.withoutWalls();
 		System.out.println(maze.getEdges().size());
 	}
