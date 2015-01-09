@@ -2,7 +2,7 @@ package grava.maze;
 
 import grava.util.CollectionUtils;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -10,21 +10,61 @@ import java.util.stream.Stream;
 
 public class MazeBuilder<V extends Positioned> {
 
+	private final Dimensions dimensions;
 	private final Set<V> vertices;
+	private final boolean isOpen;
 
-	private MazeBuilder(Set<V> vertices) {
+	private MazeBuilder(Set<V> vertices, Dimensions dimensions, boolean isOpen) {
 		this.vertices = vertices;
+		this.dimensions = dimensions;
+		this.isOpen = isOpen;
 	}
 
-	public MappedMaze<V> withoutEdges() {
-		return new MappedMaze<>(vertices);
+	private MazeBuilder(Set<V> vertices, Dimensions dimensions) {
+		this(vertices, dimensions, true);
 	}
 
-	public MappedMaze<V> withoutWalls() {
-		MappedMaze<V> maze = new MappedMaze<>(vertices);
-		vertices.forEach(v -> Arrays.stream(Direction.values()).forEach(
-				d -> maze.removeWall(v, d)));
-		return maze;
+	/**
+	 * Specifies the resulting maze to have no edges, meaning all vertices are
+	 * isolated.
+	 * 
+	 * @return a builder for a maze without edges
+	 */
+	public MazeBuilder<V> withoutEdges() {
+		return new MazeBuilder<>(vertices, dimensions, false);
+	}
+
+	/**
+	 * Returns a mapped maze. This maze is open (all neighbouring vertices are
+	 * connected), unless otherwise specified.
+	 * 
+	 * @see withoutEdges
+	 * @return a mapped maze
+	 */
+	public MappedMaze<V> mapped() {
+		return isOpen ? new MappedMaze<>(vertices) : new MappedMaze<>(vertices,
+				Collections.emptySet());
+	}
+
+	/**
+	 * Returns a matrix maze. This maze is open (all neighbouring vertices are
+	 * connected), unless otherwise specified.
+	 * 
+	 * @see withoutEdges
+	 * @return a matrix maze
+	 */
+	public MatrixMaze<V> matrix() {
+		return new MatrixMaze<V>(dimensions.width, dimensions.height, vertices);
+	}
+
+	private static class Dimensions {
+		final int width;
+		final int height;
+
+		Dimensions(int w, int h) {
+			width = w;
+			height = h;
+		}
 	}
 
 	/**
@@ -51,18 +91,25 @@ public class MazeBuilder<V extends Positioned> {
 						x -> IntStream.range(0, height).boxed()
 								.map(y -> new Position(x, y)));
 		Set<T> vertices = CollectionUtils.setOf(stream.map(mapper));
-		return new MazeBuilder<>(vertices);
+		return new MazeBuilder<>(vertices, new Dimensions(width, height));
 	}
 
+	/**
+	 * Returns a builder from which a square maze can be built. This maze will
+	 * have the specified size as width and height. Coordinates of the vertices
+	 * will be (0,0) and up.
+	 * 
+	 * @param <T>
+	 * 
+	 * @param size
+	 *            the width and height of the maze to be built
+	 * @param mapper
+	 *            creates a vertex from a given position.
+	 * @return a builder from which the square maze can be built.
+	 */
 	public static <T extends Positioned> MazeBuilder<T> square(int size,
-			Function<Position, T> mapper) {
+			Function<? super Position, ? extends T> mapper) {
 		return rectangular(size, size, mapper);
-	}
-
-	public static void main(String[] args) {
-		MappedMaze<MazeNode> maze = MazeBuilder.square(1000, MazeNode::new)
-				.withoutWalls();
-		System.out.println(maze.getEdges().size());
 	}
 
 }

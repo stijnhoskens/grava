@@ -51,7 +51,7 @@ public enum Direction {
 	};
 
 	abstract Position neighbourTo(Position pos);
-	
+
 	public abstract Direction opposite();
 
 	private static Position incrementX(Position pos, int amount) {
@@ -62,4 +62,14 @@ public enum Direction {
 		return new Position(pos.getX(), pos.getY() + amount);
 	}
 
+	boolean isHorizontal() {
+		return equals(LEFT) || equals(RIGHT);
+	}
+
+	public static Direction between(Position p1, Position p2) {
+		for (Direction d : values())
+			if (d.neighbourTo(p1).equals(p2))
+				return d;
+		return null;
+	}
 }

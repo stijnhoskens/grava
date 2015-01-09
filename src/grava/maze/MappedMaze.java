@@ -1,5 +1,6 @@
 package grava.maze;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IntSummaryStatistics;
@@ -16,110 +17,81 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 
 	private Map<Position, V> posToVertex;
 
+	/**
+	 * Creates a maze consisting of the given vertices, and the given edges.
+	 * 
+	 * @param vertices
+	 *            the set of vertices
+	 * @param edges
+	 *            the set of edges
+	 */
 	public MappedMaze(Iterable<V> vertices, Iterable<Edge<V>> edges) {
 		super(vertices, edges);
 	}
 
+	/**
+	 * Creates an open maze consisting of the given set of vertices. This means
+	 * all adjacent nodes are connected.
+	 * 
+	 * @param vertices
+	 *            the set of vertices
+	 */
 	public MappedMaze(Iterable<V> vertices) {
 		this(vertices, Collections.emptySet());
+		vertices.forEach(v -> Arrays.stream(Direction.values()).forEach(
+				d -> removeWall(v, d)));
 	}
 
+	/**
+	 * Creates an empty maze, consisting of no vertices, and no walls
+	 * (evidently).
+	 */
 	public MappedMaze() {
 		this(Collections.emptySet(), Collections.emptySet());
 	}
 
+	/**
+	 * Creates a maze out of the given graph
+	 * 
+	 * @param graph
+	 *            graph of which the vertices and edges are to be copied.
+	 */
 	public MappedMaze(Graph<V, Edge<V>> graph) {
 		super(graph);
 	}
 
-	/**
-	 * Adds the given edge to the graph. If the edge happens to be already in
-	 * the graph, nothing happens. If one of the vertices did not appear in the
-	 * vertex set before, it is added. This way, a connected graph can be
-	 * constructed by only using this method.
-	 * 
-	 * In the maze only edges between neighboring vertices can be added, if the
-	 * edge connects vertices not adjacent to one another, nothing happens.
-	 * 
-	 * @param e
-	 *            the edge to be added
-	 */
 	@Override
-	public void addEdge(Edge<V> e) {
-		if (e.asPair().getFirst().getPosition()
-				.manhattanTo(e.asPair().getSecond().getPosition()) == 1)
-			super.addEdge(e);
-	}
-
-	/**
-	 * Adds an edge starting at the given vertex, going in the given direction.
-	 * Because the edge is bi-directional, the effect is the same as adding an
-	 * edge in the resulting end-vertex (the one to which the first one gets
-	 * connected) going to the opposing direction. If there is no such
-	 * neighboring vertex, nothing happens.
-	 * 
-	 * Returns true iff an edge actually is added.
-	 * 
-	 * @param v
-	 *            the starting vertex
-	 * @param direction
-	 *            the direction the edge is going to
-	 * @return true iff the addition was successful
-	 */
-	public boolean addEdge(V v, Direction direction) {
+	public void addWall(V v, Direction direction) {
 		V otherV = neighbour(v, direction);
 		if (otherV == null)
-			return false;
-		super.addEdge(new Edge<>(v, otherV));
-		return true;
+			return;
+		removeEdgeBetween(v, otherV);
 	}
 
-	/**
-	 * The same as addEdge(v, direction), but for deletion.
-	 * 
-	 * @see addEdge
-	 * @param v
-	 *            the starting vertex
-	 * @param direction
-	 *            the direction the edge is going to
-	 * @return true iff the deletion was successful
-	 */
-	public boolean removeEdge(V v, Direction direction) {
-		V otherV = neighbour(v, direction);
-		if (otherV == null)
-			return false;
-		return removeEdgeBetween(v, otherV);
-	}
-
-	/**
-	 * The same as removeEdge, but added for increased readability.
-	 */
 	@Override
-	public boolean addWall(V v, Direction direction) {
-		return removeEdge(v, direction);
+	public void addWallBetween(V u, V v) {
+		removeEdgeBetween(u, v);
 	}
 
-	/**
-	 * The same as removeEdgeBetween, but added for increased readability.
-	 */
-	@Override
-	public boolean addWallBetween(V v, V u) {
-		return removeEdgeBetween(v, u);
-	}
-
-	/**
-	 * The same as addEdge, but added for increased readability.
-	 */
 	@Override
 	public boolean removeWall(V v, Direction direction) {
-		return addEdge(v, direction);
+		V u = neighbour(v, direction);
+		if (u == null)
+			return false;
+		return removeWallBetween(v, u);
 	}
 
-	/**
-	 * The same as addEdgeBetween, but added for increased readability.
-	 */
-	public void removeWallBetween(V v, V u) {
-		addEdge(new Edge<>(v, u));
+	@Override
+	public boolean removeWallBetween(V u, V v) {
+		if (areNeighbours(u, v))
+			return false;
+		if (!v.equals(posToVertex.get(v.getPosition()))
+				|| !u.equals(posToVertex.get(u.getPosition())))
+			return false;
+		if (v.getPosition().manhattanTo(u.getPosition()) != 1)
+			return false;
+		addEdge(new Edge<>(u, v));
+		return true;
 	}
 
 	private V neighbour(V v, Direction dir) {
@@ -147,37 +119,16 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 		return super.removeVertex(v);
 	}
 
-	/**
-	 * Returns the vertex at position p, or null if there is no such vertex.
-	 * 
-	 * @param p
-	 *            The position of the required vertex
-	 * @return The required vertex
-	 */
 	@Override
-	public V getVertexAt(Position p) {
+	public V vertexAt(Position p) {
 		return posToVertex.get(p);
 	}
 
-	/**
-	 * Returns the width of the maze, being the difference of the maximum and
-	 * the minimum x-coordinate of all nodes incremented by one. If this maze
-	 * contains no nodes, zero is returned.
-	 * 
-	 * @return the width of the maze.
-	 */
 	@Override
 	public int width() {
 		return minMaxDifference(Position::getX);
 	}
 
-	/**
-	 * Returns the height of the maze, being the difference of the maximum and
-	 * the minimum y-coordinate of all nodes incremented by one. If this maze
-	 * contains no nodes, zero is returned.
-	 * 
-	 * @return the width of the maze.
-	 */
 	@Override
 	public int height() {
 		return minMaxDifference(Position::getY);
