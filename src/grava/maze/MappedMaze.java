@@ -39,7 +39,7 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	public MappedMaze(Iterable<V> vertices) {
 		this(vertices, Collections.emptySet());
 		vertices.forEach(v -> Arrays.stream(Direction.values()).forEach(
-				d -> removeWall(v, d)));
+				d -> removeWallAt(v, d)));
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	}
 
 	@Override
-	public void addWall(V v, Direction direction) {
+	public void addWallAt(V v, Direction direction) {
 		V otherV = neighbour(v, direction);
 		if (otherV == null)
 			return;
@@ -74,7 +74,7 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	}
 
 	@Override
-	public boolean hasWall(V v, Direction direction) {
+	public boolean hasWallAt(V v, Direction direction) {
 		V u = neighbour(v, direction);
 		if (u == null)
 			return true;
@@ -87,7 +87,7 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	}
 
 	@Override
-	public boolean removeWall(V v, Direction direction) {
+	public boolean removeWallAt(V v, Direction direction) {
 		V u = neighbour(v, direction);
 		if (u == null)
 			return false;

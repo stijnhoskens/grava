@@ -38,12 +38,12 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 	@Override
 	public Set<V> neighboursOf(V v) {
 		return CollectionUtils.setOf(Arrays.stream(Direction.values())
-				.filter(d -> !hasWall(v, d)).map(v.getPosition()::neighbour)
+				.filter(d -> !hasWallAt(v, d)).map(v.getPosition()::neighbour)
 				.map(this::vertexAt));
 	}
 
 	@Override
-	public boolean hasWall(V v, Direction dir) {
+	public boolean hasWallAt(V v, Direction dir) {
 		Position pos = v.getPosition();
 		if (exceedsDimensions(pos.neighbour(dir)))
 			return true;
@@ -59,7 +59,7 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 		Direction dir = Direction.between(u.getPosition(), v.getPosition());
 		if (dir == null)
 			return true;
-		return hasWall(u, dir);
+		return hasWallAt(u, dir);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 	}
 
 	@Override
-	public void addWall(V v, Direction direction) {
+	public void addWallAt(V v, Direction direction) {
 		Position pOfV = v.getPosition();
 		if (exceedsDimensions(pOfV)
 				|| exceedsDimensions(pOfV.neighbour(direction)))
@@ -90,16 +90,16 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 		Direction direction = Direction.between(u.getPosition(),
 				v.getPosition());
 		if (direction != null)
-			addWall(u, direction);
+			addWallAt(u, direction);
 	}
 
 	@Override
-	public boolean removeWall(V v, Direction direction) {
+	public boolean removeWallAt(V v, Direction direction) {
 		Position pOfV = v.getPosition();
 		if (exceedsDimensions(pOfV)
 				|| exceedsDimensions(pOfV.neighbour(direction)))
 			return false;
-		if (!hasWall(v, direction))
+		if (!hasWallAt(v, direction))
 			return false;
 		setWall(pOfV, direction, false);
 		return true;
@@ -111,7 +111,7 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 		Direction direction = Direction.between(u.getPosition(),
 				v.getPosition());
 		if (direction != null)
-			return removeWall(u, direction);
+			return removeWallAt(u, direction);
 		return false;
 	}
 

@@ -45,7 +45,7 @@ public interface Maze<V extends Positioned> extends Searchable<V, Edge<V>> {
 	 * @param direction
 	 *            the direction where the wall is going to stand
 	 */
-	void addWall(V v, Direction direction);
+	void addWallAt(V v, Direction direction);
 
 	/**
 	 * Adds a wall between u and v. This means those vertices are no longer
@@ -68,7 +68,7 @@ public interface Maze<V extends Positioned> extends Searchable<V, Edge<V>> {
 	 *            the direction in which there could be a wall
 	 * @return true iff there is a wall
 	 */
-	boolean hasWall(V v, Direction direction);
+	boolean hasWallAt(V v, Direction direction);
 
 	/**
 	 * Returns true if there is a wall between u and v. In general, returns true
@@ -94,7 +94,7 @@ public interface Maze<V extends Positioned> extends Searchable<V, Edge<V>> {
 	 *            the direction where the wall is going to be deleted
 	 * @return true iff the deletion is successful
 	 */
-	boolean removeWall(V v, Direction direction);
+	boolean removeWallAt(V v, Direction direction);
 
 	/**
 	 * Removes the wall between u and v.
