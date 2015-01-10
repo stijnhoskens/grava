@@ -74,6 +74,19 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	}
 
 	@Override
+	public boolean hasWall(V v, Direction direction) {
+		V u = neighbour(v, direction);
+		if (u == null)
+			return true;
+		return !areNeighbours(v, u);
+	}
+
+	@Override
+	public boolean hasWallBetween(V u, V v) {
+		return !areNeighbours(u, v);
+	}
+
+	@Override
 	public boolean removeWall(V v, Direction direction) {
 		V u = neighbour(v, direction);
 		if (u == null)

@@ -2,57 +2,17 @@ package grava.maze;
 
 public enum Direction {
 
-	UP {
-		@Override
-		Position neighbourTo(Position pos) {
-			return incrementY(pos, 1);
-		}
+	UP, DOWN, LEFT, RIGHT;
 
-		@Override
-		public Direction opposite() {
-			return DOWN;
-		}
-	},
+	Position neighbourTo(Position pos) {
+		if (isHorizontal())
+			return incrementX(pos, increment() ? 1 : -1);
+		return incrementY(pos, increment() ? 1 : -1);
+	}
 
-	DOWN {
-		@Override
-		Position neighbourTo(Position pos) {
-			return incrementY(pos, -1);
-		}
-
-		@Override
-		public Direction opposite() {
-			return UP;
-		}
-	},
-
-	LEFT {
-		@Override
-		Position neighbourTo(Position pos) {
-			return incrementX(pos, -1);
-		}
-
-		@Override
-		public Direction opposite() {
-			return RIGHT;
-		}
-	},
-
-	RIGHT {
-		@Override
-		Position neighbourTo(Position pos) {
-			return incrementX(pos, 1);
-		}
-
-		@Override
-		public Direction opposite() {
-			return LEFT;
-		}
-	};
-
-	abstract Position neighbourTo(Position pos);
-
-	public abstract Direction opposite();
+	boolean increment() {
+		return equals(UP) || equals(RIGHT);
+	}
 
 	private static Position incrementX(Position pos, int amount) {
 		return new Position(pos.getX() + amount, pos.getY());

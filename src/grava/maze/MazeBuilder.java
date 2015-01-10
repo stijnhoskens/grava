@@ -12,12 +12,13 @@ public class MazeBuilder<V extends Positioned> {
 
 	private final Dimensions dimensions;
 	private final Set<V> vertices;
-	private final boolean isOpen;
+	private final boolean withoutWalls;
 
-	private MazeBuilder(Set<V> vertices, Dimensions dimensions, boolean isOpen) {
+	private MazeBuilder(Set<V> vertices, Dimensions dimensions,
+			boolean withoutWalls) {
 		this.vertices = vertices;
 		this.dimensions = dimensions;
-		this.isOpen = isOpen;
+		this.withoutWalls = withoutWalls;
 	}
 
 	private MazeBuilder(Set<V> vertices, Dimensions dimensions) {
@@ -30,7 +31,7 @@ public class MazeBuilder<V extends Positioned> {
 	 * 
 	 * @return a builder for a maze without edges
 	 */
-	public MazeBuilder<V> withoutEdges() {
+	public MazeBuilder<V> withAllWalls() {
 		return new MazeBuilder<>(vertices, dimensions, false);
 	}
 
@@ -42,8 +43,8 @@ public class MazeBuilder<V extends Positioned> {
 	 * @return a mapped maze
 	 */
 	public MappedMaze<V> mapped() {
-		return isOpen ? new MappedMaze<>(vertices) : new MappedMaze<>(vertices,
-				Collections.emptySet());
+		return withoutWalls ? new MappedMaze<>(vertices) : new MappedMaze<>(
+				vertices, Collections.emptySet());
 	}
 
 	/**
@@ -54,7 +55,8 @@ public class MazeBuilder<V extends Positioned> {
 	 * @return a matrix maze
 	 */
 	public MatrixMaze<V> matrix() {
-		return new MatrixMaze<V>(dimensions.width, dimensions.height, vertices);
+		return new MatrixMaze<V>(dimensions.width, dimensions.height, vertices,
+				withoutWalls);
 	}
 
 	private static class Dimensions {

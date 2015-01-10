@@ -94,7 +94,7 @@ public interface Graph<V, E extends Link<V>> extends Searchable<V, E> {
 	boolean removeEdgeBetween(V u, V v);
 
 	/**
-	 * Returns the set of all neighbours of the given vertices. In other words,
+	 * Returns the set of all neighbours of the given vertex. In other words,
 	 * for every u in the result, areNeighbours(v,u) == true. And none of the
 	 * other vertices not contained in the set have an edge to v. This set is
 	 * assumed to be unmodifiable.

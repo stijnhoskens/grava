@@ -24,6 +24,17 @@ public interface Maze<V extends Positioned> extends Searchable<V, Edge<V>> {
 	Set<V> getVertices();
 
 	/**
+	 * Returns the set of all neighbours of the given vertices. These are all
+	 * vertices adjacent to v and without a wall in between. This set is assumed
+	 * to be unmodifiable.
+	 * 
+	 * @param v
+	 *            the vertex whose neighbours are to be retrieved
+	 * @return the set of all neighbours of the given vertex
+	 */
+	Set<V> neighboursOf(V v);
+
+	/**
 	 * Adds a wall between v and the vertex in the given direction. This means
 	 * those vertices are no longer reachable from one another. If a wall was
 	 * already standing there, or if no vertex is available in the given
@@ -47,6 +58,30 @@ public interface Maze<V extends Positioned> extends Searchable<V, Edge<V>> {
 	 *            the second
 	 */
 	void addWallBetween(V u, V v);
+
+	/**
+	 * Returns true iff there is a wall adjacent to v in the given direction.
+	 * 
+	 * @param v
+	 *            the vertex
+	 * @param direction
+	 *            the direction in which there could be a wall
+	 * @return true iff there is a wall
+	 */
+	boolean hasWall(V v, Direction direction);
+
+	/**
+	 * Returns true if there is a wall between u and v. In general, returns true
+	 * if both vertices are unreachable from one another. So if they are not
+	 * adjacent, it will also return true.
+	 * 
+	 * @param u
+	 *            the first vertex
+	 * @param v
+	 *            the second
+	 * @return true iff there is a wall
+	 */
+	boolean hasWallBetween(V u, V v);
 
 	/**
 	 * Removes the wall between v and the vertex in the given direction.

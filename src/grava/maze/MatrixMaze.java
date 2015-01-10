@@ -13,22 +13,53 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 	private final boolean[][] verWalls;
 
 	@SuppressWarnings("unchecked")
-	public MatrixMaze(int width, int height, Iterable<V> vertices) {
+	MatrixMaze(int width, int height, Iterable<V> vertices, boolean withoutWalls) {
 		data = (V[][]) new Object[width][height];
 		vertices.forEach(v -> {
 			Position p = v.getPosition();
 			data[p.getX()][p.getY()] = v;
 		});
 		horWalls = new boolean[width][height - 1];
-		Arrays.stream(horWalls).forEach(r -> Arrays.fill(r, false));
+		Arrays.stream(horWalls).forEach(r -> Arrays.fill(r, !withoutWalls));
 		verWalls = new boolean[width - 1][height];
-		Arrays.stream(verWalls).forEach(r -> Arrays.fill(r, false));
+		Arrays.stream(verWalls).forEach(r -> Arrays.fill(r, !withoutWalls));
+	}
+
+	public MatrixMaze(int width, int height, Iterable<V> vertices) {
+		this(width, height, vertices, true);
 	}
 
 	@Override
 	public Set<Edge<V>> edgesOf(V v) {
-		// TODO Auto-generated method stub
-		return null;
+		return CollectionUtils.setOf(neighboursOf(v).stream().map(
+				u -> new Edge<>(v, u)));
+	}
+
+	@Override
+	public Set<V> neighboursOf(V v) {
+		return CollectionUtils.setOf(Arrays.stream(Direction.values())
+				.filter(d -> !hasWall(v, d)).map(v.getPosition()::neighbour)
+				.map(this::vertexAt));
+	}
+
+	@Override
+	public boolean hasWall(V v, Direction dir) {
+		Position pos = v.getPosition();
+		if (exceedsDimensions(pos.neighbour(dir)))
+			return true;
+		int x = pos.getX(), y = pos.getY();
+		if (dir.isHorizontal())
+			return verWalls[dir.increment() ? x + 1 : x][y];
+		else
+			return horWalls[x][dir.increment() ? y + 1 : y];
+	}
+
+	@Override
+	public boolean hasWallBetween(V u, V v) {
+		Direction dir = Direction.between(u.getPosition(), v.getPosition());
+		if (dir == null)
+			return true;
+		return hasWall(u, dir);
 	}
 
 	@Override
@@ -39,8 +70,19 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 
 	@Override
 	public void addWall(V v, Direction direction) {
-		// TODO Auto-generated method stub
+		Position pOfV = v.getPosition();
+		if (exceedsDimensions(pOfV)
+				|| exceedsDimensions(pOfV.neighbour(direction)))
+			return;
+		setWall(pOfV, direction, true);
+	}
 
+	private void setWall(Position pos, Direction dir, boolean val) {
+		int x = pos.getX(), y = pos.getY();
+		if (dir.isHorizontal())
+			verWalls[dir.increment() ? x : x - 1][y] = val;
+		else
+			horWalls[x][dir.increment() ? y : y - 1] = val;
 	}
 
 	@Override
@@ -53,8 +95,15 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 
 	@Override
 	public boolean removeWall(V v, Direction direction) {
-		// TODO Auto-generated method stub
-		return false;
+		Position pOfV = v.getPosition();
+		if (exceedsDimensions(pOfV)
+				|| exceedsDimensions(pOfV.neighbour(direction)))
+			return false;
+		if (!hasWall(v, direction))
+			return false;
+		setWall(pOfV, direction, false);
+		return true;
+
 	}
 
 	@Override
@@ -84,6 +133,18 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 		if (width() == 0)
 			return 0;
 		return data[0].length;
+	}
+
+	private boolean exceedsDimensions(Position p) {
+		return exceedsWidth(p) || exceedsHeight(p);
+	}
+
+	private boolean exceedsWidth(Position p) {
+		return p.getX() < 0 || p.getX() >= width();
+	}
+
+	private boolean exceedsHeight(Position p) {
+		return p.getY() < 0 || p.getY() >= height();
 	}
 
 }
