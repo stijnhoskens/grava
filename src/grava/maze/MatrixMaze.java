@@ -14,7 +14,7 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 
 	@SuppressWarnings("unchecked")
 	MatrixMaze(int width, int height, Iterable<V> vertices, boolean withoutWalls) {
-		data = (V[][]) new Object[width][height];
+		data = (V[][]) new Positioned[width][height];
 		vertices.forEach(v -> {
 			Position p = v.getPosition();
 			data[p.getX()][p.getY()] = v;
@@ -49,9 +49,9 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 			return true;
 		int x = pos.getX(), y = pos.getY();
 		if (dir.isHorizontal())
-			return verWalls[dir.increment() ? x + 1 : x][y];
+			return verWalls[dir.increment() ? x : x - 1][y];
 		else
-			return horWalls[x][dir.increment() ? y + 1 : y];
+			return horWalls[x][dir.increment() ? y : y - 1];
 	}
 
 	@Override
