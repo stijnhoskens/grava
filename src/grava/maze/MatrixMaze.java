@@ -117,10 +117,9 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 
 	@Override
 	public V vertexAt(Position p) {
-		int x = p.getX(), y = p.getY();
-		if (x >= width() || y >= height())
+		if (exceedsDimensions(p))
 			return null;
-		return data[x][y];
+		return data[p.getX()][p.getY()];
 	}
 
 	@Override
