@@ -10,7 +10,7 @@ public enum Direction {
 		return incrementY(pos, increment() ? 1 : -1);
 	}
 
-	boolean increment() {
+	public boolean increment() {
 		return equals(UP) || equals(RIGHT);
 	}
 
@@ -22,7 +22,7 @@ public enum Direction {
 		return new Position(pos.getX(), pos.getY() + amount);
 	}
 
-	boolean isHorizontal() {
+	public boolean isHorizontal() {
 		return equals(LEFT) || equals(RIGHT);
 	}
 
