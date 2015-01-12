@@ -134,7 +134,7 @@ public class MazeTest {
 	private static final int BENCH_SIZE = 200;
 
 	private static void benchBuild() {
-		System.out.println("Building a maze: ");
+		System.out.println("Building the maze: ");
 		System.out.println(" With all walls");
 		Duration duration = durationOf(() -> {
 			MazeBuilder.square(BENCH_SIZE, MazeNode::new).withAllWalls()
