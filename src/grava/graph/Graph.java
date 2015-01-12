@@ -97,7 +97,8 @@ public interface Graph<V, E extends Link<V>> extends Searchable<V, E> {
 	 * Returns the set of all neighbours of the given vertex. In other words,
 	 * for every u in the result, areNeighbours(v,u) == true. And none of the
 	 * other vertices not contained in the set have an edge to v. This set is
-	 * assumed to be unmodifiable.
+	 * assumed to be unmodifiable. Returns an empty set if v is not in the graph
+	 * in the first place.
 	 * 
 	 * @param v
 	 *            the vertex whose neighbours are to be retrieved

@@ -4,6 +4,7 @@ import grava.edge.Edge;
 import grava.util.CollectionUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 public class MatrixMaze<V extends Positioned> extends AbstractMaze<V> {
@@ -37,27 +38,29 @@ public class MatrixMaze<V extends Positioned> extends AbstractMaze<V> {
 
 	@Override
 	public Set<V> neighboursOf(V v) {
+		if (!v.equals(vertexAt(v.getPosition())))
+			return Collections.emptySet();
+		Position p = v.getPosition();
 		return CollectionUtils.setOf(Arrays.stream(Direction.values())
-				.filter(d -> !hasWallAt(v, d)).map(v.getPosition()::neighbour)
+				.filter(d -> !hasWallAt(p, d)).map(v.getPosition()::neighbour)
 				.map(this::vertexAt));
 	}
 
 	@Override
-	public boolean hasWallAt(V v, Direction dir) {
-		Position pos = v.getPosition();
-		if (exceedsDimensions(pos.neighbour(dir)))
+	public boolean hasWallAt(Position p, Direction dir) {
+		if (exceedsDimensions(p.neighbour(dir)))
 			return true;
-		int x = pos.getX(), y = pos.getY();
+		int x = p.getX(), y = p.getY();
 		return dir.isHorizontal() ? verWalls[dir.increment() ? x : x - 1][y]
 				: horWalls[x][dir.increment() ? y : y - 1];
 	}
 
 	@Override
-	public boolean hasWallBetween(V u, V v) {
-		Direction dir = Direction.between(u.getPosition(), v.getPosition());
+	public boolean hasWallBetween(Position p, Position q) {
+		Direction dir = Direction.between(p, q);
 		if (dir == null)
 			return true;
-		return hasWallAt(u, dir);
+		return hasWallAt(p, dir);
 	}
 
 	@Override
@@ -67,12 +70,10 @@ public class MatrixMaze<V extends Positioned> extends AbstractMaze<V> {
 	}
 
 	@Override
-	public void addWallAt(V v, Direction direction) {
-		Position pOfV = v.getPosition();
-		if (exceedsDimensions(pOfV)
-				|| exceedsDimensions(pOfV.neighbour(direction)))
+	public void addWallAt(Position p, Direction direction) {
+		if (exceedsDimensions(p) || exceedsDimensions(p.neighbour(direction)))
 			return;
-		setWall(pOfV, direction, true);
+		setWall(p, direction, true);
 	}
 
 	private void setWall(Position pos, Direction dir, boolean val) {
@@ -96,31 +97,27 @@ public class MatrixMaze<V extends Positioned> extends AbstractMaze<V> {
 	}
 
 	@Override
-	public void addWallBetween(V u, V v) {
-		Direction direction = Direction.between(u.getPosition(),
-				v.getPosition());
+	public void addWallBetween(Position p, Position q) {
+		Direction direction = Direction.between(p, q);
 		if (direction != null)
-			addWallAt(u, direction);
+			addWallAt(p, direction);
 	}
 
 	@Override
-	public boolean removeWallAt(V v, Direction direction) {
-		Position pOfV = v.getPosition();
-		if (exceedsDimensions(pOfV)
-				|| exceedsDimensions(pOfV.neighbour(direction)))
+	public boolean removeWallAt(Position p, Direction direction) {
+		if (exceedsDimensions(p) || exceedsDimensions(p.neighbour(direction)))
 			return false;
-		if (!hasWallAt(v, direction))
+		if (!hasWallAt(p, direction))
 			return false;
-		setWall(pOfV, direction, false);
+		setWall(p, direction, false);
 		return true;
 	}
 
 	@Override
-	public boolean removeWallBetween(V u, V v) {
-		Direction direction = Direction.between(u.getPosition(),
-				v.getPosition());
+	public boolean removeWallBetween(Position p, Position q) {
+		Direction direction = Direction.between(p, q);
 		if (direction != null)
-			return removeWallAt(u, direction);
+			return removeWallAt(p, direction);
 		return false;
 	}
 
@@ -141,18 +138,6 @@ public class MatrixMaze<V extends Positioned> extends AbstractMaze<V> {
 		if (width() == 0)
 			return 0;
 		return data[0].length;
-	}
-
-	private boolean exceedsDimensions(Position p) {
-		return exceedsWidth(p) || exceedsHeight(p);
-	}
-
-	private boolean exceedsWidth(Position p) {
-		return p.getX() < 0 || p.getX() >= width();
-	}
-
-	private boolean exceedsHeight(Position p) {
-		return p.getY() < 0 || p.getY() >= height();
 	}
 
 }

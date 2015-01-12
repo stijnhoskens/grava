@@ -35,79 +35,78 @@ public interface Maze<V extends Positioned> extends Searchable<V, Edge<V>> {
 	Set<V> neighboursOf(V v);
 
 	/**
-	 * Adds a wall between v and the vertex in the given direction. This means
-	 * those vertices are no longer reachable from one another. If a wall was
-	 * already standing there, or if no vertex is available in the given
-	 * direction, this method has no effect.
+	 * Adds a wall between p and the position in the given direction. This means
+	 * the vertices at those positions are no longer reachable from one another.
+	 * If a wall was already standing there, or if no position is available in
+	 * the given direction, this method has no effect.
 	 * 
-	 * @param v
-	 *            the starting vertex
+	 * @param p
+	 *            the starting position
 	 * @param direction
 	 *            the direction where the wall is going to stand
 	 */
-	void addWallAt(V v, Direction direction);
+	void addWallAt(Position p, Direction direction);
 
 	/**
-	 * Adds a wall between u and v. This means those vertices are no longer
-	 * reachable from one another. If a wall was already standing there, or if
-	 * one of the given vertices is not in the maze, this method has no effect.
+	 * Adds a wall between p and q. This means the vertices at those positions
+	 * are no longer reachable from one another. If a wall was already standing
+	 * there, or if one of the given positions is not in the maze, this method
+	 * has no effect.
 	 * 
-	 * @param u
-	 *            the first vertex
-	 * @param v
+	 * @param p
+	 *            the first position
+	 * @param q
 	 *            the second
 	 */
-	void addWallBetween(V u, V v);
+	void addWallBetween(Position p, Position q);
 
 	/**
-	 * Returns true iff there is a wall adjacent to v in the given direction.
+	 * Returns true iff there is a wall adjacent to p in the given direction.
 	 * 
-	 * @param v
-	 *            the vertex
+	 * @param p
+	 *            the position adjacent to the supposed wall
 	 * @param direction
 	 *            the direction in which there could be a wall
 	 * @return true iff there is a wall
 	 */
-	boolean hasWallAt(V v, Direction direction);
+	boolean hasWallAt(Position p, Direction direction);
 
 	/**
-	 * Returns true if there is a wall between u and v. In general, returns true
-	 * if both vertices are unreachable from one another. So if they are not
-	 * adjacent, it will also return true.
+	 * Returns true if there is a wall between p and q. In general, returns true
+	 * if the vertices at both positions are unreachable from one another. So if
+	 * they are not adjacent, it will also return true.
 	 * 
-	 * @param u
-	 *            the first vertex
-	 * @param v
+	 * @param p
+	 *            the first position
+	 * @param q
 	 *            the second
 	 * @return true iff there is a wall
 	 */
-	boolean hasWallBetween(V u, V v);
+	boolean hasWallBetween(Position p, Position q);
 
 	/**
-	 * Removes the wall between v and the vertex in the given direction.
-	 * 
+	 * Removes the wall between p and the position in the given direction.
 	 * Returns true iff a wall was present, and is now removed.
 	 * 
-	 * @param v
-	 *            the starting vertex
+	 * @param p
+	 *            the starting position
 	 * @param direction
 	 *            the direction where the wall is going to be deleted
 	 * @return true iff the deletion is successful
 	 */
-	boolean removeWallAt(V v, Direction direction);
+	boolean removeWallAt(Position p, Direction direction);
 
 	/**
-	 * Removes the wall between u and v.
+	 * Removes the wall between p and q. Returns true iff a wall was present,
+	 * and is now removed.
 	 * 
-	 * Returns true iff a wall was present, and is now removed.
-	 * 
-	 * @param u
-	 *            the first vertex
-	 * @param v
+	 * @param p
+	 *            the first position
+	 * @param q
 	 *            the second
 	 * @return true iff the deletion is successful
 	 */
-	boolean removeWallBetween(V u, V v);
+	boolean removeWallBetween(Position p, Position q);
 
 	/**
 	 * Returns the vertex at position p, or null if there is no such vertex.

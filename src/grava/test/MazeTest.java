@@ -52,40 +52,40 @@ public class MazeTest {
 	@Test
 	public void testWallCheck() {
 		testEachMaze(m -> {
-			MazeNode node = m.vertexAt(new Position(1, 1));
+			Position p = new Position(1, 1);
 			Arrays.stream(Direction.values()).forEach(d -> {
-				assertFalse(m.hasWallAt(node, d));
+				assertFalse(m.hasWallAt(p, d));
 			});
-			MazeNode node2 = m.vertexAt(new Position(0, 0));
-			assertTrue(m.hasWallAt(node2, Direction.DOWN));
-			assertTrue(m.hasWallAt(node2, Direction.LEFT));
-			assertFalse(m.hasWallAt(node2, Direction.UP));
-			assertFalse(m.hasWallAt(node2, Direction.RIGHT));
+			Position q = new Position(0, 0);
+			assertTrue(m.hasWallAt(q, Direction.DOWN));
+			assertTrue(m.hasWallAt(q, Direction.LEFT));
+			assertFalse(m.hasWallAt(q, Direction.UP));
+			assertFalse(m.hasWallAt(q, Direction.RIGHT));
 		});
 	}
 
 	@Test
 	public void testWallAddition() {
 		testEachMaze(m -> {
-			MazeNode node = m.vertexAt(new Position(1, 1));
+			Position p = new Position(1, 1);
 			int nbOfNeighbours = 4;
-			assertEquals(nbOfNeighbours, m.neighboursOf(node).size());
+			assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
 			for (Direction d : Direction.values()) {
-				assertFalse(m.hasWallAt(node, d));
-				m.addWallAt(node, d);
-				assertTrue(m.hasWallAt(node, d));
+				assertFalse(m.hasWallAt(p, d));
+				m.addWallAt(p, d);
+				assertTrue(m.hasWallAt(p, d));
 				nbOfNeighbours--;
-				assertEquals(nbOfNeighbours, m.neighboursOf(node).size());
+				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
 			}
-			node = m.vertexAt(new Position(2, 2));
+			p = new Position(2, 2);
 			nbOfNeighbours = 4;
 			for (Direction d : Direction.values()) {
-				MazeNode adjacent = m.vertexAt(node.getPosition().neighbour(d));
-				assertFalse(m.hasWallBetween(node, adjacent));
-				m.addWallBetween(node, adjacent);
-				assertTrue(m.hasWallBetween(node, adjacent));
+				Position q = p.neighbour(d);
+				assertFalse(m.hasWallBetween(p, q));
+				m.addWallBetween(p, q);
+				assertTrue(m.hasWallBetween(p, q));
 				nbOfNeighbours--;
-				assertEquals(nbOfNeighbours, m.neighboursOf(node).size());
+				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
 			}
 		});
 	}
@@ -93,30 +93,30 @@ public class MazeTest {
 	@Test
 	public void testWallRemoval() {
 		testEachMaze(m -> {
-			MazeNode node = m.vertexAt(new Position(1, 1));
+			Position p = new Position(1, 1);
 			for (Direction d : Direction.values())
-				m.addWallAt(node, d);
+				m.addWallAt(p, d);
 			int nbOfNeighbours = 0;
-			assertEquals(nbOfNeighbours, m.neighboursOf(node).size());
+			assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
 			for (Direction d : Direction.values()) {
-				assertTrue(m.hasWallAt(node, d));
-				m.removeWallAt(node, d);
-				assertFalse(m.hasWallAt(node, d));
+				assertTrue(m.hasWallAt(p, d));
+				m.removeWallAt(p, d);
+				assertFalse(m.hasWallAt(p, d));
 				nbOfNeighbours++;
-				assertEquals(nbOfNeighbours, m.neighboursOf(node).size());
+				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
 			}
-			node = m.vertexAt(new Position(2, 2));
+			p = new Position(2, 2);
 			for (Direction d : Direction.values())
-				m.addWallAt(node, d);
+				m.addWallAt(p, d);
 			nbOfNeighbours = 0;
-			assertEquals(nbOfNeighbours, m.neighboursOf(node).size());
+			assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
 			for (Direction d : Direction.values()) {
-				MazeNode adjacent = m.vertexAt(node.getPosition().neighbour(d));
-				assertTrue(m.hasWallBetween(node, adjacent));
-				m.removeWallBetween(node, adjacent);
-				assertFalse(m.hasWallBetween(node, adjacent));
+				Position adjacent = p.neighbour(d);
+				assertTrue(m.hasWallBetween(p, adjacent));
+				m.removeWallBetween(p, adjacent);
+				assertFalse(m.hasWallBetween(p, adjacent));
 				nbOfNeighbours++;
-				assertEquals(nbOfNeighbours, m.neighboursOf(node).size());
+				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
 			}
 		});
 	}
@@ -166,7 +166,7 @@ public class MazeTest {
 		Function<Maze<MazeNode>, Duration> f = m -> durationOf(() -> {
 			m.getVertices().forEach(v -> {
 				Arrays.stream(Direction.values()).forEach(d -> {
-					m.hasWallAt(v, d);
+					m.hasWallAt(v.getPosition(), d);
 				});
 			});
 		});
@@ -183,7 +183,7 @@ public class MazeTest {
 		Function<Maze<MazeNode>, Duration> f = m -> durationOf(() -> {
 			m.getVertices().forEach(v -> {
 				Arrays.stream(Direction.values()).forEach(d -> {
-					m.addWallAt(v, d);
+					m.addWallAt(v.getPosition(), d);
 				});
 			});
 		});
@@ -200,7 +200,7 @@ public class MazeTest {
 		Function<Maze<MazeNode>, Duration> f = m -> durationOf(() -> {
 			m.getVertices().forEach(v -> {
 				Arrays.stream(Direction.values()).forEach(d -> {
-					m.removeWallAt(v, d);
+					m.removeWallAt(v.getPosition(), d);
 				});
 			});
 		});

@@ -41,7 +41,7 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	public MappedMaze(Iterable<V> vertices) {
 		this(vertices, Collections.emptySet());
 		vertices.forEach(v -> Arrays.stream(Direction.values()).forEach(
-				d -> removeWallAt(v, d)));
+				d -> removeWallAt(v.getPosition(), d)));
 	}
 
 	/**
@@ -84,63 +84,61 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	}
 
 	@Override
-	public void addWallAt(V v, Direction direction) {
-		V otherV = neighbour(v, direction);
-		if (otherV == null)
+	public void addWallAt(Position p, Direction direction) {
+		Position q = neighbour(p, direction);
+		if (q == null)
 			return;
-		if (removeEdgeBetween(v, otherV))
-			informMazeListeners(l -> l.wallAdded(v.getPosition(), direction));
+		if (removeEdgeBetween(posToVertex.get(p), posToVertex.get(q)))
+			informMazeListeners(l -> l.wallAdded(p, direction));
 	}
 
 	@Override
-	public void addWallBetween(V u, V v) {
-		Position pOfU = u.getPosition(), pOfV = v.getPosition();
-		if (removeEdgeBetween(u, v))
-			informMazeListeners(l -> l.wallAdded(v.getPosition(),
-					Direction.between(pOfU, pOfV)));
+	public void addWallBetween(Position p, Position q) {
+		if (removeEdgeBetween(posToVertex.get(p), posToVertex.get(q)))
+			informMazeListeners(l -> l.wallAdded(p, Direction.between(p, q)));
 	}
 
 	@Override
-	public boolean hasWallAt(V v, Direction direction) {
-		V u = neighbour(v, direction);
-		if (u == null)
+	public boolean hasWallAt(Position p, Direction direction) {
+		Position q = neighbour(p, direction);
+		if (q == null)
 			return true;
-		return !areNeighbours(v, u);
+		return !areNeighbours(posToVertex.get(p), posToVertex.get(q));
 	}
 
 	@Override
-	public boolean hasWallBetween(V u, V v) {
-		return !areNeighbours(u, v);
+	public boolean hasWallBetween(Position p, Position q) {
+		return !areNeighbours(posToVertex.get(p), posToVertex.get(q));
 	}
 
 	@Override
-	public boolean removeWallAt(V v, Direction direction) {
-		return removeWallBetween(v, neighbour(v, direction), direction);
+	public boolean removeWallAt(Position p, Direction direction) {
+		return removeWallBetween(p, neighbour(p, direction), direction);
 	}
 
 	@Override
-	public boolean removeWallBetween(V u, V v) {
-		return removeWallBetween(u, v,
-				Direction.between(u.getPosition(), v.getPosition()));
+	public boolean removeWallBetween(Position p, Position q) {
+		return removeWallBetween(p, q, Direction.between(p, q));
 	}
 
-	private boolean removeWallBetween(V u, V v, Direction dir) {
-		if (v == null)
+	private boolean removeWallBetween(Position p, Position q, Direction dir) {
+		if (q == null)
 			return false;
+		V u = posToVertex.get(p), v = posToVertex.get(q);
 		if (areNeighbours(u, v))
 			return false;
-		if (!v.equals(posToVertex.get(v.getPosition()))
-				|| !u.equals(posToVertex.get(u.getPosition())))
-			return false;
-		if (v.getPosition().manhattanTo(u.getPosition()) != 1)
+		if (p.manhattanTo(q) != 1)
 			return false;
 		addEdge(new Edge<>(u, v));
-		informMazeListeners(l -> l.wallRemoved(u.getPosition(), dir));
+		informMazeListeners(l -> l.wallRemoved(p, dir));
 		return true;
 	}
 
-	private V neighbour(V v, Direction dir) {
-		return posToVertex.get(v.getPosition().neighbour(dir));
+	private Position neighbour(Position p, Direction dir) {
+		Position neighbour = p.neighbour(dir);
+		if (posToVertex.get(neighbour) == null)
+			return null;
+		return neighbour;
 	}
 
 	/**
