@@ -2,7 +2,10 @@ package grava.maze;
 
 import grava.util.CollectionUtils;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -12,17 +15,21 @@ public class MazeBuilder<V extends Positioned> {
 
 	private final Dimensions dimensions;
 	private final Set<V> vertices;
+	private final Function<? super Position, ? extends V> mapper;
 	private final boolean withoutWalls;
+	private final Set<MazeListener> ls = new HashSet<>();
 
 	private MazeBuilder(Set<V> vertices, Dimensions dimensions,
-			boolean withoutWalls) {
+			Function<? super Position, ? extends V> mapper, boolean withoutWalls) {
 		this.vertices = vertices;
 		this.dimensions = dimensions;
+		this.mapper = mapper;
 		this.withoutWalls = withoutWalls;
 	}
 
-	private MazeBuilder(Set<V> vertices, Dimensions dimensions) {
-		this(vertices, dimensions, true);
+	private MazeBuilder(Set<V> vertices, Dimensions dimensions,
+			Function<? super Position, ? extends V> mapper) {
+		this(vertices, dimensions, mapper, true);
 	}
 
 	/**
@@ -32,7 +39,31 @@ public class MazeBuilder<V extends Positioned> {
 	 * @return a builder for a maze without edges
 	 */
 	public MazeBuilder<V> withAllWalls() {
-		return new MazeBuilder<>(vertices, dimensions, false);
+		return new MazeBuilder<>(vertices, dimensions, mapper, false);
+	}
+
+	/**
+	 * Ensures the given listeners are included in the returned maze. This
+	 * ensures the mazeCreation method of MazeListener is invoked correctly.
+	 * 
+	 * @param listeners
+	 *            the listeners to be included
+	 * @return a MazeBuilder where the given listeners are included
+	 */
+	public MazeBuilder<V> withListeners(MazeListener... listeners) {
+		MazeBuilder<V> builder = new MazeBuilder<>(vertices, dimensions,
+				mapper, withoutWalls);
+		builder.addListeners(listeners);
+		builder.addListeners(ls);
+		return builder;
+	}
+
+	private void addListeners(MazeListener... listeners) {
+		Arrays.stream(listeners).forEach(ls::add);
+	}
+
+	private void addListeners(Collection<MazeListener> listeners) {
+		listeners.forEach(ls::add);
 	}
 
 	/**
@@ -43,8 +74,13 @@ public class MazeBuilder<V extends Positioned> {
 	 * @return a mapped maze
 	 */
 	public MappedMaze<V> mapped() {
-		return withoutWalls ? new MappedMaze<>(vertices) : new MappedMaze<>(
-				vertices, Collections.emptySet());
+		MappedMaze<V> maze = withoutWalls ? new MappedMaze<>(dimensions.width,
+				dimensions.height, mapper) : new MappedMaze<>(vertices,
+				Collections.emptySet());
+		ls.forEach(maze::addListener);
+		ls.forEach(l -> l.mazeCreated(dimensions.width, dimensions.height,
+				withoutWalls));
+		return maze;
 	}
 
 	/**
@@ -55,8 +91,12 @@ public class MazeBuilder<V extends Positioned> {
 	 * @return a matrix maze
 	 */
 	public MatrixMaze<V> matrix() {
-		return new MatrixMaze<V>(dimensions.width, dimensions.height, vertices,
-				withoutWalls);
+		MatrixMaze<V> maze = new MatrixMaze<V>(dimensions.width,
+				dimensions.height, vertices, withoutWalls);
+		ls.forEach(maze::addListener);
+		ls.forEach(l -> l.mazeCreated(dimensions.width, dimensions.height,
+				withoutWalls));
+		return maze;
 	}
 
 	private static class Dimensions {
@@ -93,7 +133,8 @@ public class MazeBuilder<V extends Positioned> {
 						x -> IntStream.range(0, height).boxed()
 								.map(y -> new Position(x, y)));
 		Set<T> vertices = CollectionUtils.setOf(stream.map(mapper));
-		return new MazeBuilder<>(vertices, new Dimensions(width, height));
+		return new MazeBuilder<>(vertices, new Dimensions(width, height),
+				mapper);
 	}
 
 	/**

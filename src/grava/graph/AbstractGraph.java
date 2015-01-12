@@ -62,17 +62,19 @@ abstract class AbstractGraph<V, E extends Link<V>> implements Graph<V, E> {
 		return edgesOf(v).size();
 	}
 
-	private Set<GraphListener<V, E>> listeners = new HashSet<>();
+	private final Set<GraphListener<V, E>> listeners = new HashSet<>();
 
+	@Override
 	public void addListener(GraphListener<V, E> l) {
 		listeners.add(l);
 	}
 
+	@Override
 	public void removeListener(GraphListener<V, E> l) {
 		listeners.remove(l);
 	}
 
-	protected void informListeners(Consumer<GraphListener<V, E>> action) {
+	protected void informGraphListeners(Consumer<GraphListener<V, E>> action) {
 		listeners.forEach(action);
 	}
 

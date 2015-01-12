@@ -1,16 +1,18 @@
 package grava.maze;
 
+import grava.edge.Edge;
+import grava.graph.MappedGraph;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
-
-import grava.edge.Edge;
-import grava.graph.Graph;
-import grava.graph.MappedGraph;
 
 public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 		implements Maze<V> {
@@ -43,21 +45,42 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	}
 
 	/**
-	 * Creates an empty maze, consisting of no vertices, and no walls
-	 * (evidently).
+	 * Creates an open maze (where all adjacent nodes are connected) of size
+	 * width x height.
+	 * 
+	 * @param width
+	 *            the width of the maze
+	 * @param height
+	 *            the height
+	 * @param mapper
+	 *            mapper used to create a node from a given position
 	 */
-	public MappedMaze() {
-		this(Collections.emptySet(), Collections.emptySet());
+	public MappedMaze(int width, int height,
+			Function<? super Position, ? extends V> mapper) {
+		if (width == 0 || height == 0)
+			return;
+		V[] previous = connectRow(0, width, mapper);
+		for (int y = 1; y < height; y++) {
+			V[] actual = connectRow(y, width, mapper);
+			for (int x = 0; x < width; x++)
+				addEdge(new Edge<>(previous[x], actual[x]));
+			previous = actual;
+		}
 	}
 
-	/**
-	 * Creates a maze out of the given graph
-	 * 
-	 * @param graph
-	 *            graph of which the vertices and edges are to be copied.
-	 */
-	public MappedMaze(Graph<V, Edge<V>> graph) {
-		super(graph);
+	private V[] connectRow(int y, int width,
+			Function<? super Position, ? extends V> mapper) {
+		@SuppressWarnings("unchecked")
+		V[] result = (V[]) new Positioned[width];
+		V previous = mapper.apply(new Position(0, y));
+		result[0] = previous;
+		for (int x = 1; x < width; x++) {
+			V actual = mapper.apply(new Position(x, y));
+			addEdge(new Edge<>(previous, actual));
+			result[x] = actual;
+			previous = actual;
+		}
+		return result;
 	}
 
 	@Override
@@ -65,12 +88,16 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 		V otherV = neighbour(v, direction);
 		if (otherV == null)
 			return;
-		removeEdgeBetween(v, otherV);
+		if (removeEdgeBetween(v, otherV))
+			informMazeListeners(l -> l.wallAdded(v.getPosition(), direction));
 	}
 
 	@Override
 	public void addWallBetween(V u, V v) {
-		removeEdgeBetween(u, v);
+		Position pOfU = u.getPosition(), pOfV = v.getPosition();
+		if (removeEdgeBetween(u, v))
+			informMazeListeners(l -> l.wallAdded(v.getPosition(),
+					Direction.between(pOfU, pOfV)));
 	}
 
 	@Override
@@ -88,14 +115,18 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 
 	@Override
 	public boolean removeWallAt(V v, Direction direction) {
-		V u = neighbour(v, direction);
-		if (u == null)
-			return false;
-		return removeWallBetween(v, u);
+		return removeWallBetween(v, neighbour(v, direction), direction);
 	}
 
 	@Override
 	public boolean removeWallBetween(V u, V v) {
+		return removeWallBetween(u, v,
+				Direction.between(u.getPosition(), v.getPosition()));
+	}
+
+	private boolean removeWallBetween(V u, V v, Direction dir) {
+		if (v == null)
+			return false;
 		if (areNeighbours(u, v))
 			return false;
 		if (!v.equals(posToVertex.get(v.getPosition()))
@@ -104,6 +135,7 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 		if (v.getPosition().manhattanTo(u.getPosition()) != 1)
 			return false;
 		addEdge(new Edge<>(u, v));
+		informMazeListeners(l -> l.wallRemoved(u.getPosition(), dir));
 		return true;
 	}
 
@@ -160,6 +192,22 @@ public class MappedMaze<V extends Positioned> extends MappedGraph<V, Edge<V>>
 	protected void initDataStructures() {
 		posToVertex = new HashMap<>();
 		super.initDataStructures();
+	}
+
+	private final Set<MazeListener> listeners = new HashSet<>();
+
+	@Override
+	public void addListener(MazeListener l) {
+		listeners.add(l);
+	}
+
+	@Override
+	public void removeListener(MazeListener l) {
+		listeners.remove(l);
+	}
+
+	protected void informMazeListeners(Consumer<MazeListener> action) {
+		listeners.forEach(action);
 	}
 
 }

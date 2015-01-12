@@ -77,7 +77,7 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	@Override
 	public void addVertex(V v) {
 		if (verticesToEdges.addKey(v))
-			informListeners(l -> l.vertexAdded(v));
+			informGraphListeners(l -> l.vertexAdded(v));
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 			return false;
 		verticesToConnectingEdges.get(v).forEach(this::removeEdge);
 		verticesToEdges.remove(v);
-		informListeners(l -> l.vertexRemoved(v));
+		informGraphListeners(l -> l.vertexRemoved(v));
 		return true;
 	}
 
@@ -115,8 +115,11 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 	@Override
 	public void addEdge(E e) {
 		if (e.tails().stream().allMatch(v -> verticesToEdges.addValue(v, e)))
-			informListeners(l -> l.edgeAdded(e));
-		e.asSet().forEach(v -> verticesToConnectingEdges.addValue(v, e));
+			informGraphListeners(l -> l.edgeAdded(e));
+		e.asSet().forEach(v -> {
+			addVertex(v);
+			verticesToConnectingEdges.addValue(v, e);
+		});
 	}
 
 	@Override
@@ -124,7 +127,7 @@ public class MappedGraph<V, E extends Link<V>> extends AbstractGraph<V, E> {
 		boolean isRemoved = e.tails().stream()
 				.allMatch(v -> verticesToEdges.removeValue(v, e));
 		if (isRemoved)
-			informListeners(l -> l.edgeRemoved(e));
+			informGraphListeners(l -> l.edgeRemoved(e));
 		return isRemoved;
 	}
 }

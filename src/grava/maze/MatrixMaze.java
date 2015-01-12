@@ -6,7 +6,7 @@ import grava.util.CollectionUtils;
 import java.util.Arrays;
 import java.util.Set;
 
-public class MatrixMaze<V extends Positioned> implements Maze<V> {
+public class MatrixMaze<V extends Positioned> extends AbstractMaze<V> {
 
 	private final V[][] data;
 	private final boolean[][] horWalls;
@@ -48,10 +48,8 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 		if (exceedsDimensions(pos.neighbour(dir)))
 			return true;
 		int x = pos.getX(), y = pos.getY();
-		if (dir.isHorizontal())
-			return verWalls[dir.increment() ? x : x - 1][y];
-		else
-			return horWalls[x][dir.increment() ? y : y - 1];
+		return dir.isHorizontal() ? verWalls[dir.increment() ? x : x - 1][y]
+				: horWalls[x][dir.increment() ? y : y - 1];
 	}
 
 	@Override
@@ -80,9 +78,21 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 	private void setWall(Position pos, Direction dir, boolean val) {
 		int x = pos.getX(), y = pos.getY();
 		if (dir.isHorizontal())
-			verWalls[dir.increment() ? x : x - 1][y] = val;
+			setValue(verWalls, dir.increment() ? x : x - 1, y, val, pos, dir);
 		else
-			horWalls[x][dir.increment() ? y : y - 1] = val;
+			setValue(horWalls, x, dir.increment() ? y : y - 1, val, pos, dir);
+	}
+
+	private void setValue(boolean[][] walls, int x, int y, boolean val,
+			Position p, Direction d) {
+		boolean oldValue = walls[x][y];
+		if (val && !oldValue) {
+			informMazeListeners(l -> l.wallAdded(p, d));
+			walls[x][y] = val;
+		} else if (!val && oldValue) {
+			informMazeListeners(l -> l.wallRemoved(p, d));
+			walls[x][y] = val;
+		}
 	}
 
 	@Override
@@ -103,7 +113,6 @@ public class MatrixMaze<V extends Positioned> implements Maze<V> {
 			return false;
 		setWall(pOfV, direction, false);
 		return true;
-
 	}
 
 	@Override

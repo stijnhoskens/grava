@@ -134,4 +134,22 @@ public interface Maze<V extends Positioned> extends Searchable<V, Edge<V>> {
 	 */
 	int height();
 
+	/**
+	 * Adds the specified maze listener to the maze. These listeners can be used
+	 * to monitor wall additions and removals. Typical use is a graphical
+	 * interface.
+	 * 
+	 * @param listener
+	 *            the listener to be added
+	 */
+	void addListener(MazeListener listener);
+
+	/**
+	 * Removes the specified maze listener.
+	 * 
+	 * @param listener
+	 *            the listener to be removed
+	 */
+	void removeListener(MazeListener listener);
+
 }

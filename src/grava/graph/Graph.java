@@ -142,4 +142,22 @@ public interface Graph<V, E extends Link<V>> extends Searchable<V, E> {
 	 */
 	int degreeOf(V v);
 
+	/**
+	 * Adds the specified graph listener to the graph. These listeners can be
+	 * used to monitor vertex and edge additions and removals. Typical use is a
+	 * graphical interface.
+	 * 
+	 * @param listener
+	 *            the listener to be added
+	 */
+	void addListener(GraphListener<V, E> listener);
+
+	/**
+	 * Removes the specified graph listener.
+	 * 
+	 * @param listener
+	 *            the listener to be removed
+	 */
+	void removeListener(GraphListener<V, E> listener);
+
 }
