@@ -30,14 +30,18 @@ public class MazeView extends JApplet {
 
 	@Override
 	public void start() {
-		maze = MazeBuilder.square(8, MazeNode::new)
-				.withListeners(new Listener()).matrix();
-		//maze.addWallAt(new Position(0, 0), Direction.UP);
+		Listener l = new Listener();
+		new Thread(() -> {
+			maze = MazeBuilder.square(8, MazeNode::new)
+					.withListeners(new Listener()).matrix();
+			maze.addWallAt(new Position(0, 0), Direction.UP);
+		}).start();
 	}
 
 	@Override
 	public void paint(Graphics g) {
-		painter.accept(g);
+		if (painter != null)
+			painter.accept(g);
 	}
 
 	private Position toUpperLeftCorner(Position p) {
@@ -92,15 +96,18 @@ public class MazeView extends JApplet {
 							drawWall(p, Direction.RIGHT, g);
 					});
 				});
+				System.out.println("full maze drawn");
 			};
+			repaint();
 		}
 
 		@Override
 		public void wallAdded(Position p, Direction d) {
 			painter = g -> {
 				drawWall(p, d, g);
-				System.out.println("painting a wall");
+				System.out.println("wall drawn");
 			};
+			repaint();
 		}
 
 		@Override
