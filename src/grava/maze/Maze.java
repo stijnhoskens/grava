@@ -118,6 +118,17 @@ public interface Maze<V extends Positioned> extends Searchable<V, Edge<V>> {
 	V vertexAt(Position p);
 
 	/**
+	 * Returns true iff p is contained in the maze.
+	 * 
+	 * @param p
+	 *            the position to be tested
+	 * @return true iff the maze contains p
+	 */
+	default boolean contains(Position p) {
+		return vertexAt(p) != null;
+	}
+
+	/**
 	 * Returns the width of the maze. If this maze contains no nodes, zero is
 	 * returned.
 	 * 

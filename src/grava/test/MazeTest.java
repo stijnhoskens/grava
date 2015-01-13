@@ -1,9 +1,10 @@
 package grava.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import grava.maze.Direction;
 import grava.maze.MappedMaze;
-import grava.maze.MatrixMaze;
 import grava.maze.Maze;
 import grava.maze.MazeBuilder;
 import grava.maze.MazeNode;
@@ -27,7 +28,7 @@ public class MazeTest {
 	public void before() {
 		MazeBuilder<MazeNode> builder = MazeBuilder.rectangular(10, 20,
 				MazeNode::new);
-		MatrixMaze<MazeNode> matrix = builder.matrix();
+		Maze<MazeNode> matrix = builder.build();
 		MappedMaze<MazeNode> mapped = builder.mapped();
 		mazes = Stream.of(matrix, mapped);
 	}
@@ -75,7 +76,8 @@ public class MazeTest {
 				m.addWallAt(p, d);
 				assertTrue(m.hasWallAt(p, d));
 				nbOfNeighbours--;
-				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
+				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p))
+						.size());
 			}
 			p = new Position(2, 2);
 			nbOfNeighbours = 4;
@@ -85,7 +87,8 @@ public class MazeTest {
 				m.addWallBetween(p, q);
 				assertTrue(m.hasWallBetween(p, q));
 				nbOfNeighbours--;
-				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
+				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p))
+						.size());
 			}
 		});
 	}
@@ -103,7 +106,8 @@ public class MazeTest {
 				m.removeWallAt(p, d);
 				assertFalse(m.hasWallAt(p, d));
 				nbOfNeighbours++;
-				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
+				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p))
+						.size());
 			}
 			p = new Position(2, 2);
 			for (Direction d : Direction.values())
@@ -116,7 +120,8 @@ public class MazeTest {
 				m.removeWallBetween(p, adjacent);
 				assertFalse(m.hasWallBetween(p, adjacent));
 				nbOfNeighbours++;
-				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p)).size());
+				assertEquals(nbOfNeighbours, m.neighboursOf(m.vertexAt(p))
+						.size());
 			}
 		});
 	}
@@ -138,7 +143,7 @@ public class MazeTest {
 		System.out.println(" With all walls");
 		Duration duration = durationOf(() -> {
 			MazeBuilder.square(BENCH_SIZE, MazeNode::new).withAllWalls()
-					.matrix();
+					.build();
 		});
 		System.out.println("  MatrixMaze: " + duration.toMillis() + "ms");
 		duration = durationOf(() -> {
@@ -148,7 +153,7 @@ public class MazeTest {
 		System.out.println("  MappedMazes: " + duration.toMillis() + "ms");
 		System.out.println(" Without walls");
 		duration = durationOf(() -> {
-			MazeBuilder.square(BENCH_SIZE, MazeNode::new).matrix();
+			MazeBuilder.square(BENCH_SIZE, MazeNode::new).build();
 		});
 		System.out.println("  MatrixMaze: " + duration.toMillis() + "ms");
 		duration = durationOf(() -> {
@@ -159,8 +164,8 @@ public class MazeTest {
 
 	private static void benchChecks() {
 		System.out.println("Checking walls:");
-		MatrixMaze<MazeNode> matrix = MazeBuilder.square(BENCH_SIZE,
-				MazeNode::new).matrix();
+		Maze<MazeNode> matrix = MazeBuilder.square(BENCH_SIZE, MazeNode::new)
+				.build();
 		MappedMaze<MazeNode> mapped = MazeBuilder.square(BENCH_SIZE,
 				MazeNode::new).mapped();
 		Function<Maze<MazeNode>, Duration> f = m -> durationOf(() -> {
@@ -176,8 +181,8 @@ public class MazeTest {
 
 	private static void benchAddition() {
 		System.out.println("Adding walls:");
-		MatrixMaze<MazeNode> matrix = MazeBuilder.square(BENCH_SIZE,
-				MazeNode::new).matrix();
+		Maze<MazeNode> matrix = MazeBuilder.square(BENCH_SIZE, MazeNode::new)
+				.build();
 		MappedMaze<MazeNode> mapped = MazeBuilder.square(BENCH_SIZE,
 				MazeNode::new).mapped();
 		Function<Maze<MazeNode>, Duration> f = m -> durationOf(() -> {
@@ -193,8 +198,8 @@ public class MazeTest {
 
 	private static void benchRemoval() {
 		System.out.println("Removing walls:");
-		MatrixMaze<MazeNode> matrix = MazeBuilder
-				.square(BENCH_SIZE, MazeNode::new).withAllWalls().matrix();
+		Maze<MazeNode> matrix = MazeBuilder.square(BENCH_SIZE, MazeNode::new)
+				.withAllWalls().build();
 		MappedMaze<MazeNode> mapped = MazeBuilder
 				.square(BENCH_SIZE, MazeNode::new).withAllWalls().mapped();
 		Function<Maze<MazeNode>, Duration> f = m -> durationOf(() -> {

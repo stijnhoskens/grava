@@ -6,6 +6,7 @@ import grava.maze.MazeBuilder;
 import grava.maze.MazeListener;
 import grava.maze.MazeNode;
 import grava.maze.Position;
+import grava.maze.generator.RecursiveBacktracker;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -42,7 +43,8 @@ public class MazeView extends JApplet {
 	public void start() {
 		executor.execute(() -> {
 			maze = MazeBuilder.square(20, MazeNode::new)
-					.withListeners(listener).matrix();
+					.withListeners(listener)
+					.build(new RecursiveBacktracker<>());
 		});
 	}
 
@@ -69,7 +71,15 @@ public class MazeView extends JApplet {
 	}
 
 	private void drawWall(Position p, Direction d, Graphics g) {
-		Style.WALL.set(g);
+		drawLine(p, d, g, Style.WALL);
+	}
+
+	private void removeWall(Position p, Direction d, Graphics g) {
+		drawLine(p, d, g, Style.NO_WALL);
+	}
+
+	private void drawLine(Position p, Direction d, Graphics g, Style s) {
+		s.set(g);
 		if (d.isHorizontal()) {
 			int x = d.increment() ? p.getX() + 1 : p.getX();
 			int y = p.getY();
@@ -122,7 +132,7 @@ public class MazeView extends JApplet {
 		@Override
 		public void wallRemoved(Position p, Direction d) {
 			addPaintJob(g -> {
-
+				removeWall(p, d, g);
 			});
 			repaint();
 		}
@@ -131,9 +141,9 @@ public class MazeView extends JApplet {
 	private enum Style {
 
 		WALL {
+			private final Color color = Color.BLACK;
 			private final Stroke stroke = new BasicStroke(5,
 					BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
-			private final Color color = Color.BLACK;
 
 			@Override
 			void set(Graphics g) {
@@ -142,8 +152,9 @@ public class MazeView extends JApplet {
 			}
 		},
 		NO_WALL {
-			private final Stroke stroke = new BasicStroke(1);
-			private final Color color = Color.LIGHT_GRAY;
+			private final Color color = Color.WHITE;
+			private final Stroke stroke = new BasicStroke(5,
+					BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
 
 			@Override
 			void set(Graphics g) {

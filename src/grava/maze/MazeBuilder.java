@@ -1,5 +1,6 @@
 package grava.maze;
 
+import grava.maze.generator.MazeGenerator;
 import grava.util.CollectionUtils;
 
 import java.util.Arrays;
@@ -46,6 +47,23 @@ public class MazeBuilder<V extends Positioned> {
 	}
 
 	/**
+	 * Returns a mapped maze. This maze is open (all neighbouring vertices are
+	 * connected), unless otherwise specified.
+	 * 
+	 * @see withoutEdges
+	 * @return a mapped maze
+	 */
+	public MappedMaze<V> mapped() {
+		MappedMaze<V> maze = withoutWalls ? new MappedMaze<>(dimensions.width,
+				dimensions.height, mapper) : new MappedMaze<>(vertices,
+				Collections.emptySet());
+		ls.forEach(maze::addListener);
+		ls.forEach(l -> l.mazeCreated(dimensions.width, dimensions.height,
+				withoutWalls));
+		return maze;
+	}
+
+	/**
 	 * Ensures the given listeners are included in the returned maze. This
 	 * ensures the mazeCreation method of MazeListener is invoked correctly.
 	 * 
@@ -70,16 +88,15 @@ public class MazeBuilder<V extends Positioned> {
 	}
 
 	/**
-	 * Returns a mapped maze. This maze is open (all neighbouring vertices are
+	 * Returns a matrix maze. This maze is open (all neighbouring vertices are
 	 * connected), unless otherwise specified.
 	 * 
 	 * @see withoutEdges
-	 * @return a mapped maze
+	 * @return a matrix maze
 	 */
-	public MappedMaze<V> mapped() {
-		MappedMaze<V> maze = withoutWalls ? new MappedMaze<>(dimensions.width,
-				dimensions.height, mapper) : new MappedMaze<>(vertices,
-				Collections.emptySet());
+	public Maze<V> build() {
+		MatrixMaze<V> maze = new MatrixMaze<V>(dimensions.width,
+				dimensions.height, vertices, withoutWalls);
 		ls.forEach(maze::addListener);
 		ls.forEach(l -> l.mazeCreated(dimensions.width, dimensions.height,
 				withoutWalls));
@@ -87,19 +104,14 @@ public class MazeBuilder<V extends Positioned> {
 	}
 
 	/**
-	 * Returns a matrix maze. This maze is open (all neighbouring vertices are
-	 * connected), unless otherwise specified.
+	 * Builds a maze given the specified maze generator.
 	 * 
-	 * @see withoutEdges
-	 * @return a matrix maze
+	 * @param generator
+	 *            the generator building the maze
+	 * @return the generated maze
 	 */
-	public MatrixMaze<V> matrix() {
-		MatrixMaze<V> maze = new MatrixMaze<V>(dimensions.width,
-				dimensions.height, vertices, withoutWalls);
-		ls.forEach(maze::addListener);
-		ls.forEach(l -> l.mazeCreated(dimensions.width, dimensions.height,
-				withoutWalls));
-		return maze;
+	public Maze<V> build(MazeGenerator<V> generator) {
+		return generator.apply(this);
 	}
 
 	private static class Dimensions {
