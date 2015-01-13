@@ -39,7 +39,10 @@ public class MazeBuilder<V extends Positioned> {
 	 * @return a builder for a maze without edges
 	 */
 	public MazeBuilder<V> withAllWalls() {
-		return new MazeBuilder<>(vertices, dimensions, mapper, false);
+		MazeBuilder<V> builder = new MazeBuilder<>(vertices, dimensions,
+				mapper, false);
+		builder.addListeners(ls);
+		return builder;
 	}
 
 	/**

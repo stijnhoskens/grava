@@ -7,8 +7,13 @@ import grava.maze.MazeListener;
 import grava.maze.MazeNode;
 import grava.maze.Position;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -19,44 +24,52 @@ public class MazeView extends JApplet {
 	private static final long serialVersionUID = 1L;
 
 	private static final int SQUARE_WIDTH = 20;
+	private static final Position OFFSET = new Position(10, 10);
+
+	private Consumer<Graphics> painter = defaultPainter();
 
 	private Maze<MazeNode> maze;
-	private Consumer<Graphics> painter;
+	private Listener listener = new Listener();
+	private ExecutorService executor = Executors.newCachedThreadPool();
 
 	@Override
 	public void init() {
 		setBackground(Color.WHITE);
+		setSize(500, 500);
 	}
 
 	@Override
 	public void start() {
-		Listener l = new Listener();
-		new Thread(() -> {
-			maze = MazeBuilder.square(8, MazeNode::new)
-					.withListeners(new Listener()).matrix();
-			maze.addWallAt(new Position(0, 0), Direction.UP);
-		}).start();
+		executor.execute(() -> {
+			maze = MazeBuilder.square(20, MazeNode::new)
+					.withListeners(listener).matrix();
+		});
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		if (painter != null)
-			painter.accept(g);
+	public synchronized void paint(Graphics g) {
+		painter.accept(g);
+	}
+
+	private synchronized void addPaintJob(Consumer<Graphics> c) {
+		painter = painter.andThen(c);
+	}
+
+	public Consumer<Graphics> defaultPainter() {
+		return g -> {
+			// DO NOTHING
+		};
 	}
 
 	private Position toUpperLeftCorner(Position p) {
-		int newY = (maze.height() - p.getY() - 1) * SQUARE_WIDTH;
-		int newX = p.getX() * SQUARE_WIDTH;
+		int newY = (maze.height() - p.getY() - 1) * SQUARE_WIDTH
+				+ OFFSET.getY();
+		int newX = p.getX() * SQUARE_WIDTH + OFFSET.getX();
 		return new Position(newX, newY);
 	}
 
-	private void drawSquare(Position p, Graphics g) {
-		Position q = toUpperLeftCorner(p);
-		g.drawRect(q.getX(), q.getY(), SQUARE_WIDTH, SQUARE_WIDTH);
-	}
-
 	private void drawWall(Position p, Direction d, Graphics g) {
-		g.setColor(Color.BLACK);
+		Style.WALL.set(g);
 		if (d.isHorizontal()) {
 			int x = d.increment() ? p.getX() + 1 : p.getX();
 			int y = p.getY();
@@ -80,42 +93,67 @@ public class MazeView extends JApplet {
 
 		@Override
 		public void mazeCreated(int w, int h, boolean flag) {
-			painter = g -> {
+			addPaintJob(g -> {
 				IntStream.range(0, w).forEach(x -> {
 					IntStream.range(0, h).forEach(y -> {
 						Position p = new Position(x, y);
-						g.setColor(Color.LIGHT_GRAY);
-						drawSquare(p, g);
-						if (y == 0)
+						if (y == 0 || !flag)
 							drawWall(p, Direction.DOWN, g);
-						if (y == h - 1)
+						if (y == h - 1 || !flag)
 							drawWall(p, Direction.UP, g);
-						if (x == 0)
+						if (x == 0 || !flag)
 							drawWall(p, Direction.LEFT, g);
-						if (x == w - 1)
+						if (x == w - 1 || !flag)
 							drawWall(p, Direction.RIGHT, g);
 					});
 				});
-				System.out.println("full maze drawn");
-			};
+			});
 			repaint();
 		}
 
 		@Override
 		public void wallAdded(Position p, Direction d) {
-			painter = g -> {
+			addPaintJob(g -> {
 				drawWall(p, d, g);
-				System.out.println("wall drawn");
-			};
+			});
 			repaint();
 		}
 
 		@Override
 		public void wallRemoved(Position p, Direction d) {
-			painter = g -> {
+			addPaintJob(g -> {
 
-			};
+			});
+			repaint();
 		}
+	}
+
+	private enum Style {
+
+		WALL {
+			private final Stroke stroke = new BasicStroke(5,
+					BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
+			private final Color color = Color.BLACK;
+
+			@Override
+			void set(Graphics g) {
+				g.setColor(color);
+				((Graphics2D) g).setStroke(stroke);
+			}
+		},
+		NO_WALL {
+			private final Stroke stroke = new BasicStroke(1);
+			private final Color color = Color.LIGHT_GRAY;
+
+			@Override
+			void set(Graphics g) {
+				g.setColor(color);
+				((Graphics2D) g).setStroke(stroke);
+			}
+		};
+
+		abstract void set(Graphics g);
+
 	}
 
 }
