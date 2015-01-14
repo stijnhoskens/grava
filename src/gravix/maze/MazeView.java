@@ -142,26 +142,25 @@ public class MazeView extends JApplet {
 
 		WALL {
 			private final Color color = Color.BLACK;
-			private final Stroke stroke = new BasicStroke(5,
-					BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
 
 			@Override
 			void set(Graphics g) {
 				g.setColor(color);
-				((Graphics2D) g).setStroke(stroke);
+				((Graphics2D) g).setStroke(STROKE);
 			}
 		},
 		NO_WALL {
 			private final Color color = Color.WHITE;
-			private final Stroke stroke = new BasicStroke(5,
-					BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
 
 			@Override
 			void set(Graphics g) {
 				g.setColor(color);
-				((Graphics2D) g).setStroke(stroke);
+				((Graphics2D) g).setStroke(STROKE);
 			}
 		};
+
+		private final static Stroke STROKE = new BasicStroke(1,
+				BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
 
 		abstract void set(Graphics g);
 

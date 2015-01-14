@@ -25,7 +25,9 @@ public class RecursiveBacktracker<V extends Positioned> implements
 	@Override
 	public Maze<V> apply(MazeBuilder<V> builder) {
 		maze = builder.withAllWalls().build();
-		stack.push(new Position(0, 0));
+		Position seed = new Position(0, 0);
+		stack.push(seed);
+		visited.add(seed);
 		Random r = new Random();
 		while (!stack.isEmpty()) {
 			Position p = stack.pop();
@@ -33,6 +35,7 @@ public class RecursiveBacktracker<V extends Positioned> implements
 			if (nextPositions.isEmpty())
 				continue;
 			Position next = nextPositions.get(r.nextInt(nextPositions.size()));
+			stack.push(p);
 			stack.push(next);
 			visited.add(next);
 			maze.removeWallBetween(p, next);
