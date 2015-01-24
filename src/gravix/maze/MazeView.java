@@ -12,7 +12,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,7 +31,7 @@ public class MazeView extends JApplet {
 	private static final Position OFFSET = new Position(10, 10);
 
 	private Set<Wall> walls = new HashSet<>();
-	private Consumer<Graphics> paintJobs = doNothing();
+	private List<Consumer<Graphics>> paintJobs = new ArrayList<>();
 
 	private int mazeHeight;
 	private Listener listener = new Listener();
@@ -37,43 +39,40 @@ public class MazeView extends JApplet {
 
 	@Override
 	public void init() {
-		setBackground(Color.WHITE);
 		setSize(500, 500);
 	}
 
 	@Override
 	public void start() {
-		executor.execute(() -> {
-			MazeBuilder.square(20, MazeNode::new).withListeners(listener)
-					.build(new RecursiveBacktracker<>());
-		});
+		executor.execute(() -> MazeBuilder.square(20, MazeNode::new)
+				.withListeners(listener).build(new RecursiveBacktracker<>()));
 	}
 
 	@Override
 	public synchronized void paint(Graphics g) {
-		paintJobs.accept(g);
-		paintJobs = doNothing();
+		paintJobs.forEach(c -> c.accept(g));
+		paintJobs.clear();
 		walls.forEach(w -> w.draw(g));
 	}
 
 	private synchronized void addPaintJob(Consumer<Graphics> c) {
-		paintJobs.andThen(c);
+		paintJobs.add(c);
 	}
 
-	private static Consumer<Graphics> doNothing() {
-		return g -> {
-			// DO NOTHING
-		};
+	private synchronized void addWall(Position p, Direction d) {
+		walls.add(toWall(p, d));
+	}
+
+	private synchronized void removeWall(Position p, Direction d) {
+		Wall wall = toWall(p, d);
+		walls.remove(wall);
+		addPaintJob(g -> wall.remove(g));
 	}
 
 	private Position toUpperLeftCorner(Position p) {
 		int newY = (mazeHeight - p.getY() - 1) * SQUARE_WIDTH + OFFSET.getY();
 		int newX = p.getX() * SQUARE_WIDTH + OFFSET.getX();
 		return new Position(newX, newY);
-	}
-
-	private void addWall(Position p, Direction d) {
-		walls.add(toWall(p, d));
 	}
 
 	private Wall toWall(Position p, Direction d) {
@@ -83,12 +82,6 @@ public class MazeView extends JApplet {
 			p = new Position(p.getX(), p.getY() - 1);
 		Orientation o = d.isHorizontal() ? Orientation.RIGHT : Orientation.DOWN;
 		return new Wall(toUpperLeftCorner(p), o);
-	}
-
-	private void removeWall(Position p, Direction d) {
-		Wall wall = toWall(p, d);
-		walls.remove(wall);
-		addPaintJob(g -> wall.remove(g));
 	}
 
 	private void drawLine(Position p, Position q, Graphics g) {
@@ -104,49 +97,61 @@ public class MazeView extends JApplet {
 		@Override
 		public void mazeCreated(int w, int h, boolean flag) {
 			mazeHeight = h;
+			drawDots(w, h);
+			// addPaintJob(g -> {
+			// IntStream.range(0, w).forEach(x -> {
+			// IntStream.range(0, h).forEach(y -> {
+			// Position p = new Position(x, y);
+			// Position q = toUpperLeftCorner(p);
+			// drawDot(q, g);
+			// if (y == 0 || !flag) {
+			// addWall(p, Direction.DOWN);
+			// Position s = new Position(x + 1, y);
+			// q = toUpperLeftCorner(s);
+			// drawDot(q, g);
+			// }
+			// if (y == h - 1 || !flag)
+			// addWall(p, Direction.UP);
+			// if (x == 0 || !flag)
+			// addWall(p, Direction.LEFT);
+			// if (x == w - 1 || !flag) {
+			// addWall(p, Direction.RIGHT);
+			// Position s = new Position(x, y - 1);
+			// q = toUpperLeftCorner(s);
+			// drawDot(q, g);
+			// if (y == 0) {
+			// s = new Position(x + 1, y - 1);
+			// q = toUpperLeftCorner(s);
+			// drawDot(q, g);
+			// }
+			// }
+			// });
+			// });
+			// });
+			// repaint();
+		}
+
+		private void drawDots(int w, int h) {
 			addPaintJob(g -> {
-				IntStream.range(0, w).forEach(x -> {
-					IntStream.range(0, h).forEach(y -> {
-						Position p = new Position(x, y);
-						Position q = toUpperLeftCorner(p);
-						drawDot(q, g);
-						if (y == 0 || !flag) {
-							addWall(p, Direction.DOWN);
-							Position s = new Position(x + 1, y);
-							q = toUpperLeftCorner(s);
-							drawDot(q, g);
-						}
-						if (y == h - 1 || !flag)
-							addWall(p, Direction.UP);
-						if (x == 0 || !flag)
-							addWall(p, Direction.LEFT);
-						if (x == w - 1 || !flag) {
-							addWall(p, Direction.RIGHT);
-							Position s = new Position(x, y - 1);
-							q = toUpperLeftCorner(s);
-							drawDot(q, g);
-							if (y == 0) {
-								s = new Position(x + 1, y - 1);
-								q = toUpperLeftCorner(s);
-								drawDot(q, g);
-							}
-						}
-					});
-				});
+				LineStyle.WALL.set(g);
+				IntStream.rangeClosed(0, w).forEach(
+						x -> IntStream.rangeClosed(0, h).forEach(
+								y -> drawDot(toUpperLeftCorner(new Position(x,
+										y)), g)));
 			});
 			repaint();
 		}
 
 		@Override
 		public void wallAdded(Position p, Direction d) {
-			addWall(p, d);
-			repaint();
+			// addWall(p, d);
+			// repaint();
 		}
 
 		@Override
 		public void wallRemoved(Position p, Direction d) {
-			removeWall(p, d);
-			repaint();
+			// removeWall(p, d);
+			// repaint();
 		}
 	}
 
