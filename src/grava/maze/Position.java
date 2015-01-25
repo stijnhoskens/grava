@@ -5,6 +5,8 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.sqrt;
 
+import java.awt.Point;
+
 /**
  * Positions hold an x- and a y-coordinate.
  * 
@@ -58,6 +60,14 @@ public class Position {
 
 	public Position neighbour(Direction direction) {
 		return direction.neighbourTo(this);
+	}
+
+	public static Position fromPoint(Point point) {
+		return new Position(point.x, point.y);
+	}
+
+	public Position translate(Position p) {
+		return new Position(x + p.x, y + p.y);
 	}
 
 	@Override
