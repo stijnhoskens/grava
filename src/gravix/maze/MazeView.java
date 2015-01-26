@@ -15,7 +15,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -50,9 +49,9 @@ public class MazeView extends JApplet {
 
 	@Override
 	public void start() {
-		executor.execute(() -> MazeBuilder.square(50, MazeNode::new)
+		executor.execute(() -> MazeBuilder.square(20, MazeNode::new)
 				.withListeners(listener)
-				.build(/* new RecursiveBacktracker<>() */));
+				.build( new RecursiveBacktracker<>() ));
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
 	}
@@ -67,9 +66,9 @@ public class MazeView extends JApplet {
 
 	@Override
 	public synchronized void paint(Graphics g) {
-		permPaintJobs.forEach(c -> c.accept(g));
 		tempPaintJobs.forEach(c -> c.accept(g));
 		tempPaintJobs.clear();
+		permPaintJobs.forEach(c -> c.accept(g));
 		walls.forEach(w -> w.draw(g));
 	}
 
